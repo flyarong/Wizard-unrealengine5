@@ -1,0 +1,80 @@
+[
+	{
+		"Name": "Ennomari",
+		"CharacterName": "Ennomari",
+		"CharacterClass": "/Script/Engine.BlueprintGeneratedClass'/Game/Wizard/Blueprints/Characters/LobbyCharacters/BP_Ennomari.BP_Ennomari_C'",
+		"CharacterMesh": "/Script/Engine.SkeletalMesh'/Game/Assets/Meshes/EnnomariSM.EnnomariSM'",
+		"MagicStaff": "/Script/Engine.StaticMesh'/Game/BattleWizardPolyart/Meshes/MagicStaffs/Staff02SM.Staff02SM'",
+		"Health": 9,
+		"Power": 6,
+		"Wisdom": 4,
+		"Intelligence": 2,
+		"Combat": 4,
+		"Agility": 2
+	},
+	{
+		"Name": "Irogreth",
+		"CharacterName": "Irogreth",
+		"CharacterClass": "/Script/Engine.BlueprintGeneratedClass'/Game/Wizard/Blueprints/Characters/LobbyCharacters/BP_Irogreth.BP_Irogreth_C'",
+		"CharacterMesh": "/Script/Engine.SkeletalMesh'/Game/Assets/Meshes/IrogrethSM.IrogrethSM'",
+		"MagicStaff": "/Script/Engine.StaticMesh'/Game/BattleWizardPolyart/Meshes/MagicStaffs/Staff03SM.Staff03SM'",
+		"Health": 6,
+		"Power": 8,
+		"Wisdom": 5,
+		"Intelligence": 2,
+		"Combat": 2,
+		"Agility": 3
+	},
+	{
+		"Name": "Lohion",
+		"CharacterName": "Lohion",
+		"CharacterClass": "/Script/Engine.BlueprintGeneratedClass'/Game/Wizard/Blueprints/Characters/LobbyCharacters/BP_Lohion.BP_Lohion_C'",
+		"CharacterMesh": "/Script/Engine.SkeletalMesh'/Game/Assets/Meshes/LohionSM.LohionSM'",
+		"MagicStaff": "/Script/Engine.StaticMesh'/Game/BattleWizardPolyart/Meshes/MagicStaffs/Staff01SM.Staff01SM'",
+		"Health": 5,
+		"Power": 9,
+		"Wisdom": 3,
+		"Intelligence": 5,
+		"Combat": 2,
+		"Agility": 2
+	},
+	{
+		"Name": "Oharis",
+		"CharacterName": "Oharis",
+		"CharacterClass": "/Script/Engine.BlueprintGeneratedClass'/Game/Wizard/Blueprints/Characters/LobbyCharacters/BP_Oharis.BP_Oharis_C'",
+		"CharacterMesh": "/Script/Engine.SkeletalMesh'/Game/Assets/Meshes/OharisSM.OharisSM'",
+		"MagicStaff": "/Script/Engine.StaticMesh'/Game/BattleWizardPolyart/Meshes/MagicStaffs/Staff02SM.Staff02SM'",
+		"Health": 9,
+		"Power": 5,
+		"Wisdom": 3,
+		"Intelligence": 3,
+		"Combat": 4,
+		"Agility": 2
+	},
+	{
+		"Name": "Pikelis",
+		"CharacterName": "Pikelis",
+		"CharacterClass": "/Script/Engine.BlueprintGeneratedClass'/Game/Wizard/Blueprints/Characters/LobbyCharacters/BP_Pikelis.BP_Pikelis_C'",
+		"CharacterMesh": "/Script/Engine.SkeletalMesh'/Game/Assets/Meshes/PikelisSM.PikelisSM'",
+		"MagicStaff": "/Script/Engine.StaticMesh'/Game/BattleWizardPolyart/Meshes/MagicStaffs/Staff03SM.Staff03SM'",
+		"Health": 8,
+		"Power": 6,
+		"Wisdom": 2,
+		"Intelligence": 3,
+		"Combat": 3,
+		"Agility": 4
+	},
+	{
+		"Name": "Alion",
+		"CharacterName": "Alion",
+		"CharacterClass": "/Script/Engine.BlueprintGeneratedClass'/Game/Wizard/Blueprints/Characters/LobbyCharacters/BP_Alion.BP_Alion_C'",
+		"CharacterMesh": "/Script/Engine.SkeletalMesh'/Game/Assets/Meshes/AlionSM.AlionSM'",
+		"MagicStaff": "/Script/Engine.StaticMesh'/Game/BattleWizardPolyart/Meshes/MagicStaffs/Staff01SM.Staff01SM'",
+		"Health": 9,
+		"Power": 5,
+		"Wisdom": 3,
+		"Intelligence": 3,
+		"Combat": 4,
+		"Agility": 2
+	}
+]
