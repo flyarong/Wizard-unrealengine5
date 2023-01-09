@@ -51,6 +51,13 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
+
+	/// <summary>
+	/// Character's Action component: handling
+	/// all the actions a character can do
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UActionComponent* Action;
 #pragma endregion
 
 #pragma region WizardStats
@@ -62,18 +69,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
 	int32 Power;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Wisdom;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Intelligence;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Combat;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Agility;
 #pragma endregion
 };
 

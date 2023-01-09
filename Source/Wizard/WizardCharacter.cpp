@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Wizard/HUD/LobbyHUD.h"
 #include "Wizard/HUD/OverheadWidget.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 
 AWizardCharacter::AWizardCharacter()
 {
@@ -29,6 +30,10 @@ AWizardCharacter::AWizardCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+
+	// Create Action Component
+	Action = CreateDefaultSubobject<UActionComponent>(TEXT("Action"));
+	Action->SetIsReplicated(true);
 
 	// Create Overhead widget
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
@@ -61,17 +66,17 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		FCharacterDataTable* SelectedCharacter = CharacterTableObject->FindRow<FCharacterDataTable>(RowName, TEXT(""));
 
 		// Setup character properties when story starts
-		if (GetMesh() && MagicStaff && SelectedCharacter) {
+		if (Action && GetMesh() && MagicStaff && SelectedCharacter) {
 			GetMesh()->SetSkeletalMesh(SelectedCharacter->CharacterMesh);
 			MagicStaff->SetStaticMesh(SelectedCharacter->MagicStaff);
 
 			Name = SelectedCharacter->CharacterName;
 			Health = SelectedCharacter->Health;
 			Power = SelectedCharacter->Power;
-			Wisdom = SelectedCharacter->Wisdom;
-			Intelligence = SelectedCharacter->Intelligence;
-			Combat = SelectedCharacter->Combat;
-			Agility = SelectedCharacter->Agility;
+			Action->SetWisdom(SelectedCharacter->Wisdom);
+			Action->SetIntelligence(SelectedCharacter->Intelligence);
+			Action->SetCombat(SelectedCharacter->Combat);
+			Action->SetAgility(SelectedCharacter->Agility);
 		}
 	}
 
