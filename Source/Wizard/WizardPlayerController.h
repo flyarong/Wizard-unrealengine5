@@ -26,10 +26,6 @@ public:
 	/// <param name="CharacterName">Selected Character's name</param>
 	void InitCharacter(FName CharacterName);
 
-	/** Time Threshold to know if it was a short press */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	float ShortPressThreshold;
-
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
@@ -55,6 +51,7 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+#pragma region InputHandling
 	/** Input handlers for SetDestination action. */
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
@@ -62,7 +59,6 @@ protected:
 	void OnTouchTriggered();
 	void OnTouchReleased();
 
-#pragma region AxisMappingCallbacks
 	/// <summary>
 	/// Callback function to Mouse Wheel Axis for
 	/// Zooming in/out with the camera
@@ -115,10 +111,19 @@ private:
 	UPROPERTY()
 	bool bCharacterInitialized = false;
 
+#pragma region Movement
+	/// <summary>
+	/// Server RPC to replicate Character movement
+	/// </summary>
+	/// <param name="Controller">Character's Controller</param>
+	/// <param name="Dest">Location to move the Character to</param>
+	UFUNCTION(Server, Reliable)
+	void ServerMoveToLocation(AWizardPlayerController* Controller, FVector Dest);
+
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device
-	float FollowTime; // For how long it has been pressed
+#pragma endregion
 };
 
 
