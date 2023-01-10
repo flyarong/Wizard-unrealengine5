@@ -24,11 +24,12 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-#pragma region AxisMappingCallbacks
+#pragma region CameraMovementFunctions
 	/// <summary>
-	/// Callback function to Mouse Wheel Axis Mapping
+	/// Function for setting the Camera zoom position
+	/// with Mouse wheel
 	/// </summary>
-	void MouseWheelAxis(float Value);
+	void SetPositionWithMouseWheel(float Value);
 
 	/// <summary>
 	/// Rotating the camera with the mouse
@@ -36,6 +37,16 @@ public:
 	/// </summary>
 	/// <param name="Value">Base amount to rotate</param>
 	void MouseRotate(float Value);
+
+	/// <summary>
+	/// Function for moving the camera forward/backward with keys
+	/// </summary>
+	void KeyMoveForwardOrBackward(float Value);
+
+	/// <summary>
+	/// Function for moving the camera left/right with keys
+	/// </summary>
+	void KeyMoveLeftOrRight(float Value);
 #pragma endregion
 
 private:
@@ -89,7 +100,6 @@ private:
 	float CameraRotationMultiplier = 3.f;
 #pragma endregion
 
-#pragma region CameraMovementFunctions
 	/// <summary>
 	/// Function for handling camera zooming in/out
 	/// </summary>
@@ -103,9 +113,4 @@ private:
 	void MouseMoveRight();
 	void MouseMoveForward();
 	void MouseMoveBack();
-#pragma endregion
-
-public:
-	FORCEINLINE float GetCameraMovementSpeed() const { return CameraMovementSpeed; }
-	FORCEINLINE USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 };

@@ -59,7 +59,7 @@ void AGameplayCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AGameplayCamera::MouseWheelAxis(float Value)
+void AGameplayCamera::SetPositionWithMouseWheel(float Value)
 {
 	if (Value > 0.f) {
 		CameraPosition = FMath::Clamp(CameraPosition + 1, -MaxCameraPosition, MaxCameraPosition);
@@ -67,6 +67,12 @@ void AGameplayCamera::MouseWheelAxis(float Value)
 	else if (Value < 0.f) {
 		CameraPosition = FMath::Clamp(CameraPosition - 1, -MaxCameraPosition, MaxCameraPosition);
 	}
+}
+
+void AGameplayCamera::CameraZoom(float DeltaTime)
+{
+	float NewTargetLength = DefaultSpringArmLength + (-1 * (CameraZoomDiff * CameraPosition));
+	CameraBoom->TargetArmLength = FMath::FInterpTo(CameraBoom->TargetArmLength, NewTargetLength, DeltaTime, 2.f);
 }
 
 void AGameplayCamera::MouseRotate(float Value)
@@ -77,10 +83,22 @@ void AGameplayCamera::MouseRotate(float Value)
 	}
 }
 
-void AGameplayCamera::CameraZoom(float DeltaTime)
+void AGameplayCamera::KeyMoveForwardOrBackward(float Value)
 {
-	float NewTargetLength = DefaultSpringArmLength + (-1 * (CameraZoomDiff * CameraPosition));
-	CameraBoom->TargetArmLength = FMath::FInterpTo(CameraBoom->TargetArmLength, NewTargetLength, DeltaTime, 2.f);
+	if (CameraBoom && Value != 0) {
+		FVector DeltaLocation = FRotator(0.f, -90.f + CameraBoom->GetComponentRotation().Yaw, 0.f)
+			.RotateVector(FVector(0.f, Value * CameraMovementSpeed, 0.f));
+		CameraBoom->AddRelativeLocation(DeltaLocation);
+	}
+}
+
+void AGameplayCamera::KeyMoveLeftOrRight(float Value)
+{
+	if (CameraBoom && Value != 0) {
+		FVector DeltaLocation = FRotator(0.f, CameraBoom->GetComponentRotation().Yaw, 0.f)
+			.RotateVector(FVector(0.f, Value * CameraMovementSpeed, 0.f));
+		CameraBoom->AddRelativeLocation(DeltaLocation);
+	}
 }
 
 void AGameplayCamera::MouseMoveLeft()

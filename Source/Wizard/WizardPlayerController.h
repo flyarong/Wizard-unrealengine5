@@ -65,6 +65,9 @@ protected:
 	/// </summary>
 	void MouseWheelAxis(float Value);
 
+	/// <summary>
+	/// Callback function to rotate Camera with Right Mouse Button
+	/// </summary>
 	void MouseRotateYaw(float Value);
 
 	/// <summary>
