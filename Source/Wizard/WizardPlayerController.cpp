@@ -77,6 +77,7 @@ void AWizardPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(FName("MouseWheelAxis"), this, &AWizardPlayerController::MouseWheelAxis);
 	InputComponent->BindAxis(FName("MoveForward"), this, &AWizardPlayerController::OnKeyMoveForward);
 	InputComponent->BindAxis(FName("MoveRight"), this, &AWizardPlayerController::OnKeyMoveRight);
+	InputComponent->BindAxis(FName("LookYaw"), this, &AWizardPlayerController::MouseRotateYaw);
 }
 
 void AWizardPlayerController::InitCharacter(FName CharacterName)
@@ -176,33 +177,31 @@ void AWizardPlayerController::MouseWheelAxis(float Value)
 	}
 }
 
+void AWizardPlayerController::MouseRotateYaw(float Value)
+{
+	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
+	if (GameplayCamera && IsInputKeyDown(EKeys::RightMouseButton)) {
+		GameplayCamera->MouseRotate(Value);
+	}
+}
+
 void AWizardPlayerController::OnKeyMoveForward(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
-	if (GameplayCamera) {
-		if (Value > 0) {
-			FVector DeltaLocation = FVector(0.f, -GameplayCamera->GetCameraMovementSpeed(), 0.f);
-			if (GameplayCamera->GetCameraBoom()) GameplayCamera->GetCameraBoom()->AddRelativeLocation(DeltaLocation);
-		}
-		else if (Value < 0) {
-			FVector DeltaLocation = FVector(0.f, GameplayCamera->GetCameraMovementSpeed(), 0.f);
-			if (GameplayCamera->GetCameraBoom()) GameplayCamera->GetCameraBoom()->AddRelativeLocation(DeltaLocation);
-		}
+	if (GameplayCamera && GameplayCamera->GetCameraBoom() && Value != 0) {
+		FVector DeltaLocation = FRotator(0.f, -90.f + GameplayCamera->GetCameraBoom()->GetComponentRotation().Yaw, 0.f)
+			.RotateVector(FVector(0.f, Value * GameplayCamera->GetCameraMovementSpeed(), 0.f));
+		GameplayCamera->GetCameraBoom()->AddRelativeLocation(DeltaLocation);
 	}
 }
 
 void AWizardPlayerController::OnKeyMoveRight(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
-	if (GameplayCamera) {
-		if (Value > 0) {
-			FVector DeltaLocation = FVector(GameplayCamera->GetCameraMovementSpeed(), 0.f, 0.f);
-			if (GameplayCamera->GetCameraBoom()) GameplayCamera->GetCameraBoom()->AddRelativeLocation(DeltaLocation);
-		}
-		else if (Value < 0) {
-			FVector DeltaLocation = FVector(-GameplayCamera->GetCameraMovementSpeed(), 0.f, 0.f);
-			if (GameplayCamera->GetCameraBoom()) GameplayCamera->GetCameraBoom()->AddRelativeLocation(DeltaLocation);
-		}
+	if (GameplayCamera && GameplayCamera->GetCameraBoom() && Value != 0) {
+		FVector DeltaLocation = FRotator(0.f, GameplayCamera->GetCameraBoom()->GetComponentRotation().Yaw, 0.f)
+			.RotateVector(FVector(0.f, Value * GameplayCamera->GetCameraMovementSpeed(), 0.f));
+		GameplayCamera->GetCameraBoom()->AddRelativeLocation(DeltaLocation);
 	}
 }
 #pragma endregion

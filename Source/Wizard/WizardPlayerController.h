@@ -65,6 +65,8 @@ protected:
 	/// </summary>
 	void MouseWheelAxis(float Value);
 
+	void MouseRotateYaw(float Value);
+
 	/// <summary>
 	/// Callback function for moving the camera
 	/// forward/backward with keys

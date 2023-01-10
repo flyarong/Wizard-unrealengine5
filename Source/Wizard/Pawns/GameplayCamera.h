@@ -29,6 +29,13 @@ public:
 	/// Callback function to Mouse Wheel Axis Mapping
 	/// </summary>
 	void MouseWheelAxis(float Value);
+
+	/// <summary>
+	/// Rotating the camera with the mouse
+	/// Input was setup in Controller
+	/// </summary>
+	/// <param name="Value">Base amount to rotate</param>
+	void MouseRotate(float Value);
 #pragma endregion
 
 private:
@@ -74,6 +81,12 @@ private:
 	/// </summary>
 	UPROPERTY()
 	float CameraMovementSpeed = 15.f;
+
+	/// <summary>
+	/// How fast the camera should rotate
+	/// </summary>
+	UPROPERTY()
+	float CameraRotationMultiplier = 3.f;
 #pragma endregion
 
 #pragma region CameraMovementFunctions

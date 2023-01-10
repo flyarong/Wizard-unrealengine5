@@ -69,6 +69,14 @@ void AGameplayCamera::MouseWheelAxis(float Value)
 	}
 }
 
+void AGameplayCamera::MouseRotate(float Value)
+{
+	if (CameraBoom) {
+		FRotator CameraRotation(0.f, Value * CameraRotationMultiplier, 0.f);
+		CameraBoom->AddWorldRotation(CameraRotation);
+	}
+}
+
 void AGameplayCamera::CameraZoom(float DeltaTime)
 {
 	float NewTargetLength = DefaultSpringArmLength + (-1 * (CameraZoomDiff * CameraPosition));
