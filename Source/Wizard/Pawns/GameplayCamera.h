@@ -69,34 +69,34 @@ private:
 	/// <summary>
 	/// Camera Position multiplier
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	int32 CameraPosition = 0;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	int32 MaxCameraPosition = 8;
 
 	/// <summary>
 	/// Variable holding the amount to zoom in/out
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	float CameraZoomDiff = 150.f;
 
 	/// <summary>
 	/// CameraBoom default length
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	float DefaultSpringArmLength = 800.f;
 
 	/// <summary>
 	/// Speed multiplier when Camera is moving
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	float CameraMovementSpeed = 15.f;
 
 	/// <summary>
 	/// How fast the camera should rotate
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	float CameraRotationMultiplier = 3.f;
 #pragma endregion
 
