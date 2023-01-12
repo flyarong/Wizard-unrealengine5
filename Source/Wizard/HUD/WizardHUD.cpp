@@ -3,14 +3,32 @@
 
 #include "WizardHUD.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
+#include "Wizard/HUD/WizardWidgetClasses/TravelPopUpWidget.h"
 
-void AWizardHUD::CreateWizardOverlay()
+bool AWizardHUD::CreateWizardOverlay()
 {
 	APlayerController* PlayerController = GetOwningPlayerController();
 	if (PlayerController && WizardOverlayClass)
 	{
 		WizardOverlay = CreateWidget<UWizardOverlay>(PlayerController, WizardOverlayClass);
 		WizardOverlay->AddToViewport();
+		
+		return true;
+	}
+
+	return false;
+}
+
+void AWizardHUD::ShowTravelPopUp(EDistrict District)
+{
+	if (TravelPopUpClass == nullptr) return;
+
+	if (TravelPopUp == nullptr) {
+		APlayerController* PlayerController = GetOwningPlayerController();
+		if (PlayerController) TravelPopUp = CreateWidget<UTravelPopUpWidget>(PlayerController, TravelPopUpClass);
+	}
+	if (TravelPopUp) {
+		TravelPopUp->PopUpSetup(District);
 	}
 }
 

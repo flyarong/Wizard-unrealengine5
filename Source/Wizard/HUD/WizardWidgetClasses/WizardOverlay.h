@@ -23,4 +23,5 @@ private:
 
 public:
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
+	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
 };

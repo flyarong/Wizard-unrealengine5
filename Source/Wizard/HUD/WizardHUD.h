@@ -20,8 +20,16 @@ public:
 	/// <summary>
 	/// Create & add the overlay to the viewport
 	/// </summary>
-	void CreateWizardOverlay();
+	/// <returns>Whether the creation was successful or not</returns>
+	bool CreateWizardOverlay();
 
+	void ShowTravelPopUp(EDistrict District);
+
+	/// <summary>
+	/// Function for printing the current district's name
+	/// on the screen
+	/// </summary>
+	/// <param name="District">The current district to print</param>
 	void SetCurrentDistrict(EDistrict District);
 
 private:
@@ -38,6 +46,18 @@ private:
 	UPROPERTY()
 	class UWizardOverlay* WizardOverlay;
 
+	/// <summary>
+	/// Widget Class of the gameplay overlay
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Wizard Overlay")
+	TSubclassOf<class UUserWidget> TravelPopUpClass;
+
+	/// <summary>
+	/// Pointer to the gameplay overlay
+	/// </summary>
+	UPROPERTY()
+	class UTravelPopUpWidget* TravelPopUp;
+
 public:
-	FORCEINLINE UWizardOverlay* GetOverlay() { return WizardOverlay; }
+	FORCEINLINE UWizardOverlay* GetOverlay() const { return WizardOverlay; }
 };

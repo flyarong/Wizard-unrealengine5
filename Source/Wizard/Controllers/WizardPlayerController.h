@@ -20,6 +20,8 @@ class AWizardPlayerController : public APlayerController
 public:
 	AWizardPlayerController();
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void AcknowledgePossession(APawn* Pawn) override;
 
 	/// <summary>
 	/// Function to initialize the WizardCharacter
@@ -27,7 +29,13 @@ public:
 	/// <param name="CharacterName">Selected Character's name</param>
 	void InitCharacter(FName CharacterName);
 
-	void SetHUDCurrentDistrict(EDistrict District);
+	void ShowHUDTravelPopUp(EDistrict District);
+
+	/// <summary>
+	/// Function for setting the current district
+	/// in the HUD
+	/// </summary>
+	void SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter);
 
 #pragma region InputPointers
 	/** FX Class that we will spawn when clicking */
@@ -92,6 +100,7 @@ protected:
 
 private:
 
+#pragma region GameplayPointers
 	/// <summary>
 	/// Pointer to the player character
 	/// </summary>
@@ -121,6 +130,7 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AGameplayCamera* GameplayCamera;
+#pragma endregion
 
 	/// <summary>
 	/// Boolean for whether or not the player's
@@ -129,8 +139,19 @@ private:
 	UPROPERTY()
 	bool bCharacterInitialized = false;
 
+	/// <summary>
+	/// Boolean for whether or not the player's
+	/// Overlay is initialized
+	/// </summary>
 	UPROPERTY()
 	bool bWizardOverlayInitialized = false;
+
+	/// <summary>
+	/// Variable to store the character's current district
+	/// until the HUD&Overlay becomes valid
+	/// </summary>
+	UPROPERTY()
+	EDistrict CachedCurrentDistrict;
 
 #pragma region Movement
 	/// <summary>

@@ -48,7 +48,7 @@ void UActionComponent::SetCurrentDistrict(EDistrict District)
 
 	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDCurrentDistrict(CurrentDistrict);
+		Controller->SetHUDCurrentDistrict(CurrentDistrict, true);
 	}
 }
 
@@ -56,7 +56,7 @@ void UActionComponent::OnRep_CurrentDistrict()
 {
 	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDCurrentDistrict(CurrentDistrict);
+		Controller->SetHUDCurrentDistrict(CurrentDistrict, true);
 	}
 }
 #pragma endregion

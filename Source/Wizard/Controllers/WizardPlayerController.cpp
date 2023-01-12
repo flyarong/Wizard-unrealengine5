@@ -7,6 +7,7 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Pawns/GameplayCamera.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/HUD/WizardHUD.h"
@@ -48,7 +49,29 @@ void AWizardPlayerController::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	PollInit();
+}
 
+#pragma region CharacterInit
+void AWizardPlayerController::OnPossess(APawn* InPawn) {
+	Super::OnPossess(InPawn);
+
+	WizardCharacter = Cast<AWizardCharacter>(InPawn);
+	if (WizardCharacter && WizardCharacter->GetAction()) {
+		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict(), false);
+	}
+}
+
+void AWizardPlayerController::AcknowledgePossession(APawn* InPawn) {
+	Super::AcknowledgePossession(InPawn);
+
+	WizardCharacter = Cast<AWizardCharacter>(InPawn);
+	if (WizardCharacter && WizardCharacter->GetAction()) {
+		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict(), false);
+	}
+}
+
+void AWizardPlayerController::PollInit()
+{
 	if (HasAuthority() && !bCharacterInitialized) {
 		WizardGameMode = Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this));
 		WizardPlayerState = GetPlayerState<AWizardPlayerState>();
@@ -57,17 +80,39 @@ void AWizardPlayerController::Tick(float DeltaSeconds)
 			InitCharacter(WizardName);
 		}
 	}
-}
 
-void AWizardPlayerController::PollInit()
-{
-	if (!bWizardOverlayInitialized && WizardHUD) {
-		WizardHUD->CreateWizardOverlay();
-		if (WizardHUD->GetOverlay()) {
-			bWizardOverlayInitialized = true;
+	if (!bWizardOverlayInitialized) {
+		WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+		if (WizardHUD) {
+			bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
+			if (WizardHUD->GetOverlay() && bWizardOverlayInitialized) {
+				SetHUDCurrentDistrict(CachedCurrentDistrict, false);
+			}
 		}
 	}
 }
+
+void AWizardPlayerController::InitCharacter(FName CharacterName)
+{
+	WizardPlayerState = WizardPlayerState == nullptr ? GetPlayerState<AWizardPlayerState>() : WizardPlayerState;
+	if (WizardPlayerState && !CharacterName.IsNone()) {
+
+		// Set timer to wait for client Pawn to be valid
+		FTimerHandle CharacterInitTimer;
+		FTimerDelegate CharacterInitDelegate;
+		CharacterInitDelegate.BindUFunction(WizardPlayerState, FName("SetSelectedCharacter"), CharacterName);
+
+		GetWorldTimerManager().SetTimer(
+			CharacterInitTimer,
+			CharacterInitDelegate,
+			3.f,
+			false
+		);
+
+		bCharacterInitialized = true;
+	}
+}
+#pragma endregion
 
 void AWizardPlayerController::SetupInputComponent()
 {
@@ -95,27 +140,6 @@ void AWizardPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(FName("MoveForward"), this, &AWizardPlayerController::OnKeyMoveForward);
 	InputComponent->BindAxis(FName("MoveRight"), this, &AWizardPlayerController::OnKeyMoveRight);
 	InputComponent->BindAxis(FName("LookYaw"), this, &AWizardPlayerController::MouseRotateYaw);
-}
-
-void AWizardPlayerController::InitCharacter(FName CharacterName)
-{
-	WizardPlayerState = WizardPlayerState == nullptr ? GetPlayerState<AWizardPlayerState>() : WizardPlayerState;
-	if (WizardPlayerState && !CharacterName.IsNone()) {
-
-		// Set timer to wait for client Pawn to be valid
-		FTimerHandle CharacterInitTimer;
-		FTimerDelegate CharacterInitDelegate;
-		CharacterInitDelegate.BindUFunction(WizardPlayerState, FName("SetSelectedCharacter"), CharacterName);
-
-		GetWorldTimerManager().SetTimer(
-			CharacterInitTimer,
-			CharacterInitDelegate,
-			3.f,
-			false
-		);
-
-		bCharacterInitialized = true;
-	}
 }
 
 #pragma region CharacterMovement
@@ -216,11 +240,24 @@ void AWizardPlayerController::OnKeyMoveRight(float Value)
 #pragma endregion
 
 #pragma region HUD
-void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
+void AWizardPlayerController::ShowHUDTravelPopUp(EDistrict District)
+{
+	StopMovement();
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) WizardHUD->ShowTravelPopUp(District);
+}
+
+void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD) {
+	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetCurrentDistrictText()) {
 		WizardHUD->SetCurrentDistrict(District);
 	}
+	else {
+		CachedCurrentDistrict = District;
+	}
+
+	// Move Character to CachedDestination
+	if (bMoveCharacter) OnSetDestinationReleased();
 }
 #pragma endregion

@@ -55,7 +55,7 @@ private:
 	/// <summary>
 	/// District the player is currently at
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_CurrentDistrict)
+	UPROPERTY(EditAnywhere, Category = "Movement Action", ReplicatedUsing = OnRep_CurrentDistrict)
 	EDistrict CurrentDistrict;
 
 	UFUNCTION()
@@ -66,5 +66,6 @@ public:
 	FORCEINLINE void SetIntelligence(int32 IntelligenceToSet) { Intelligence = IntelligenceToSet; }
 	FORCEINLINE void SetCombat(int32 CombatToSet) { Combat = CombatToSet; }
 	FORCEINLINE void SetAgility(int32 AgilityToSet) { Agility = AgilityToSet; }
+	FORCEINLINE EDistrict GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(EDistrict District);
 };

@@ -45,9 +45,13 @@ void ADistrict::BeginPlay()
 void ADistrict::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	if (Character && Character->GetAction()) {
-		Character->GetAction()->SetCurrentDistrict(DistrictName);
+	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(Character->Controller);
+	if (PlayerController) {
+		PlayerController->ShowHUDTravelPopUp(DistrictName);
 	}
+	/*if (Character && Character->GetAction()) {
+		Character->GetAction()->SetCurrentDistrict(DistrictName);
+	}*/
 }
 
 void ADistrict::BindOverlapTimerFinished()

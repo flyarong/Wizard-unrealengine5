@@ -38,4 +38,11 @@ private:
 	/// </summary>
 	UFUNCTION()
 	void OnRep_SelectedCharacter();
+
+	/// <summary>
+	/// Integer holding the number of actions a player
+	/// can take per round
+	/// </summary>
+	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Gameplay")
+	int32 NumOfActionsPerRound = 3;
 };
