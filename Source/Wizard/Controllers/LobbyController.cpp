@@ -6,8 +6,8 @@
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
 #include "Wizard/Lobby/CharacterButton.h"
-#include "Wizard/WizardCharacter.h"
-#include "Wizard/WizardGameInstance.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/GameInstance/WizardGameInstance.h"
 #include "Wizard/GameModes/LobbyGameMode.h"
 #include "Wizard/GameStates/LobbyGameState.h"
 

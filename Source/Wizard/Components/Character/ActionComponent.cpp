@@ -2,6 +2,9 @@
 
 
 #include "ActionComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
 
 // Sets default values for this component's properties
 UActionComponent::UActionComponent()
@@ -23,7 +26,6 @@ void UActionComponent::BeginPlay()
 	
 }
 
-
 // Called every frame
 void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -32,3 +34,29 @@ void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// ...
 }
 
+void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UActionComponent, CurrentDistrict)
+}
+
+#pragma region Movement
+void UActionComponent::SetCurrentDistrict(EDistrict District)
+{
+	CurrentDistrict = District;
+
+	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDCurrentDistrict(CurrentDistrict);
+	}
+}
+
+void UActionComponent::OnRep_CurrentDistrict()
+{
+	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDCurrentDistrict(CurrentDistrict);
+	}
+}
+#pragma endregion

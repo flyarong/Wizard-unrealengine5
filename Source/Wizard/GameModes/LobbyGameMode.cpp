@@ -4,7 +4,7 @@
 #include "LobbyGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerState.h"
-#include "Wizard/WizardGameInstance.h"
+#include "Wizard/GameInstance/WizardGameInstance.h"
 #include "Wizard/GameStates/LobbyGameState.h"
 #include "Wizard/Controllers/LobbyController.h"
 

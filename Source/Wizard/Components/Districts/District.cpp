@@ -3,6 +3,9 @@
 
 #include "District.h"
 #include "Components/BoxComponent.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 
 // Sets default values
 ADistrict::ADistrict()
@@ -41,6 +44,10 @@ void ADistrict::BeginPlay()
 
 void ADistrict::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
+	if (Character && Character->GetAction()) {
+		Character->GetAction()->SetCurrentDistrict(DistrictName);
+	}
 }
 
 void ADistrict::BindOverlapTimerFinished()

@@ -2,7 +2,7 @@
 
 
 #include "WizardPlayerState.h"
-#include "Wizard/WizardCharacter.h"
+#include "Wizard/Characters/WizardCharacter.h"
 #include "Net/UnrealNetwork.h"
 
 void AWizardPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
