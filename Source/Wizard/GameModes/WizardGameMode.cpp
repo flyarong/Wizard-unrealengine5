@@ -46,3 +46,16 @@ FName AWizardGameMode::GetPlayerCharacter(FString PlayerName)
 
 	return FName("Lohion"); // NAME_None
 }
+
+int32 AWizardGameMode::GetActionCost(EAction Action)
+{
+	switch (Action)
+	{
+	case EAction::EA_Movement:
+		return 1;
+		break;
+	default:
+		return 0;
+		break;
+	}
+}

@@ -146,6 +146,7 @@ void AWizardPlayerController::SetupInputComponent()
 void AWizardPlayerController::OnInputStarted()
 {
 	StopMovement();
+	CachedStart = GetPawn()->GetActorLocation();
 }
 
 // Triggered every frame when the input is held down
@@ -193,6 +194,15 @@ void AWizardPlayerController::OnSetDestinationReleased()
 
 void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerController* Controller, FVector Dest) {
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
+}
+
+void AWizardPlayerController::MoveBack()
+{
+	ServerMoveToLocation(this, CachedStart);
+	if (!HasAuthority()) {
+		// Move back locally on client
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedStart);
+	}
 }
 
 // Triggered every frame when the input is held down
@@ -244,7 +254,9 @@ void AWizardPlayerController::ShowHUDTravelPopUp(EDistrict District)
 {
 	StopMovement();
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD) WizardHUD->ShowTravelPopUp(District);
+	if (WizardHUD) {
+		WizardHUD->ShowTravelPopUp(District);
+	}
 }
 
 void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter)
@@ -259,5 +271,21 @@ void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District, bool bMo
 
 	// Move Character to CachedDestination
 	if (bMoveCharacter) OnSetDestinationReleased();
+}
+
+void AWizardPlayerController::SetHUDActions(int32 Actions)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetActionsText()) {
+		WizardHUD->SetActions(Actions);
+	}
+}
+
+void AWizardPlayerController::SetHUDNumOfActions(int32 NumOfActions)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetNumOfActionsText()) {
+		WizardHUD->SetNumOfActions(NumOfActions);
+	}
 }
 #pragma endregion

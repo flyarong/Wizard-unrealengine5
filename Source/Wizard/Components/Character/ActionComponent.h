@@ -38,6 +38,12 @@ private:
 	UPROPERTY()
 	class AWizardPlayerController* Controller;
 
+	/// <summary>
+	/// Player state pointer
+	/// </summary>
+	UPROPERTY()
+	class AWizardPlayerState* PlayerState;
+
 #pragma region WizardStats
 	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
 	int32 Wisdom;

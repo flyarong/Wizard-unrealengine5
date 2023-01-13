@@ -23,6 +23,11 @@ public:
 	/// <returns>Whether the creation was successful or not</returns>
 	bool CreateWizardOverlay();
 
+	/// <summary>
+	/// Function to show the pop up message
+	/// before travelling to a new district
+	/// </summary>
+	/// <param name="District">The destination</param>
 	void ShowTravelPopUp(EDistrict District);
 
 	/// <summary>
@@ -31,6 +36,18 @@ public:
 	/// </summary>
 	/// <param name="District">The current district to print</param>
 	void SetCurrentDistrict(EDistrict District);
+
+	/// <summary>
+	/// Function to set the number of available Actions
+	/// on the HUD
+	/// </summary>
+	void SetActions(int32 Actions);
+
+	/// <summary>
+	/// Function to set the max number of Actions
+	/// on the HUD
+	/// </summary>
+	void SetNumOfActions(int32 NumOfActions);
 
 private:
 	

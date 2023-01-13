@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Wizard/Characters/WizardCharacter.h"
-#include "Wizard/Components/Character/ActionComponent.h"
 #include "TravelPopUpWidget.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
-#include "Wizard/Controllers/WizardPlayerController.h"
+#include "GameFramework/PlayerController.h"
+#include "Wizard/PlayerStates/WizardPlayerState.h"
 
 void UTravelPopUpWidget::PopUpSetup(EDistrict District)
 {
@@ -19,10 +21,10 @@ void UTravelPopUpWidget::PopUpSetup(EDistrict District)
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(World->GetFirstPlayerController()) : PlayerController;
+		APlayerController* PlayerController = World->GetFirstPlayerController();
 		if (PlayerController)
 		{
-			FInputModeGameAndUI InputModeData;
+			FInputModeUIOnly InputModeData;
 			InputModeData.SetWidgetToFocus(TakeWidget());
 			PlayerController->SetInputMode(InputModeData);
 			PlayerController->SetShowMouseCursor(true);
@@ -43,10 +45,10 @@ void UTravelPopUpWidget::PopUpTearDown() {
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(World->GetFirstPlayerController()) : PlayerController;
+		APlayerController* PlayerController = World->GetFirstPlayerController();
 		if (PlayerController)
 		{
-			FInputModeGameOnly InputModeData;
+			FInputModeGameAndUI InputModeData;
 			PlayerController->SetInputMode(InputModeData);
 			PlayerController->SetShowMouseCursor(true);
 		}
@@ -67,13 +69,12 @@ void UTravelPopUpWidget::YesButtonClicked() {
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(World->GetFirstPlayerController()) : PlayerController;
+		APlayerController* PlayerController = World->GetFirstPlayerController();
 		AWizardCharacter* WizardCharacter = Cast<AWizardCharacter>(PlayerController->GetPawn());
-		if (PlayerController && WizardCharacter && WizardCharacter->GetAction())
+		if (WizardCharacter && WizardCharacter->GetAction())
 		{
-			// TODO decrease number of actions in PlayerState
 			WizardCharacter->GetAction()->SetCurrentDistrict(DistrictToMove);
-			PlayerController->SetHUDCurrentDistrict(DistrictToMove, true);
+			PopUpTearDown();
 		}
 	}
 
@@ -81,5 +82,9 @@ void UTravelPopUpWidget::YesButtonClicked() {
 }
 
 void UTravelPopUpWidget::NoButtonClicked() {
-	PopUpTearDown();
+	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
+	if (PlayerController) {
+		PlayerController->MoveBack();
+		PopUpTearDown();
+	}
 }

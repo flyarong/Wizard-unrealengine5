@@ -29,6 +29,13 @@ public:
 	/// <param name="CharacterName">Selected Character's name</param>
 	void InitCharacter(FName CharacterName);
 
+	void MoveBack();
+
+#pragma region HUD
+	/// <summary>
+	/// Function to show the pop up message in the HUD
+	/// before travelling to a new district
+	/// </summary>
 	void ShowHUDTravelPopUp(EDistrict District);
 
 	/// <summary>
@@ -36,6 +43,19 @@ public:
 	/// in the HUD
 	/// </summary>
 	void SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter);
+
+	/// <summary>
+	/// Function to set the number of available Actions
+	/// on the HUD
+	/// </summary>
+	void SetHUDActions(int32 Actions);
+
+	/// <summary>
+	/// Function to set the max number of Actions
+	/// on the HUD
+	/// </summary>
+	void SetHUDNumOfActions(int32 NumOfActions);
+#pragma endregion
 
 #pragma region InputPointers
 	/** FX Class that we will spawn when clicking */
@@ -162,6 +182,7 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerMoveToLocation(AWizardPlayerController* Controller, FVector Dest);
 
+	FVector CachedStart;
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device

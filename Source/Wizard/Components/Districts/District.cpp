@@ -19,7 +19,7 @@ ADistrict::ADistrict()
 
 	DistrictBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DistrictBox"));
 	DistrictBox->SetupAttachment(RootComponent);
-	DistrictBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	DistrictBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	DistrictBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	DistrictBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
@@ -31,27 +31,22 @@ void ADistrict::BeginPlay()
 	Super::BeginPlay();
 	
 	// Wait until Component becomes valid
-	if (HasAuthority())
-	{
-		GetWorldTimerManager().SetTimer(
-			BindOverlapTimer,
-			this,
-			&ADistrict::BindOverlapTimerFinished,
-			BindOverlapTime
-		);
-	}
+	GetWorldTimerManager().SetTimer(
+		BindOverlapTimer,
+		this,
+		&ADistrict::BindOverlapTimerFinished,
+		BindOverlapTime
+	);
 }
 
 void ADistrict::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(Character->Controller);
-	if (PlayerController) {
+	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(OtherActor->GetInstigatorController());
+	if (PlayerController && Character && Character->GetAction() &&
+		Character->GetAction()->GetCurrentDistrict() != DistrictName) { // if travelling to a new district
 		PlayerController->ShowHUDTravelPopUp(DistrictName);
 	}
-	/*if (Character && Character->GetAction()) {
-		Character->GetAction()->SetCurrentDistrict(DistrictName);
-	}*/
 }
 
 void ADistrict::BindOverlapTimerFinished()

@@ -23,12 +23,6 @@ public:
 private:
 
 	/// <summary>
-	/// Player controller pointer
-	/// </summary>
-	UPROPERTY()
-	class AWizardPlayerController* PlayerController;
-
-	/// <summary>
 	/// Text holding the new district's name
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
@@ -46,12 +40,23 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* NoButton;
 
+	/// <summary>
+	/// Callback function to YesButton
+	/// OnClicked event
+	/// </summary>
 	UFUNCTION()
 	void YesButtonClicked();
 
+	/// <summary>
+	/// Callback function to NoButton
+	/// OnClicked event
+	/// </summary>
 	UFUNCTION()
 	void NoButtonClicked();
 
+	/// <summary>
+	/// District to move to
+	/// </summary>
 	UPROPERTY()
 	EDistrict DistrictToMove;
 };

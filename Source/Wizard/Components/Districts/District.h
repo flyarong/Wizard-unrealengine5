@@ -26,6 +26,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	/// <summary>
+	/// Callback function to component overlap
+	/// </summary>
 	UFUNCTION()
 	virtual void OnBoxOverlap(
 		UPrimitiveComponent* OverlappedComponent,
@@ -40,9 +43,16 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* DistrictBox;
 
+	/// <summary>
+	/// Name of the district
+	/// </summary>
 	UPROPERTY(EditAnywhere)
 	EDistrict DistrictName;
 
+	/// <summary>
+	/// Timer to handle component
+	/// validity at the beginning of the game
+	/// </summary>
 	FTimerHandle BindOverlapTimer;
 	float BindOverlapTime = 0.25f;
 	void BindOverlapTimerFinished();

@@ -36,3 +36,13 @@ void AWizardHUD::SetCurrentDistrict(EDistrict District)
 {
 	WizardOverlay->SetCurrentDistrictText(UEnum::GetDisplayValueAsText<EDistrict>(District));
 }
+
+void AWizardHUD::SetActions(int32 Actions)
+{
+	WizardOverlay->SetActionsText(FText::AsNumber(Actions));
+}
+
+void AWizardHUD::SetNumOfActions(int32 NumOfActions)
+{
+	WizardOverlay->SetActionsText(FText::AsNumber(NumOfActions));
+}

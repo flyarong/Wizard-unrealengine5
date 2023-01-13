@@ -4,6 +4,7 @@
 #include "ActionComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 
 // Sets default values for this component's properties
@@ -47,7 +48,9 @@ void UActionComponent::SetCurrentDistrict(EDistrict District)
 	CurrentDistrict = District;
 
 	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	if (Controller) {
+	PlayerState = PlayerState == nullptr ? Controller->GetPlayerState<AWizardPlayerState>() : PlayerState;
+	if (Controller && PlayerState) {
+		PlayerState->SpendAction(EAction::EA_Movement);
 		Controller->SetHUDCurrentDistrict(CurrentDistrict, true);
 	}
 }
@@ -55,7 +58,9 @@ void UActionComponent::SetCurrentDistrict(EDistrict District)
 void UActionComponent::OnRep_CurrentDistrict()
 {
 	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	if (Controller) {
+	PlayerState = PlayerState == nullptr ? Controller->GetPlayerState<AWizardPlayerState>() : PlayerState;
+	if (Controller && PlayerState) {
+		PlayerState->SpendAction(EAction::EA_Movement);
 		Controller->SetHUDCurrentDistrict(CurrentDistrict, true);
 	}
 }
