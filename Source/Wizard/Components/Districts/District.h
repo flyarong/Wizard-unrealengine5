@@ -30,7 +30,7 @@ protected:
 	/// Callback function to component overlap
 	/// </summary>
 	UFUNCTION()
-	virtual void OnBoxOverlap(
+	virtual void OnBoxBeginOverlap(
 		UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
@@ -49,12 +49,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	EDistrict DistrictName;
 
-	/// <summary>
-	/// Timer to handle component
-	/// validity at the beginning of the game
-	/// </summary>
-	FTimerHandle BindOverlapTimer;
-	float BindOverlapTime = 0.25f;
-	void BindOverlapTimerFinished();
-
+public:
+	FORCEINLINE EDistrict GetDistrictName() const { return DistrictName; }
 };

@@ -44,5 +44,5 @@ void AWizardHUD::SetActions(int32 Actions)
 
 void AWizardHUD::SetNumOfActions(int32 NumOfActions)
 {
-	WizardOverlay->SetActionsText(FText::AsNumber(NumOfActions));
+	WizardOverlay->SetNumOfActionsText(FText::AsNumber(NumOfActions));
 }

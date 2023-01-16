@@ -4,7 +4,6 @@
 #include "District.h"
 #include "Components/BoxComponent.h"
 #include "Wizard/Characters/WizardCharacter.h"
-#include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 
 // Sets default values
@@ -19,9 +18,8 @@ ADistrict::ADistrict()
 
 	DistrictBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DistrictBox"));
 	DistrictBox->SetupAttachment(RootComponent);
-	DistrictBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	DistrictBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	DistrictBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	DistrictBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
 }
 
@@ -30,28 +28,21 @@ void ADistrict::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Wait until Component becomes valid
-	GetWorldTimerManager().SetTimer(
-		BindOverlapTimer,
-		this,
-		&ADistrict::BindOverlapTimerFinished,
-		BindOverlapTime
-	);
-}
-
-void ADistrict::OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(OtherActor->GetInstigatorController());
-	if (PlayerController && Character && Character->GetAction() &&
-		Character->GetAction()->GetCurrentDistrict() != DistrictName) { // if travelling to a new district
-		PlayerController->ShowHUDTravelPopUp(DistrictName);
+	// Setup overlap on server
+	if (HasAuthority()) {
+		DistrictBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		DistrictBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		DistrictBox->OnComponentBeginOverlap.AddDynamic(this, &ADistrict::OnBoxBeginOverlap);
 	}
 }
 
-void ADistrict::BindOverlapTimerFinished()
+void ADistrict::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	DistrictBox->OnComponentBeginOverlap.AddDynamic(this, &ADistrict::OnBoxOverlap);
+	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
+	if (Character && Character->GetAction() && 
+		Character->GetAction()->GetCurrentDistrict() != DistrictName) {
+		Character->GetAction()->SetCachedDistrict(DistrictName);
+	}
 }
 
 // Called every frame

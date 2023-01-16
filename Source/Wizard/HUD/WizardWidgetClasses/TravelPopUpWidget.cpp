@@ -8,7 +8,6 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerController.h"
-#include "Wizard/PlayerStates/WizardPlayerState.h"
 
 void UTravelPopUpWidget::PopUpSetup(EDistrict District)
 {
@@ -16,7 +15,7 @@ void UTravelPopUpWidget::PopUpSetup(EDistrict District)
 	SetVisibility(ESlateVisibility::Visible);
 	bIsFocusable = true;
 	DistrictToMove = District;
-	if (NewDistrictNameText) NewDistrictNameText->SetText(UEnum::GetDisplayValueAsText<EDistrict>(District));
+	if (NewDistrictNameText) NewDistrictNameText->SetText(UEnum::GetDisplayValueAsText<EDistrict>(DistrictToMove));
 
 	UWorld* World = GetWorld();
 	if (World)
@@ -70,11 +69,13 @@ void UTravelPopUpWidget::YesButtonClicked() {
 	if (World)
 	{
 		APlayerController* PlayerController = World->GetFirstPlayerController();
-		AWizardCharacter* WizardCharacter = Cast<AWizardCharacter>(PlayerController->GetPawn());
-		if (WizardCharacter && WizardCharacter->GetAction())
-		{
-			WizardCharacter->GetAction()->SetCurrentDistrict(DistrictToMove);
-			PopUpTearDown();
+		if (PlayerController) {
+			AWizardCharacter* WizardCharacter = Cast<AWizardCharacter>(PlayerController->GetPawn());
+			if (WizardCharacter && WizardCharacter->GetAction())
+			{
+				WizardCharacter->GetAction()->SetCurrentDistrict(DistrictToMove);
+				PopUpTearDown();
+			}
 		}
 	}
 
@@ -84,7 +85,7 @@ void UTravelPopUpWidget::YesButtonClicked() {
 void UTravelPopUpWidget::NoButtonClicked() {
 	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (PlayerController) {
-		PlayerController->MoveBack();
+		PlayerController->CancelTravel();
 		PopUpTearDown();
 	}
 }

@@ -14,6 +14,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/GameModes/WizardGameMode.h"
 #include "Engine/World.h"
+#include "Net/UnrealNetwork.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -21,8 +22,10 @@
 
 AWizardPlayerController::AWizardPlayerController()
 {
-	bShowMouseCursor = true;
+	bShowMouseCursor = false;
 	DefaultMouseCursor = EMouseCursor::Default;
+
+	CachedStart = FVector::ZeroVector;
 	CachedDestination = FVector::ZeroVector;
 }
 
@@ -42,6 +45,8 @@ void AWizardPlayerController::BeginPlay()
 
 	// Init HUD
 	WizardHUD = Cast<AWizardHUD>(GetHUD());
+	FInputModeUIOnly InputModeData;
+	SetInputMode(InputModeData);
 }
 
 void AWizardPlayerController::Tick(float DeltaSeconds)
@@ -51,13 +56,20 @@ void AWizardPlayerController::Tick(float DeltaSeconds)
 	PollInit();
 }
 
+void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWizardPlayerController, CachedDestination);
+}
+
 #pragma region CharacterInit
 void AWizardPlayerController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 
 	WizardCharacter = Cast<AWizardCharacter>(InPawn);
 	if (WizardCharacter && WizardCharacter->GetAction()) {
-		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict(), false);
+		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict());
 	}
 }
 
@@ -66,7 +78,7 @@ void AWizardPlayerController::AcknowledgePossession(APawn* InPawn) {
 
 	WizardCharacter = Cast<AWizardCharacter>(InPawn);
 	if (WizardCharacter && WizardCharacter->GetAction()) {
-		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict(), false);
+		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict());
 	}
 }
 
@@ -78,16 +90,6 @@ void AWizardPlayerController::PollInit()
 		if (WizardGameMode && WizardPlayerState) {
 			FName WizardName = WizardGameMode->GetPlayerCharacter(WizardPlayerState->GetPlayerName());
 			InitCharacter(WizardName);
-		}
-	}
-
-	if (!bWizardOverlayInitialized) {
-		WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-		if (WizardHUD) {
-			bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
-			if (WizardHUD->GetOverlay() && bWizardOverlayInitialized) {
-				SetHUDCurrentDistrict(CachedCurrentDistrict, false);
-			}
 		}
 	}
 }
@@ -110,6 +112,21 @@ void AWizardPlayerController::InitCharacter(FName CharacterName)
 		);
 
 		bCharacterInitialized = true;
+	}
+}
+void AWizardPlayerController::InitOverlay()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
+		if (WizardHUD->GetOverlay() && bWizardOverlayInitialized) {
+			SetHUDCurrentDistrict(CachedCurrentDistrict);
+			WizardPlayerState = WizardPlayerState == nullptr ? GetPlayerState<AWizardPlayerState>() : WizardPlayerState;
+			if (WizardPlayerState) {
+				SetHUDActions(WizardPlayerState->GetNumOfActionsPerRound());
+				SetHUDNumOfActions(WizardPlayerState->GetNumOfActionsPerRound());
+			}
+		}
 	}
 }
 #pragma endregion
@@ -145,8 +162,14 @@ void AWizardPlayerController::SetupInputComponent()
 #pragma region CharacterMovement
 void AWizardPlayerController::OnInputStarted()
 {
-	StopMovement();
 	CachedStart = GetPawn()->GetActorLocation();
+	ServerStopMovement();
+	if (!HasAuthority()) StopMovement();
+}
+
+void AWizardPlayerController::ServerStopMovement_Implementation()
+{
+	StopMovement();
 }
 
 // Triggered every frame when the input is held down
@@ -196,12 +219,16 @@ void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerC
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
 }
 
-void AWizardPlayerController::MoveBack()
+void AWizardPlayerController::CancelTravel()
 {
-	ServerMoveToLocation(this, CachedStart);
-	if (!HasAuthority()) {
-		// Move back locally on client
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedStart);
+	WizardCharacter = WizardCharacter == nullptr ? Cast<AWizardCharacter>(GetPawn()) : WizardCharacter;
+	if (WizardCharacter && WizardCharacter->GetAction()) {
+		WizardCharacter->GetAction()->SetCachedDistrict(EDistrict::ED_None);
+		ServerMoveToLocation(this, CachedStart);
+		if (!HasAuthority()) {
+			// Move back locally on client
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedStart);
+		}
 	}
 }
 
@@ -252,7 +279,8 @@ void AWizardPlayerController::OnKeyMoveRight(float Value)
 #pragma region HUD
 void AWizardPlayerController::ShowHUDTravelPopUp(EDistrict District)
 {
-	StopMovement();
+	ServerStopMovement();
+	if (!HasAuthority()) StopMovement();
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		WizardHUD->ShowTravelPopUp(District);

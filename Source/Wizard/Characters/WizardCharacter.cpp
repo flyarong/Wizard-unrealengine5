@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Materials/Material.h"
 #include "Engine/World.h"
+#include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 #include "Wizard/HUD/LobbyHUD.h"
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
@@ -59,6 +60,12 @@ void AWizardCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+}
+
 void AWizardCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
@@ -95,6 +102,13 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 			Overhead->SetDisplayText(PlayerName);
 		}
 	}
+
+	PlayerController = Cast<AWizardPlayerController>(Controller);
+	if (PlayerController) {
+		PlayerController->InitOverlay();
+
+		FInputModeGameAndUI InputModeData;
+		PlayerController->SetInputMode(InputModeData);
+		PlayerController->SetShowMouseCursor(true);
+	}
 }
-
-

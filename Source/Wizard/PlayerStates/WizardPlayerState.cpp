@@ -15,6 +15,7 @@ void AWizardPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	DOREPLIFETIME(AWizardPlayerState, Actions);
 }
 
+#pragma region Character
 void AWizardPlayerState::SetSelectedCharacter(FName RowName)
 {
 	CharacterName = RowName;
@@ -32,11 +33,13 @@ void AWizardPlayerState::OnRep_SelectedCharacter()
 		WizardCharacter->InitGameplayCharacter(GetPlayerName(), CharacterName);
 	}
 }
+#pragma endregion
 
+#pragma region ActionCalc
 void AWizardPlayerState::SpendAction(EAction Action)
 {
-	ServerCalculateAction(Action);
-
+	ServerCalculateActionCost(Action);
+	
 	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(GetPawn()->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDActions(Actions);
@@ -51,11 +54,12 @@ void AWizardPlayerState::OnRep_Actions()
 	}
 }
 
-void AWizardPlayerState::ServerCalculateAction_Implementation(EAction Action)
+void AWizardPlayerState::ServerCalculateActionCost_Implementation(EAction Action)
 {
 	AWizardGameMode* GameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode) {
-		int32 Cost = GameMode->GetActionCost(Action);
-		Actions = FMath::Clamp(Actions - Cost, 0, NumOfActionsPerRound);
+		CostOfAction = GameMode->GetActionCost(Action);
+		Actions = FMath::Clamp(Actions - CostOfAction, 0, NumOfActionsPerRound);
 	}
 }
+#pragma endregion

@@ -20,6 +20,7 @@ class AWizardPlayerController : public APlayerController
 public:
 	AWizardPlayerController();
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void AcknowledgePossession(APawn* Pawn) override;
 
@@ -29,7 +30,16 @@ public:
 	/// <param name="CharacterName">Selected Character's name</param>
 	void InitCharacter(FName CharacterName);
 
-	void MoveBack();
+	/// <summary>
+	/// Function to initialize the Gameplay Overlay
+	/// </summary>
+	void InitOverlay();
+
+	/// <summary>
+	/// Function to stop the travelling to another
+	/// district
+	/// </summary>
+	void CancelTravel();
 
 #pragma region HUD
 	/// <summary>
@@ -42,7 +52,7 @@ public:
 	/// Function for setting the current district
 	/// in the HUD
 	/// </summary>
-	void SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter);
+	void SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter = false);
 
 	/// <summary>
 	/// Function to set the number of available Actions
@@ -182,7 +192,23 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerMoveToLocation(AWizardPlayerController* Controller, FVector Dest);
 
+	/// <summary>
+	/// Server RPC to stop Character movement
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerStopMovement();
+
+	/// <summary>
+	/// Vector storing the location where
+	/// the character is moving from
+	/// </summary>
 	FVector CachedStart;
+
+	/// <summary>
+	/// Vector storing the location where
+	/// the character is moving to
+	/// </summary>
+	UPROPERTY(Replicated)
 	FVector CachedDestination;
 
 	bool bIsTouch; // Is it a touch device

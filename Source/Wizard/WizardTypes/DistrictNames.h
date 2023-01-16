@@ -3,6 +3,7 @@
 UENUM(BlueprintType)
 enum class EDistrict : uint8
 {
+	ED_None UMETA(DisplayName = "None"),
 	ED_ShimmidgotBazaar UMETA(DisplayName = "Shimmidgot Bazaar"),
 	ED_LowerEastPum UMETA(DisplayName = "Lower East Pum"), 
 	ED_UpperSigguk UMETA(DisplayName = "Upper Sigguk"),

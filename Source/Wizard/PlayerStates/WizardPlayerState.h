@@ -81,5 +81,8 @@ private:
 	/// action based on its type
 	/// </summary>
 	UFUNCTION(Server, Reliable)
-	void ServerCalculateAction(EAction Action);
+	void ServerCalculateActionCost(EAction Action);
+
+public:
+	FORCEINLINE int32 GetNumOfActionsPerRound() const { return NumOfActionsPerRound; }
 };

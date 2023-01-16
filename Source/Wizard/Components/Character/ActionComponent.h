@@ -61,11 +61,35 @@ private:
 	/// <summary>
 	/// District the player is currently at
 	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Movement Action", ReplicatedUsing = OnRep_CurrentDistrict)
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentDistrict)
 	EDistrict CurrentDistrict;
 
 	UFUNCTION()
 	void OnRep_CurrentDistrict();
+	
+	/// <summary>
+	/// Server RPC to set the current district on
+	/// the server
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerCurrentDistrict(EDistrict District);
+	
+	/// <summary>
+	/// The district the character is currently
+	/// overlapping
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_CachedDistrict)
+	EDistrict CachedDistrict;
+
+	UFUNCTION()
+	void OnRep_CachedDistrict();
+
+	/// <summary>
+	/// Server RPC to set the currently overlapping district on
+	/// the server
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerCachedDistrict(EDistrict District);
 
 public:
 	FORCEINLINE void SetWisdom(int32 WisdomToSet) { Wisdom = WisdomToSet; }
@@ -73,5 +97,6 @@ public:
 	FORCEINLINE void SetCombat(int32 CombatToSet) { Combat = CombatToSet; }
 	FORCEINLINE void SetAgility(int32 AgilityToSet) { Agility = AgilityToSet; }
 	FORCEINLINE EDistrict GetCurrentDistrict() const { return CurrentDistrict; }
+	void SetCachedDistrict(EDistrict District);
 	void SetCurrentDistrict(EDistrict District);
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Wizard/WizardTypes/DistrictNames.h"
 #include "WizardCharacter.generated.h"
 
 UCLASS(Blueprintable)
@@ -17,6 +18,7 @@ public:
 	// Called every frame.
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
 
 	/// <summary>
@@ -67,7 +69,7 @@ private:
 #pragma endregion
 
 public:
-	FORCEINLINE UActionComponent* GetAction() { return Action; }
+	FORCEINLINE UActionComponent* GetAction() const { return Action; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
 };
 
