@@ -12,8 +12,14 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	const FString PlayerName = NewPlayer->PlayerState->GetPlayerName();
+	LobbyGameState = LobbyGameState == nullptr ?
+		Cast<ALobbyGameState>(GameState) : LobbyGameState;
+	ALobbyController* NewController = Cast<ALobbyController>(NewPlayer);
+	if (LobbyGameState && NewController) {
+		NewController->ClientCharacterSelectorMenuSetup(LobbyGameState->SelectionStatus);
+	}
 
+	const FString PlayerName = NewPlayer->PlayerState->GetPlayerName();
 	UpdatePlayerList(PlayerName);
 }
 

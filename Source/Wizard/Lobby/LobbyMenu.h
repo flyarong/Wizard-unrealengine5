@@ -18,6 +18,12 @@ class WIZARD_API ULobbyMenu : public UMainMenu
 private:
 
 	/// <summary>
+	/// Character selector title text
+	/// </summary>
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* CharacterSelectorTitleText;
+
+	/// <summary>
 	/// Character selector horizontal box
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
@@ -43,6 +49,7 @@ private:
 	UVerticalBox* StartGameParent;
 
 public:
+	FORCEINLINE UTextBlock* GetCharacterSelectorTitleText() const { return CharacterSelectorTitleText; }
 	FORCEINLINE UHorizontalBox* GetCharacterSelector() const { return CharacterSelector; }
 	FORCEINLINE UVerticalBox* GetConnectedPlayersBox() const { return ConnectedPlayersBox; }
 	FORCEINLINE UVerticalBox* GetReadyParent() const { return ReadyParent; }

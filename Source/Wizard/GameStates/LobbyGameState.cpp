@@ -20,7 +20,7 @@ void ALobbyGameState::UpdateCharacterSelection(int32 PreviousIndex, int32 NewInd
 	ALobbyController* Controller = Cast<ALobbyController>(GetWorld()->GetFirstPlayerController());
 	if (Controller)
 	{
-		Controller->UpdateHUDCharacterSelector();
+		Controller->UpdateHUDCharacterSelector(SelectionStatus);
 	}
 }
 
@@ -29,7 +29,7 @@ void ALobbyGameState::OnRep_UpdateCharacterSelection()
 	ALobbyController* Controller = Cast<ALobbyController>(GetWorld()->GetFirstPlayerController());
 	if (Controller)
 	{
-		Controller->UpdateHUDCharacterSelector();
+		Controller->UpdateHUDCharacterSelector(SelectionStatus);
 	}
 }
 

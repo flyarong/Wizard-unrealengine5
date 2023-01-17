@@ -18,9 +18,11 @@ class WIZARD_API ALobbyController : public APlayerController
 public:
 
 	/// <summary>
-	/// Function setting up the Character selector menu
+	/// Client RPC setting up the Character selector menu
 	/// </summary>
-	void CharacterSelectorMenuSetup();
+	/// <param name="SelectionStatus">Array of the status of character selection</param>
+	UFUNCTION(Client, Reliable)
+	void ClientCharacterSelectorMenuSetup(const TArray<bool>& SelectionStatus);
 
 	/// <summary>
 	/// Function for handling the selection of a character
@@ -44,7 +46,8 @@ public:
 	/// <summary>
 	/// Function updating the character selector on the HUD
 	/// </summary>
-	void UpdateHUDCharacterSelector();
+	/// <param name="SelectionStatus">Array of the status of character selection</param>
+	void UpdateHUDCharacterSelector(TArray<bool> SelectionStatus);
 
 	/// <summary>
 	/// Function updating the Player Ready List on the HUD
@@ -96,6 +99,9 @@ private:
 	UPROPERTY()
 	int32 CurrentlySelectedButtonIndex = -1;
 
+	/// <summary>
+	/// Player's currently selected character
+	/// </summary>
 	UPROPERTY()
 	FCharacterDataTable CurrentlySelectedCharacter;
 

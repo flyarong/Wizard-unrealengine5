@@ -83,8 +83,13 @@ void ALobbyHUD::SpawnCharacterSelector(TArray<bool> SelectionStatus)
 {
 	bool bSelectorValid = CharacterButtons.Num() > 0 &&
 		LobbyMenu &&
-		LobbyMenu->GetCharacterSelector();
+		LobbyMenu->GetCharacterSelector() &&
+		LobbyMenu->GetCharacterSelectorTitleText();
 	if (bSelectorValid) {
+		if (LobbyMenu->GetCharacterSelectorTitleText()->GetVisibility() == ESlateVisibility::Hidden) {
+			LobbyMenu->GetCharacterSelectorTitleText()->SetVisibility(ESlateVisibility::Visible);
+		}
+
 		for (int32 i = 0; i < CharacterButtons.Num(); i++) {
 			if (CharacterButtons[i]) {
 				if (SelectionStatus.Num() > 0) CharacterButtons[i]->SetIsEnabled(SelectionStatus[i]);
@@ -98,8 +103,10 @@ void ALobbyHUD::RemoveCharacterSelector()
 {
 	bool bSelectorValid = LobbyMenu &&
 		LobbyMenu->GetCharacterSelector() &&
+		LobbyMenu->GetCharacterSelectorTitleText() &&
 		LobbyMenu->GetCharacterSelector()->HasAnyChildren();
 	if (bSelectorValid) {
+		LobbyMenu->GetCharacterSelectorTitleText()->SetVisibility(ESlateVisibility::Hidden);
 		LobbyMenu->GetCharacterSelector()->ClearChildren();
 	}
 }

@@ -14,10 +14,9 @@
 void ALobbyController::BeginPlay()
 {
 	Super::BeginPlay();
-	CharacterSelectorMenuSetup();
 }
 
-void ALobbyController::CharacterSelectorMenuSetup()
+void ALobbyController::ClientCharacterSelectorMenuSetup_Implementation(const TArray<bool>& SelectionStatus)
 {
 	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
 
@@ -27,7 +26,7 @@ void ALobbyController::CharacterSelectorMenuSetup()
 		LobbyHUD->AddLobbyMenu();
 		LobbyHUD->SpawnReadyButton();
 		if (HasAuthority()) LobbyHUD->SpawnStartGameButton();
-		LobbyHUD->SpawnCharacterSelector(TArray<bool>());
+		LobbyHUD->SpawnCharacterSelector(SelectionStatus);
 	}
 }
 
@@ -51,17 +50,15 @@ void ALobbyController::ServerSwitchButtonSelection_Implementation(int32 Previous
 	}
 }
 
-void ALobbyController::UpdateHUDCharacterSelector()
+void ALobbyController::UpdateHUDCharacterSelector(TArray<bool> SelectionStatus)
 {
 	if (bReady) return;
 
 	LobbyHUD = LobbyHUD == nullptr ? Cast<ALobbyHUD>(GetHUD()) : LobbyHUD;
-	LobbyGameState = LobbyGameState == nullptr ?
-		Cast<ALobbyGameState>(UGameplayStatics::GetGameState(this)) : LobbyGameState;
 
-	if (LobbyHUD && LobbyGameState) {
+	if (LobbyHUD) {
 		LobbyHUD->RemoveCharacterSelector();
-		LobbyHUD->SpawnCharacterSelector(LobbyGameState->SelectionStatus);
+		LobbyHUD->SpawnCharacterSelector(SelectionStatus);
 	}
 }
 
