@@ -52,8 +52,6 @@ void AWizardPlayerController::BeginPlay()
 void AWizardPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
-	PollInit();
 }
 
 void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -63,7 +61,7 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	DOREPLIFETIME(AWizardPlayerController, CachedDestination);
 }
 
-#pragma region CharacterInit
+#pragma region Init
 void AWizardPlayerController::OnPossess(APawn* InPawn) {
 	Super::OnPossess(InPawn);
 
@@ -82,38 +80,6 @@ void AWizardPlayerController::AcknowledgePossession(APawn* InPawn) {
 	}
 }
 
-void AWizardPlayerController::PollInit()
-{
-	if (HasAuthority() && !bCharacterInitialized) {
-		WizardGameMode = Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this));
-		WizardPlayerState = GetPlayerState<AWizardPlayerState>();
-		if (WizardGameMode && WizardPlayerState) {
-			FName WizardName = WizardGameMode->GetPlayerCharacter(WizardPlayerState->GetPlayerName());
-			InitCharacter(WizardName);
-		}
-	}
-}
-
-void AWizardPlayerController::InitCharacter(FName CharacterName)
-{
-	WizardPlayerState = WizardPlayerState == nullptr ? GetPlayerState<AWizardPlayerState>() : WizardPlayerState;
-	if (WizardPlayerState && !CharacterName.IsNone()) {
-
-		// Set timer to wait for client Pawn to be valid
-		FTimerHandle CharacterInitTimer;
-		FTimerDelegate CharacterInitDelegate;
-		CharacterInitDelegate.BindUFunction(WizardPlayerState, FName("SetSelectedCharacter"), CharacterName);
-
-		GetWorldTimerManager().SetTimer(
-			CharacterInitTimer,
-			CharacterInitDelegate,
-			3.f,
-			false
-		);
-
-		bCharacterInitialized = true;
-	}
-}
 void AWizardPlayerController::InitOverlay()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;

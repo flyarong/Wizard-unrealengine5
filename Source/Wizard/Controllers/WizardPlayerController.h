@@ -25,12 +25,6 @@ public:
 	virtual void AcknowledgePossession(APawn* Pawn) override;
 
 	/// <summary>
-	/// Function to initialize the WizardCharacter
-	/// </summary>
-	/// <param name="CharacterName">Selected Character's name</param>
-	void InitCharacter(FName CharacterName);
-
-	/// <summary>
 	/// Function to initialize the Gameplay Overlay
 	/// </summary>
 	void InitOverlay();
@@ -93,8 +87,6 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
-
-	virtual void PollInit();
 
 #pragma region InputHandling
 	/** Input handlers for SetDestination action. */
@@ -161,13 +153,6 @@ private:
 	UPROPERTY()
 	class AGameplayCamera* GameplayCamera;
 #pragma endregion
-
-	/// <summary>
-	/// Boolean for whether or not the player's
-	/// WizardCharacter is initialized
-	/// </summary>
-	UPROPERTY()
-	bool bCharacterInitialized = false;
 
 	/// <summary>
 	/// Boolean for whether or not the player's

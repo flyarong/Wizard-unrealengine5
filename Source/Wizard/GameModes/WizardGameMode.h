@@ -27,6 +27,12 @@ private:
 	/// </summary>
 	class UWizardGameInstance* WizardGameInstance;
 
+	/// <summary>
+	/// Function to initialize the joining player's character
+	/// </summary>
+	/// <param name="Controller">The player's controller</param>
+	void InitCharacter(APlayerController* Controller);
+
 public:
 
 	/// <summary>

@@ -28,11 +28,31 @@ void AWizardGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	AWizardPlayerState* WizardPlayerState = NewPlayer->GetPlayerState<AWizardPlayerState>();
-	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(NewPlayer);
+	InitCharacter(NewPlayer);
+}
+
+
+void AWizardGameMode::InitCharacter(APlayerController* Controller)
+{
+	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(Controller);
+	AWizardPlayerState* WizardPlayerState = Controller->GetPlayerState<AWizardPlayerState>();
 	if (PlayerController && WizardPlayerState) {
 		FName PlayerCharacter = GetPlayerCharacter(WizardPlayerState->GetPlayerName());
-		PlayerController->InitCharacter(PlayerCharacter);
+		if (PlayerCharacter.IsValid()) {
+
+			// Set timer to wait for client Pawn to be valid
+			FTimerHandle CharacterInitTimer;
+			FTimerDelegate CharacterInitDelegate;
+			CharacterInitDelegate.BindUFunction(WizardPlayerState, FName("SetSelectedCharacter"), PlayerCharacter);
+
+			GetWorldTimerManager().SetTimer(
+				CharacterInitTimer,
+				CharacterInitDelegate,
+				3.f,
+				false
+			);
+
+		}
 	}
 }
 
@@ -44,7 +64,7 @@ FName AWizardGameMode::GetPlayerCharacter(FString PlayerName)
 		return *WizardGameInstance->SelectedCharacters.Find(PlayerName);
 	}
 
-	return FName("Lohion"); // NAME_None
+	return FName(NAME_None);
 }
 
 int32 AWizardGameMode::GetActionCost(EAction Action)
