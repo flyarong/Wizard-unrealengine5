@@ -66,6 +66,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Camera Movement") 
 	bool bEnableMouseMovement = true;
 	
+	FVector Bound;
+
 	/// <summary>
 	/// Camera Position multiplier
 	/// </summary>
@@ -113,4 +115,10 @@ private:
 	void MouseMoveRight();
 	void MouseMoveForward();
 	void MouseMoveBack();
+
+	/// <summary>
+	/// Function for checking whether or not we are
+	/// at the border of the Navmesh bound
+	/// </summary>
+	bool CheckCameraMovementBounds(FVector DeltaLocation);
 };
