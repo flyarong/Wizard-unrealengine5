@@ -44,20 +44,6 @@ private:
 	UPROPERTY()
 	class AWizardPlayerState* PlayerState;
 
-#pragma region WizardStats
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Wisdom;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Intelligence;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Combat;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Agility;
-#pragma endregion
-
 	/// <summary>
 	/// District the player is currently at
 	/// </summary>
@@ -92,10 +78,6 @@ private:
 	void ServerCachedDistrict(EDistrict District);
 
 public:
-	FORCEINLINE void SetWisdom(int32 WisdomToSet) { Wisdom = WisdomToSet; }
-	FORCEINLINE void SetIntelligence(int32 IntelligenceToSet) { Intelligence = IntelligenceToSet; }
-	FORCEINLINE void SetCombat(int32 CombatToSet) { Combat = CombatToSet; }
-	FORCEINLINE void SetAgility(int32 AgilityToSet) { Agility = AgilityToSet; }
 	FORCEINLINE EDistrict GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCachedDistrict(EDistrict District);
 	void SetCurrentDistrict(EDistrict District);

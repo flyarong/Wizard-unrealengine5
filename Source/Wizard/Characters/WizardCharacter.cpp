@@ -16,11 +16,14 @@
 #include "Wizard/HUD/LobbyHUD.h"
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
 
 AWizardCharacter::AWizardCharacter()
 {
 	// Set size for player capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
@@ -32,6 +35,10 @@ AWizardCharacter::AWizardCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 640.f, 0.f);
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
+
+	// Create Attribute Component
+	Attribute = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attribute"));
+	Attribute->SetIsReplicated(true);
 
 	// Create Action Component
 	Action = CreateDefaultSubobject<UActionComponent>(TEXT("Action"));
@@ -72,6 +79,9 @@ void AWizardCharacter::PostInitializeComponents()
 	if (Action) {
 		Action->Character = this;
 	}
+	if (Attribute) {
+		Attribute->Character = this;
+	}
 }
 
 void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
@@ -82,17 +92,17 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		FCharacterDataTable* SelectedCharacter = CharacterTableObject->FindRow<FCharacterDataTable>(RowName, TEXT(""));
 
 		// Setup character properties when story starts
-		if (Action && GetMesh() && MagicStaff && SelectedCharacter) {
+		if (Attribute && GetMesh() && MagicStaff && SelectedCharacter) {
 			GetMesh()->SetSkeletalMesh(SelectedCharacter->CharacterMesh);
 			MagicStaff->SetStaticMesh(SelectedCharacter->MagicStaff);
 
-			Name = SelectedCharacter->CharacterName;
-			Health = SelectedCharacter->Health;
-			Power = SelectedCharacter->Power;
-			Action->SetWisdom(SelectedCharacter->Wisdom);
-			Action->SetIntelligence(SelectedCharacter->Intelligence);
-			Action->SetCombat(SelectedCharacter->Combat);
-			Action->SetAgility(SelectedCharacter->Agility);
+			Attribute->SetName(SelectedCharacter->CharacterName);
+			Attribute->SetHealth(SelectedCharacter->Health);
+			Attribute->SetPower(SelectedCharacter->Power);
+			Attribute->SetWisdom(SelectedCharacter->Wisdom);
+			Attribute->SetIntelligence(SelectedCharacter->Intelligence);
+			Attribute->SetCombat(SelectedCharacter->Combat);
+			Attribute->SetAgility(SelectedCharacter->Agility);
 		}
 	}
 
@@ -103,6 +113,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		}
 	}
 
+	// Setup overlay on HUD and enable gameplay input mode
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController) {
 		PlayerController->InitOverlay();

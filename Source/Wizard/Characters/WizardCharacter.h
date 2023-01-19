@@ -50,6 +50,14 @@ private:
 	class UWidgetComponent* OverheadWidget;
 
 	/// <summary>
+	/// Character's Attribute component: handling
+	/// all the functionality regarding character
+	/// attributes (e.g. health)
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UAttributeComponent* Attribute;
+
+	/// <summary>
 	/// Character's Action component: handling
 	/// all the actions a character can do
 	/// </summary>
@@ -57,19 +65,9 @@ private:
 	class UActionComponent* Action;
 #pragma endregion
 
-#pragma region WizardStats
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	FString Name;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Health;
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Stats")
-	int32 Power;
-#pragma endregion
-
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
+	FORCEINLINE UAttributeComponent* GetAttribute() const { return Attribute; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
 };
 
