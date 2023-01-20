@@ -6,7 +6,9 @@
 #include "Components/ActorComponent.h"
 #include "AttributeComponent.generated.h"
 
-
+/**
+* Component class to handle Character attribute functionality
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WIZARD_API UAttributeComponent : public UActorComponent
 {
@@ -29,6 +31,10 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AWizardCharacter* Character;
+
+	/**
+	* Wizard Attributes
+	*/
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	FString Name;
