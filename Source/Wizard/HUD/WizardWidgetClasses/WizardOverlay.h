@@ -27,6 +27,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* NumOfActionsText;
 
+	UPROPERTY(meta = (BindWidget))
+	class UMiniMapWidget* MiniMap;
+
 public:
 	FORCEINLINE void SetActionsText(FText Actions) { ActionsText->SetText(Actions); };
 	FORCEINLINE UTextBlock* GetActionsText() const { return ActionsText; }
@@ -34,4 +37,5 @@ public:
 	FORCEINLINE UTextBlock* GetNumOfActionsText() const { return NumOfActionsText; }
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
+	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 };

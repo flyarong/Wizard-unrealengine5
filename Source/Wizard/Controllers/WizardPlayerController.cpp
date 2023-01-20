@@ -282,4 +282,11 @@ void AWizardPlayerController::SetHUDNumOfActions(int32 NumOfActions)
 		WizardHUD->SetNumOfActions(NumOfActions);
 	}
 }
+void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetMiniMap()) {
+		WizardHUD->SetPOIOnMiniMap(POIOwner);
+	}
+}
 #pragma endregion

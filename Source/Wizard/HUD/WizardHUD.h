@@ -49,6 +49,13 @@ public:
 	/// </summary>
 	void SetNumOfActions(int32 NumOfActions);
 
+	/// <summary>
+	/// Function to set the Point Of Interest on the MiniMap 
+	/// on the HUD
+	/// </summary>
+	/// <param name="POIOwner">Point Of Interest's Owner</param>
+	void SetPOIOnMiniMap(class AActor* POIOwner);
+
 private:
 	
 	/// <summary>

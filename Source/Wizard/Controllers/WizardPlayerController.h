@@ -59,6 +59,13 @@ public:
 	/// on the HUD
 	/// </summary>
 	void SetHUDNumOfActions(int32 NumOfActions);
+
+	/// <summary>
+	/// Set Point Of Interest on MiniMap
+	/// in the HUD
+	/// </summary>
+	/// <param name="POIOwner">The owner of the Point Of Interest</param>
+	void SetHUDPOIOnMiniMap(class AActor* POIOwner);
 #pragma endregion
 
 #pragma region InputPointers

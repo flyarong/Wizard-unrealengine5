@@ -2,6 +2,7 @@
 
 
 #include "WizardHUD.h"
+#include "Wizard/HUD/WizardWidgetClasses/MiniMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/HUD/WizardWidgetClasses/TravelPopUpWidget.h"
 
@@ -45,4 +46,9 @@ void AWizardHUD::SetActions(int32 Actions)
 void AWizardHUD::SetNumOfActions(int32 NumOfActions)
 {
 	WizardOverlay->SetNumOfActionsText(FText::AsNumber(NumOfActions));
+}
+
+void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)
+{
+	WizardOverlay->GetMiniMap()->AddPOI(POIOwner);
 }
