@@ -21,6 +21,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void SpendEnergy(float Cost);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -31,6 +33,12 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AWizardCharacter* Character;
+
+	/// <summary>
+	/// Pointer to the player character
+	/// </summary>
+	UPROPERTY()
+	class AWizardPlayerController* Controller;
 
 	/**
 	* Wizard Attributes
@@ -44,6 +52,21 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Power;
+
+	UPROPERTY(ReplicatedUsing = OnRep_Energy, VisibleAnywhere, Category = "Wizard Attributes")
+	float Energy = 100.f;
+
+	UFUNCTION()
+	void OnRep_Energy();
+
+	/// <summary>
+	/// Function to update the Energy bar
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDEnergy();
+
+	UPROPERTY(EditAnywhere, Category = "Wizard Attributes")
+	float MaxEnergy = 100.f;
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Wisdom;

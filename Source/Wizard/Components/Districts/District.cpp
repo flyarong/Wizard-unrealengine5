@@ -40,8 +40,8 @@ void ADistrict::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction() && 
-		Character->GetAction()->GetCurrentDistrict() != DistrictName) {
-		Character->GetAction()->SetCachedDistrict(DistrictName);
+		Character->GetAction()->GetCurrentDistrict() != this) {
+		Character->GetAction()->SetCurrentDistrict(this);
 	}
 }
 

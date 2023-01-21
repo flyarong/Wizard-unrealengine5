@@ -21,44 +21,24 @@ public:
 	AWizardPlayerController();
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual void OnPossess(APawn* InPawn) override;
-	virtual void AcknowledgePossession(APawn* Pawn) override;
 
 	/// <summary>
 	/// Function to initialize the Gameplay Overlay
 	/// </summary>
 	void InitOverlay();
 
-	/// <summary>
-	/// Function to stop the travelling to another
-	/// district
-	/// </summary>
-	void CancelTravel();
-
 #pragma region HUD
-	/// <summary>
-	/// Function to show the pop up message in the HUD
-	/// before travelling to a new district
-	/// </summary>
-	void ShowHUDTravelPopUp(EDistrict District);
-
 	/// <summary>
 	/// Function for setting the current district
 	/// in the HUD
 	/// </summary>
-	void SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter = false);
+	void SetHUDCurrentDistrict(EDistrict District);
 
 	/// <summary>
-	/// Function to set the number of available Actions
+	/// Function to set the Energy bar
 	/// on the HUD
 	/// </summary>
-	void SetHUDActions(int32 Actions);
-
-	/// <summary>
-	/// Function to set the max number of Actions
-	/// on the HUD
-	/// </summary>
-	void SetHUDNumOfActions(int32 NumOfActions);
+	void SetHUDEnergy(float Energy, float MaxEnergy);
 
 	/// <summary>
 	/// Set Point Of Interest on MiniMap
@@ -168,13 +148,6 @@ private:
 	UPROPERTY()
 	bool bWizardOverlayInitialized = false;
 
-	/// <summary>
-	/// Variable to store the character's current district
-	/// until the HUD&Overlay becomes valid
-	/// </summary>
-	UPROPERTY()
-	EDistrict CachedCurrentDistrict;
-
 #pragma region Movement
 	/// <summary>
 	/// Server RPC to replicate Character movement
@@ -189,12 +162,6 @@ private:
 	/// </summary>
 	UFUNCTION(Server, Reliable)
 	void ServerStopMovement();
-
-	/// <summary>
-	/// Vector storing the location where
-	/// the character is moving from
-	/// </summary>
-	FVector CachedStart;
 
 	/// <summary>
 	/// Vector storing the location where

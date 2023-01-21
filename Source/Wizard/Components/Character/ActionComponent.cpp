@@ -4,7 +4,8 @@
 #include "ActionComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Wizard/Characters/WizardCharacter.h"
-#include "Wizard/PlayerStates/WizardPlayerState.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
+#include "Wizard/Components/Districts/District.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 
 // Sets default values for this component's properties
@@ -21,8 +22,6 @@ void UActionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentDistrict = EDistrict::ED_None;
-	CachedDistrict = EDistrict::ED_None;
 }
 
 // Called every frame
@@ -38,58 +37,27 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
-	DOREPLIFETIME(UActionComponent, CachedDistrict);
 }
 
 #pragma region Movement
-void UActionComponent::SetCachedDistrict(EDistrict District)
+void UActionComponent::SetCurrentDistrict(ADistrict* District)
 {
-	ServerCachedDistrict(District);
-
-	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	if (Controller && CachedDistrict != EDistrict::ED_None) {
-		Controller->ShowHUDTravelPopUp(CachedDistrict);
-	}
-}
-
-void UActionComponent::OnRep_CachedDistrict()
-{
-	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	if (Controller && CachedDistrict != EDistrict::ED_None) {
-		Controller->ShowHUDTravelPopUp(CachedDistrict);
-	}
-}
-
-void UActionComponent::SetCurrentDistrict(EDistrict District)
-{
-	ServerCurrentDistrict(District);
+	CurrentDistrict = District;
 	
-	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	PlayerState = (PlayerState == nullptr && Controller) ? Controller->GetPlayerState<AWizardPlayerState>() : PlayerState;
-	if (PlayerState && Controller->HasAuthority()) {
-		PlayerState->SpendAction(EAction::EA_Movement);
-		Controller->SetHUDCurrentDistrict(CurrentDistrict, true);
-	}
+	UpdateHUDCurrentDistrict();
 }
 
 void UActionComponent::OnRep_CurrentDistrict()
 {
-	Controller = Controller == nullptr ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	PlayerState = (PlayerState == nullptr && Controller) ? Controller->GetPlayerState<AWizardPlayerState>() : PlayerState;
-	if (PlayerState) {
-		PlayerState->SpendAction(EAction::EA_Movement);
-		Controller->SetHUDCurrentDistrict(CurrentDistrict, true);
+	UpdateHUDCurrentDistrict();
+}
+
+void UActionComponent::UpdateHUDCurrentDistrict()
+{
+	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller && Character->GetAttribute() && CurrentDistrict) {
+		Character->GetAttribute()->SpendEnergy(CurrentDistrict->GetCost());
+		Controller->SetHUDCurrentDistrict(CurrentDistrict->GetDistrictName());
 	}
-}
-
-void UActionComponent::ServerCurrentDistrict_Implementation(EDistrict District)
-{
-	ServerCachedDistrict(EDistrict::ED_None);
-	CurrentDistrict = District;
-}
-
-void UActionComponent::ServerCachedDistrict_Implementation(EDistrict District)
-{
-	CachedDistrict = District;
 }
 #pragma endregion

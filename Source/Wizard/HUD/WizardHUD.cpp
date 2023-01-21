@@ -4,7 +4,6 @@
 #include "WizardHUD.h"
 #include "Wizard/HUD/WizardWidgetClasses/MiniMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
-#include "Wizard/HUD/WizardWidgetClasses/TravelPopUpWidget.h"
 
 bool AWizardHUD::CreateWizardOverlay()
 {
@@ -20,32 +19,14 @@ bool AWizardHUD::CreateWizardOverlay()
 	return false;
 }
 
-void AWizardHUD::ShowTravelPopUp(EDistrict District)
-{
-	if (TravelPopUpClass == nullptr) return;
-
-	if (TravelPopUp == nullptr) {
-		APlayerController* PlayerController = GetOwningPlayerController();
-		if (PlayerController) TravelPopUp = CreateWidget<UTravelPopUpWidget>(PlayerController, TravelPopUpClass);
-	}
-	if (TravelPopUp) {
-		TravelPopUp->PopUpSetup(District);
-	}
-}
-
 void AWizardHUD::SetCurrentDistrict(EDistrict District)
 {
 	WizardOverlay->SetCurrentDistrictText(UEnum::GetDisplayValueAsText<EDistrict>(District));
 }
 
-void AWizardHUD::SetActions(int32 Actions)
+void AWizardHUD::SetEnergy(float Energy, float MaxEnergy)
 {
-	WizardOverlay->SetActionsText(FText::AsNumber(Actions));
-}
-
-void AWizardHUD::SetNumOfActions(int32 NumOfActions)
-{
-	WizardOverlay->SetNumOfActionsText(FText::AsNumber(NumOfActions));
+	WizardOverlay->SetEnergyBarPercentage(Energy / MaxEnergy);
 }
 
 void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)

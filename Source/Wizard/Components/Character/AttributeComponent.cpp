@@ -3,6 +3,8 @@
 
 #include "AttributeComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
 
 // Sets default values for this component's properties
 UAttributeComponent::UAttributeComponent()
@@ -24,7 +26,6 @@ void UAttributeComponent::BeginPlay()
 	
 }
 
-
 // Called every frame
 void UAttributeComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -40,8 +41,31 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UAttributeComponent, Name);
 	DOREPLIFETIME(UAttributeComponent, Health);
 	DOREPLIFETIME(UAttributeComponent, Power);
+	DOREPLIFETIME(UAttributeComponent, Energy);
 	DOREPLIFETIME(UAttributeComponent, Wisdom);
 	DOREPLIFETIME(UAttributeComponent, Intelligence);
 	DOREPLIFETIME(UAttributeComponent, Combat);
 	DOREPLIFETIME(UAttributeComponent, Agility);
+}
+
+void UAttributeComponent::SpendEnergy(float Cost)
+{
+	if (Character->HasAuthority()) {
+		Energy = FMath::Clamp(Energy - Cost, 0.f, MaxEnergy);
+		UpdateHUDEnergy();
+	}
+}
+
+void UAttributeComponent::OnRep_Energy()
+{
+	UpdateHUDEnergy();
+}
+
+void UAttributeComponent::UpdateHUDEnergy()
+{
+	Controller = (Controller == nullptr) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDEnergy(Energy, MaxEnergy);
+	}
 }

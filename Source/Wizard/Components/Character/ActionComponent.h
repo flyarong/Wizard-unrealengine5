@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Wizard/WizardTypes/DistrictNames.h"
 #include "ActionComponent.generated.h"
 
 
@@ -48,37 +47,14 @@ private:
 	/// District the player is currently at
 	/// </summary>
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentDistrict)
-	EDistrict CurrentDistrict;
+	class ADistrict* CurrentDistrict;
 
 	UFUNCTION()
 	void OnRep_CurrentDistrict();
-	
-	/// <summary>
-	/// Server RPC to set the current district on
-	/// the server
-	/// </summary>
-	UFUNCTION(Server, Reliable)
-	void ServerCurrentDistrict(EDistrict District);
-	
-	/// <summary>
-	/// The district the character is currently
-	/// overlapping
-	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_CachedDistrict)
-	EDistrict CachedDistrict;
 
-	UFUNCTION()
-	void OnRep_CachedDistrict();
-
-	/// <summary>
-	/// Server RPC to set the currently overlapping district on
-	/// the server
-	/// </summary>
-	UFUNCTION(Server, Reliable)
-	void ServerCachedDistrict(EDistrict District);
+	void UpdateHUDCurrentDistrict();
 
 public:
-	FORCEINLINE EDistrict GetCurrentDistrict() const { return CurrentDistrict; }
-	void SetCachedDistrict(EDistrict District);
-	void SetCurrentDistrict(EDistrict District);
+	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
+	void SetCurrentDistrict(ADistrict* District);
 };

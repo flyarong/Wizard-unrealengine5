@@ -8,6 +8,7 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Pawns/GameplayCamera.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/HUD/WizardHUD.h"
@@ -25,7 +26,6 @@ AWizardPlayerController::AWizardPlayerController()
 	bShowMouseCursor = false;
 	DefaultMouseCursor = EMouseCursor::Default;
 
-	CachedStart = FVector::ZeroVector;
 	CachedDestination = FVector::ZeroVector;
 }
 
@@ -62,36 +62,13 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 }
 
 #pragma region Init
-void AWizardPlayerController::OnPossess(APawn* InPawn) {
-	Super::OnPossess(InPawn);
-
-	WizardCharacter = Cast<AWizardCharacter>(InPawn);
-	if (WizardCharacter && WizardCharacter->GetAction()) {
-		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict());
-	}
-}
-
-void AWizardPlayerController::AcknowledgePossession(APawn* InPawn) {
-	Super::AcknowledgePossession(InPawn);
-
-	WizardCharacter = Cast<AWizardCharacter>(InPawn);
-	if (WizardCharacter && WizardCharacter->GetAction()) {
-		SetHUDCurrentDistrict(WizardCharacter->GetAction()->GetCurrentDistrict());
-	}
-}
-
 void AWizardPlayerController::InitOverlay()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
 		if (WizardHUD->GetOverlay() && bWizardOverlayInitialized) {
-			SetHUDCurrentDistrict(CachedCurrentDistrict);
-			WizardPlayerState = WizardPlayerState == nullptr ? GetPlayerState<AWizardPlayerState>() : WizardPlayerState;
-			if (WizardPlayerState) {
-				SetHUDActions(WizardPlayerState->GetNumOfActionsPerRound());
-				SetHUDNumOfActions(WizardPlayerState->GetNumOfActionsPerRound());
-			}
+			SetHUDCurrentDistrict(EDistrict::ED_None);
 		}
 	}
 }
@@ -128,7 +105,6 @@ void AWizardPlayerController::SetupInputComponent()
 #pragma region CharacterMovement
 void AWizardPlayerController::OnInputStarted()
 {
-	CachedStart = GetPawn()->GetActorLocation();
 	ServerStopMovement();
 	if (!HasAuthority()) StopMovement();
 }
@@ -185,19 +161,6 @@ void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerC
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
 }
 
-void AWizardPlayerController::CancelTravel()
-{
-	WizardCharacter = WizardCharacter == nullptr ? Cast<AWizardCharacter>(GetPawn()) : WizardCharacter;
-	if (WizardCharacter && WizardCharacter->GetAction()) {
-		WizardCharacter->GetAction()->SetCachedDistrict(EDistrict::ED_None);
-		ServerMoveToLocation(this, CachedStart);
-		if (!HasAuthority()) {
-			// Move back locally on client
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedStart);
-		}
-	}
-}
-
 // Triggered every frame when the input is held down
 void AWizardPlayerController::OnTouchTriggered()
 {
@@ -243,45 +206,22 @@ void AWizardPlayerController::OnKeyMoveRight(float Value)
 #pragma endregion
 
 #pragma region HUD
-void AWizardPlayerController::ShowHUDTravelPopUp(EDistrict District)
-{
-	ServerStopMovement();
-	if (!HasAuthority()) StopMovement();
-	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD) {
-		WizardHUD->ShowTravelPopUp(District);
-	}
-}
-
-void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District, bool bMoveCharacter)
+void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetCurrentDistrictText()) {
 		WizardHUD->SetCurrentDistrict(District);
 	}
-	else {
-		CachedCurrentDistrict = District;
-	}
-
-	// Move Character to CachedDestination
-	if (bMoveCharacter) OnSetDestinationReleased();
 }
 
-void AWizardPlayerController::SetHUDActions(int32 Actions)
+void AWizardPlayerController::SetHUDEnergy(float Energy, float MaxEnergy)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetActionsText()) {
-		WizardHUD->SetActions(Actions);
+	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetEnergyBar()) {
+		WizardHUD->SetEnergy(Energy, MaxEnergy);
 	}
 }
 
-void AWizardPlayerController::SetHUDNumOfActions(int32 NumOfActions)
-{
-	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetNumOfActionsText()) {
-		WizardHUD->SetNumOfActions(NumOfActions);
-	}
-}
 void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;

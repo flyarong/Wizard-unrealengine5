@@ -43,6 +43,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* DistrictBox;
 
+	UPROPERTY(EditAnywhere)
+	float EnergyCost = 10.f;
+
 	/// <summary>
 	/// Name of the district
 	/// </summary>
@@ -51,4 +54,5 @@ private:
 
 public:
 	FORCEINLINE EDistrict GetDistrictName() const { return DistrictName; }
+	FORCEINLINE float GetCost() const { return EnergyCost; }
 };

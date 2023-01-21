@@ -24,13 +24,6 @@ public:
 	bool CreateWizardOverlay();
 
 	/// <summary>
-	/// Function to show the pop up message
-	/// before travelling to a new district
-	/// </summary>
-	/// <param name="District">The destination</param>
-	void ShowTravelPopUp(EDistrict District);
-
-	/// <summary>
 	/// Function for printing the current district's name
 	/// on the screen
 	/// </summary>
@@ -38,16 +31,10 @@ public:
 	void SetCurrentDistrict(EDistrict District);
 
 	/// <summary>
-	/// Function to set the number of available Actions
+	/// Function to set the Energy level
 	/// on the HUD
 	/// </summary>
-	void SetActions(int32 Actions);
-
-	/// <summary>
-	/// Function to set the max number of Actions
-	/// on the HUD
-	/// </summary>
-	void SetNumOfActions(int32 NumOfActions);
+	void SetEnergy(float Energy, float MaxEnergy);
 
 	/// <summary>
 	/// Function to set the Point Of Interest on the MiniMap 
@@ -69,18 +56,6 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class UWizardOverlay* WizardOverlay;
-
-	/// <summary>
-	/// Widget Class of the gameplay overlay
-	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Wizard Overlay")
-	TSubclassOf<class UUserWidget> TravelPopUpClass;
-
-	/// <summary>
-	/// Pointer to the gameplay overlay
-	/// </summary>
-	UPROPERTY()
-	class UTravelPopUpWidget* TravelPopUp;
 
 public:
 	FORCEINLINE UWizardOverlay* GetOverlay() const { return WizardOverlay; }

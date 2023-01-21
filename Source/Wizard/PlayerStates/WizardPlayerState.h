@@ -25,14 +25,6 @@ public:
 	UFUNCTION()
 	void SetSelectedCharacter(FName RowName);
 
-	/// <summary>
-	/// Function to handle the number of actions
-	/// for the player
-	/// </summary>
-	/// <param name="Action">The action which is executed</param>
-	UFUNCTION()
-	void SpendAction(EAction Action);
-
 private:
 
 	/// <summary>
@@ -52,37 +44,4 @@ private:
 	/// </summary>
 	UFUNCTION()
 	void OnRep_SelectedCharacter();
-
-	/// <summary>
-	/// Integer holding the number of actions
-	/// the player currently has
-	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_Actions)
-	int32 Actions = 3;
-
-	UFUNCTION()
-	void OnRep_Actions();
-
-	/// <summary>
-	/// Integer holding the number of actions a player
-	/// can take per round
-	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Wizard Gameplay")
-	int32 NumOfActionsPerRound = 3;
-	
-	/// <summary>
-	/// Variable storing the cost of the current
-	/// action
-	/// </summary>
-	int32 CostOfAction = 0;
-
-	/// <summary>
-	/// Server RPC for calculating the cost of the
-	/// action based on its type
-	/// </summary>
-	UFUNCTION(Server, Reliable)
-	void ServerCalculateActionCost(EAction Action);
-
-public:
-	FORCEINLINE int32 GetNumOfActionsPerRound() const { return NumOfActionsPerRound; }
 };

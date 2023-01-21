@@ -117,6 +117,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController) {
 		PlayerController->InitOverlay();
+		PlayerController->SetHUDEnergy(Attribute->Energy, Attribute->MaxEnergy);
 
 		FInputModeGameAndUI InputModeData;
 		PlayerController->SetInputMode(InputModeData);

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
-#include "Wizard/WizardTypes/ActionTypes.h"
 #include "WizardGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -41,12 +40,6 @@ public:
 	/// <param name="PlayerName">Player's name</param>
 	/// <returns>Character's name selected by the player</returns>
 	FName GetPlayerCharacter(FString PlayerName);
-
-	/// <summary>
-	/// Function to get the cost of an action
-	/// based on its type
-	/// </summary>
-	int32 GetActionCost(EAction Action);
 };
 
 
