@@ -22,7 +22,7 @@ void UAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	Energy = MaxEnergy;
 	
 }
 

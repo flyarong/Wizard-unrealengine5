@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
 
 // Sets default values
 ADistrict::ADistrict()
@@ -33,6 +34,7 @@ void ADistrict::BeginPlay()
 		DistrictBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		DistrictBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		DistrictBox->OnComponentBeginOverlap.AddDynamic(this, &ADistrict::OnBoxBeginOverlap);
+		DistrictBox->OnComponentEndOverlap.AddDynamic(this, &ADistrict::OnBoxEndOverlap);
 	}
 }
 
@@ -42,6 +44,14 @@ void ADistrict::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	if (Character && Character->GetAction() && 
 		Character->GetAction()->GetCurrentDistrict() != this) {
 		Character->GetAction()->SetCurrentDistrict(this);
+	}
+}
+
+void ADistrict::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
+	if (Character && Character->GetAttribute()) {
+		Character->GetAttribute()->SpendEnergy(EnergyCost / 2);
 	}
 }
 

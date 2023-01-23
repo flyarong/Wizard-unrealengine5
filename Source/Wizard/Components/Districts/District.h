@@ -39,6 +39,14 @@ protected:
 		const FHitResult& SweepResult
 	);
 
+	UFUNCTION()
+	void OnBoxEndOverlap(
+		UPrimitiveComponent* OverlappedComp, 
+		AActor* OtherActor, 
+		UPrimitiveComponent* OtherComp, 
+		int32 OtherBodyIndex
+	);
+
 private:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* DistrictBox;

@@ -172,6 +172,9 @@ private:
 
 	bool bIsTouch; // Is it a touch device
 #pragma endregion
+
+public:
+	void SetWizardCharacter(AWizardCharacter* WCharacter) { WizardCharacter = WCharacter; }
 };
 
 

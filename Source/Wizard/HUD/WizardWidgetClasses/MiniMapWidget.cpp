@@ -7,7 +7,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/Image.h"
-#include "GameFramework/Character.h"
+#include "Wizard/Pawns/GameplayCamera.h"
 #include "Components/Overlay.h"
 #include "Components/OverlaySlot.h"
 #include "Components/CanvasPanelSlot.h"
@@ -36,10 +36,10 @@ void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		MiniMapRadius = MiniMapSize / 2;
 	}
 
-	// Update Character's location on MiniMap
-	FVector CharacterLocation = UGameplayStatics::GetPlayerCharacter(this, 0)->GetActorLocation();
-	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("X"), CharacterLocation.X);
-	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Y"), CharacterLocation.Y);
+	// Update Camera's location on MiniMap
+	FVector CameraLocation = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())->GetActorLocation();
+	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("X"), CameraLocation.X);
+	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Y"), CameraLocation.Y);
 	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Zoom"), Zoom);
 }
 

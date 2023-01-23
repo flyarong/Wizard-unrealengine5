@@ -18,15 +18,17 @@ void UPointOfInterestWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	// Init custom POI image
-	UPointOfInterestComponent* POIComponent =
-		Cast<UPointOfInterestComponent>(Owner->GetComponentByClass(UPointOfInterestComponent::StaticClass()));
-	if (POIComponent) {
-		POIImage->SetBrushFromTexture(POIComponent->GetIconImage());
-		if (POIImage) {
-			DefaultImage->SetVisibility(ESlateVisibility::Hidden);
-		}
-		else {
-			POIImage->SetVisibility(ESlateVisibility::Hidden);
+	if (Owner) {
+		UPointOfInterestComponent* POIComponent =
+			Cast<UPointOfInterestComponent>(Owner->GetComponentByClass(UPointOfInterestComponent::StaticClass()));
+		if (POIComponent) {
+			POIImage->SetBrushFromTexture(POIComponent->GetIconImage());
+			if (POIImage) {
+				DefaultImage->SetVisibility(ESlateVisibility::Hidden);
+			}
+			else {
+				POIImage->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
 	}
 }
@@ -36,7 +38,7 @@ void UPointOfInterestWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	// Init MiniMap member variable
-	if (MiniMap == nullptr) {
+	if (MiniMap == nullptr && Owner) {
 		AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
 		if (PlayerController) {
 			AWizardHUD* WizardHUD = Cast<AWizardHUD>(PlayerController->GetHUD());
@@ -47,8 +49,13 @@ void UPointOfInterestWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 	}
 
 	// Update POI's relative location on MiniMap
-	if (MiniMap) {
+	if (MiniMap && Owner) {
 		UpdateRelativeLocation();
+	}
+
+	// Delete if Owner is no longer valid
+	if (!Owner) {
+		RemoveFromParent();
 	}
 }
 

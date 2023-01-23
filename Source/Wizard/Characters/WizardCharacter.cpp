@@ -116,6 +116,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	// Setup overlay on HUD and enable gameplay input mode
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController) {
+		PlayerController->SetWizardCharacter(this);
 		PlayerController->InitOverlay();
 		PlayerController->SetHUDEnergy(Attribute->Energy, Attribute->MaxEnergy);
 

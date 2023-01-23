@@ -21,6 +21,10 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	/// <summary>
+	/// Function to handle Energy expenditure
+	/// </summary>
+	/// <param name="Cost">The number of energy to be lost</param>
 	void SpendEnergy(float Cost);
 
 protected:
@@ -53,20 +57,22 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Power;
 
+#pragma region Energy
 	UPROPERTY(ReplicatedUsing = OnRep_Energy, VisibleAnywhere, Category = "Wizard Attributes")
-	float Energy = 100.f;
+	float Energy;
 
 	UFUNCTION()
 	void OnRep_Energy();
+
+	UPROPERTY(EditAnywhere, Category = "Wizard Attributes")
+	float MaxEnergy = 100.f;
 
 	/// <summary>
 	/// Function to update the Energy bar
 	/// on the HUD
 	/// </summary>
 	void UpdateHUDEnergy();
-
-	UPROPERTY(EditAnywhere, Category = "Wizard Attributes")
-	float MaxEnergy = 100.f;
+#pragma endregion
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Wisdom;

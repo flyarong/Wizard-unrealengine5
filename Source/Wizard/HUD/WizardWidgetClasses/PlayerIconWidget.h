@@ -7,7 +7,7 @@
 #include "PlayerIconWidget.generated.h"
 
 /**
- * Widget class for the player character's icon
+ * Widget class for the player camera's icon
  * on the MiniMap
  */
 UCLASS()
