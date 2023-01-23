@@ -26,7 +26,7 @@ void AWizardHUD::SetCurrentDistrict(EDistrict District)
 
 void AWizardHUD::SetEnergy(float Energy, float MaxEnergy)
 {
-	WizardOverlay->SetEnergyBarPercentage(Energy / MaxEnergy);
+	WizardOverlay->SetEnergyBarPercentage(Energy, MaxEnergy);
 }
 
 void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)

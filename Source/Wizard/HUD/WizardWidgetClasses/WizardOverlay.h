@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
+#include "Wizard/HUD/WizardWidgetClasses/WizardProgressBarWidget.h"
 #include "Components/TextBlock.h"
 #include "WizardOverlay.generated.h"
 
@@ -23,14 +23,14 @@ private:
 	class UTextBlock* CurrentDistrictText;
 
 	UPROPERTY(meta = (BindWidget))
-	class UProgressBar* EnergyBar;
+	class UWizardProgressBarWidget* EnergyBar;
 
 	UPROPERTY(meta = (BindWidget))
 	class UMiniMapWidget* MiniMap;
 
 public:
-	FORCEINLINE void SetEnergyBarPercentage(float Percentage) { EnergyBar->SetPercent(Percentage); };
-	FORCEINLINE UProgressBar* GetEnergyBar() const { return EnergyBar; }
+	FORCEINLINE void SetEnergyBarPercentage(float Energy, float MaxEnergy) { EnergyBar->SetWizardBarPercent(Energy, MaxEnergy); };
+	FORCEINLINE UWizardProgressBarWidget* GetEnergyBar() const { return EnergyBar; }
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
