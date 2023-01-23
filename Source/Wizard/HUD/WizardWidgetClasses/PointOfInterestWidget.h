@@ -72,10 +72,10 @@ private:
 	/// Function to find the angle of distance
 	/// between the Character and the POI
 	/// </summary>
-	/// <param name="CharacterLocation">Character's location - always (0,0) on MiniMap</param>
+	/// <param name="CameraLocation">Camera's location - always (0,0) on MiniMap</param>
 	/// <param name="ActorLocation">Point of Interest's location</param>
 	/// <returns>Angle of Character and POI distance</returns>
-	float FindAngle(FVector2D CharacterLocation, FVector2D ActorLocation);
+	float FindAngle(FVector2D CameraLocation, FVector2D ActorLocation);
 
 	/// <summary>
 	/// Function to clamp the POI icon's location
