@@ -225,7 +225,7 @@ void AWizardPlayerController::SetHUDEnergy(float Energy, float MaxEnergy)
 void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetMiniMap()) {
+	if (POIOwner && WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetMiniMap()) {
 		WizardHUD->SetPOIOnMiniMap(POIOwner);
 	}
 }

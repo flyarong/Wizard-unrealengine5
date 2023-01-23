@@ -31,7 +31,6 @@ void AWizardGameMode::PostLogin(APlayerController* NewPlayer)
 	InitCharacter(NewPlayer);
 }
 
-
 void AWizardGameMode::InitCharacter(APlayerController* Controller)
 {
 	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(Controller);
@@ -65,4 +64,9 @@ FName AWizardGameMode::GetPlayerCharacter(FString PlayerName)
 	}
 
 	return FName("Lohion"); // NAME_None
+}
+
+void AWizardGameMode::AddMiniMapActor(AActor* MiniMapActor)
+{
+	if (MiniMapActor) MiniMapActors.AddUnique(MiniMapActor);
 }

@@ -3,6 +3,9 @@
 
 #include "PointOfInterestComponent.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
+#include "Wizard/GameModes/WizardGameMode.h"
+#include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UPointOfInterestComponent::UPointOfInterestComponent()
@@ -21,17 +24,51 @@ void UPointOfInterestComponent::BeginPlay()
 
 }
 
+void UPointOfInterestComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UPointOfInterestComponent, IconImage);
+	DOREPLIFETIME(UPointOfInterestComponent, bIsStatic);
+	DOREPLIFETIME(UPointOfInterestComponent, MiniMapActors);
+}
 
 // Called every frame
 void UPointOfInterestComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
-void UPointOfInterestComponent::SetupPOI()
+void UPointOfInterestComponent::SetupPOI(AActor* Owner)
 {
-	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
-	PlayerController->SetHUDPOIOnMiniMap(GetOwner());
+	ServerSetupPOI(Owner);
+	UpdateMiniMap();
+}
+
+void UPointOfInterestComponent::ServerSetupPOI_Implementation(AActor* Owner)
+{
+	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this)) : WizardGameMode;
+	if (WizardGameMode) {
+		WizardGameMode->AddMiniMapActor(Owner);
+		MiniMapActors = WizardGameMode->GetMiniMapActors();
+	}
+}
+
+void UPointOfInterestComponent::OnRep_MiniMapActors()
+{
+	UpdateMiniMap();
+}
+
+void UPointOfInterestComponent::UpdateMiniMap()
+{
+	WizardController = WizardController == nullptr ?
+		Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController()) : WizardController;
+	if (WizardController) {
+		if (MiniMapActors.Num() > 0) {
+			for (AActor* Owner : MiniMapActors)
+			{
+				WizardController->SetHUDPOIOnMiniMap(Owner);
+			}
+		}
+	}
 }

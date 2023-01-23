@@ -41,6 +41,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	class UStaticMesh* MagicStaff;
 
+	/// <summary>
+	/// The icon representing the Character on the
+	/// MiniMap
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UTexture2D* MiniMapIcon;
+
 	/**
 	* Wizard Stats
 	*/

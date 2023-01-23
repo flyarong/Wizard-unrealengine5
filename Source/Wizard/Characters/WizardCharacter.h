@@ -63,6 +63,13 @@ private:
 	/// </summary>
 	UPROPERTY(VisibleAnywhere)
 	class UActionComponent* Action;
+
+	/// <summary>
+	/// Character's Point of Interest component:
+	/// shows the location of the Character on the MiniMap
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UPointOfInterestComponent* POI;
 #pragma endregion
 
 public:

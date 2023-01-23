@@ -17,6 +17,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
+#include "Wizard/Components/MiniMap/PointOfInterestComponent.h"
 
 AWizardCharacter::AWizardCharacter()
 {
@@ -43,6 +44,10 @@ AWizardCharacter::AWizardCharacter()
 	// Create Action Component
 	Action = CreateDefaultSubobject<UActionComponent>(TEXT("Action"));
 	Action->SetIsReplicated(true);
+
+	// Create Point of Interest Component
+	POI = CreateDefaultSubobject<UPointOfInterestComponent>(TEXT("PointOfInterest"));
+	POI->SetIsReplicated(true);
 
 	// Create Overhead widget
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
@@ -76,6 +81,7 @@ void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 void AWizardCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
 	if (Action) {
 		Action->Character = this;
 	}
@@ -103,6 +109,9 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 			Attribute->SetIntelligence(SelectedCharacter->Intelligence);
 			Attribute->SetCombat(SelectedCharacter->Combat);
 			Attribute->SetAgility(SelectedCharacter->Agility);
+
+			POI->bIsStatic = true;
+			POI->IconImage = SelectedCharacter->MiniMapIcon;
 		}
 	}
 
@@ -119,6 +128,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		PlayerController->SetWizardCharacter(this);
 		PlayerController->InitOverlay();
 		PlayerController->SetHUDEnergy(Attribute->Energy, Attribute->MaxEnergy);
+		POI->SetupPOI(this);
 
 		FInputModeGameAndUI InputModeData;
 		PlayerController->SetInputMode(InputModeData);

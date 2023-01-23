@@ -16,6 +16,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+	/// <summary>
+	/// Function to add a new Actor to the
+	/// MiniMapActors array
+	/// </summary>
+	/// <param name="MiniMapActor">New MiniMap Actor</param>
+	void AddMiniMapActor(class AActor* MiniMapActor);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -32,7 +39,16 @@ private:
 	/// <param name="Controller">The player's controller</param>
 	void InitCharacter(APlayerController* Controller);
 
+	/// <summary>
+	/// Array holding all the Actors that should be
+	/// displayed on the MiniMap
+	/// </summary>
+	UPROPERTY()
+	TArray<AActor*> MiniMapActors = TArray<AActor*>();
+
 public:
+
+	TArray<AActor*> GetMiniMapActors() const { return MiniMapActors; }
 
 	/// <summary>
 	/// Public getter for the player's character name
