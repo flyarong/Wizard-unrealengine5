@@ -40,7 +40,7 @@ private:
 	/// <summary>
 	/// Mesh for holding the Magic Staff
 	/// </summary>
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* MagicStaff;
 
 	/// <summary>

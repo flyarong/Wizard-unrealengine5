@@ -23,6 +23,7 @@ void UPointOfInterestWidget::NativeConstruct()
 		UPointOfInterestComponent* POIComponent =
 			Cast<UPointOfInterestComponent>(Owner->GetComponentByClass(UPointOfInterestComponent::StaticClass()));
 		if (POIComponent) {
+			bIsStatic = POIComponent->GetIsStatic();
 			POIImage->SetBrushFromTexture(POIComponent->GetIconImage());
 			if (POIImage) {
 				DefaultImage->SetVisibility(ESlateVisibility::Hidden);
@@ -69,7 +70,7 @@ void UPointOfInterestWidget::UpdateRelativeLocation()
 	SetRenderTranslation(RenderTranslation);
 
 	// Hide POI image on MiniMap, if it is at the edge and not static
-	if (!bIsStatic && RenderTranslation.Length() >= MiniMap->MiniMapRadius) {
+	if (!bIsStatic && RenderTranslation.Length() >= MiniMap->MiniMapRadius * 0.9f) {
 		POIImage->SetVisibility(ESlateVisibility::Hidden);	
 	}
 	else {
