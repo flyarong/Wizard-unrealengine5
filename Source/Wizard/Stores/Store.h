@@ -20,6 +20,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+
+#pragma region Components
 	/// <summary>
 	/// Store's Point of Interest component:
 	/// shows the location of the Store on the MiniMap
@@ -50,12 +52,31 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class UOverheadWidget* OverheadWidget;
+#pragma endregion
 
 	/// <summary>
 	/// Name of the store
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Store")
 	FString StoreName;
+
+	UFUNCTION()
+	void OnStoreBeginOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
+	UFUNCTION()
+	void OnStoreEndOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex
+	);
 
 public:	
 	// Called every frame

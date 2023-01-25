@@ -40,8 +40,18 @@ void AStore::BeginPlay()
 	
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	/*AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnSphereOverlap);
-	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AWeapon::OnSphereEndOverlap);*/
+	AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AStore::OnStoreBeginOverlap);
+	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AStore::OnStoreEndOverlap);
+
+	POI->SetupPOI(this);
+}
+
+void AStore::OnStoreBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+}
+
+void AStore::OnStoreEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
 }
 
 // Called every frame
