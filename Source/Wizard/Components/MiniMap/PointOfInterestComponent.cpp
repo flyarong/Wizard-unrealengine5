@@ -4,6 +4,7 @@
 #include "PointOfInterestComponent.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/GameModes/WizardGameMode.h"
+#include "Wizard/Stores/Store.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -65,10 +66,7 @@ void UPointOfInterestComponent::UpdateMiniMap()
 		Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController()) : WizardController;
 	if (WizardController) {
 		if (MiniMapActors.Num() > 0) {
-			for (AActor* Owner : MiniMapActors)
-			{
-				WizardController->SetHUDPOIOnMiniMap(Owner);
-			}
+			WizardController->SetHUDPOIOnMiniMap(MiniMapActors.Last());
 		}
 	}
 }

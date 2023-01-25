@@ -69,7 +69,7 @@ private:
 	/// shows the location of the Character on the MiniMap
 	/// </summary>
 	UPROPERTY(VisibleAnywhere)
-	class UPointOfInterestComponent* POI;
+	class UCharacterPOIComponent* POI;
 #pragma endregion
 
 public:

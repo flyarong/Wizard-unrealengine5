@@ -8,7 +8,7 @@
 
 /**
 * Component class to handle Point of Interest functionality
-* on MiniMap for any Actor
+* on MiniMap for Actors
 */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WIZARD_API UPointOfInterestComponent : public UActorComponent
@@ -23,8 +23,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	/// <summary>
-	/// Function to setup the Point Of Interest
-	/// Should be called from owning Actor
+	/// Function to setup the Point Of Interest on the MiniMap
+	/// Should be called from Owning Actor
 	/// </summary>
 	void SetupPOI(class AActor* Owner);
 
@@ -32,19 +32,17 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-private:
-
 	/// <summary>
 	/// Server RPC to setup the POI
 	/// on the MiniMap
 	/// </summary>
-	UFUNCTION(Server, Reliable)
+	UFUNCTION(Server, UnReliable)
 	void ServerSetupPOI(AActor* Owner);
 
 	/// <summary>
 	/// Function to update the MiniMap
 	/// </summary>
-	void UpdateMiniMap();
+	virtual void UpdateMiniMap();
 
 	/// <summary>
 	/// Pointer to the game mode

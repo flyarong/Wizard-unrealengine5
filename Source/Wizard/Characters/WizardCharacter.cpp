@@ -17,7 +17,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
-#include "Wizard/Components/MiniMap/PointOfInterestComponent.h"
+#include "Wizard/Components/MiniMap/CharacterPOIComponent.h"
 
 AWizardCharacter::AWizardCharacter()
 {
@@ -46,7 +46,7 @@ AWizardCharacter::AWizardCharacter()
 	Action->SetIsReplicated(true);
 
 	// Create Point of Interest Component
-	POI = CreateDefaultSubobject<UPointOfInterestComponent>(TEXT("PointOfInterest"));
+	POI = CreateDefaultSubobject<UCharacterPOIComponent>(TEXT("PointOfInterest"));
 	POI->SetIsReplicated(true);
 
 	// Create Overhead widget
