@@ -2,9 +2,12 @@
 
 
 #include "WizardProgressBarWidget.h"
+#include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Kismet/KismetMathLibrary.h"
-
+#include "Blueprint/WidgetBlueprintLibrary.h"
+#include "Styling/SlateTypes.h"
+#include "Styling/SlateBrush.h"
 
 void UWizardProgressBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {

@@ -18,13 +18,45 @@ class WIZARD_API UWizardProgressBarWidget : public UUserWidget
 public:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	
+	/// <summary>
+	/// Function to set the percentage of
+	/// the progress bar
+	/// Value / MaxValue
+	/// </summary>
+	/// <param name="Value">New Value</param>
+	/// <param name="MaxValue">Maximum Value</param>
 	void SetWizardBarPercent(float Value, float MaxValue);
 
-private:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UImage* ProgressBarImage;
 
-	UPROPERTY(meta = (BindWidget))
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* ProgressBar;
 
+	/// <summary>
+	/// Icon next to the progress bar
+	/// </summary>
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
+	class UTexture2D* ProgressBarIcon;
+
+	/// <summary>
+	/// Background of the progress bar
+	/// </summary>
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
+	UTexture2D* ProgressBarBackground;
+
+	/// <summary>
+	/// Color of the progress bar
+	/// </summary>
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
+	UTexture2D* ProgressBarForeground;
+
+	/// <summary>
+	/// Function to animate the percentage
+	/// update
+	/// </summary>
+	/// <param name="DeltaTime">Delta time from tick event</param>
 	void UpdateWizardBarPercentage(float DeltaTime);
 
 	/// <summary>
@@ -37,6 +69,7 @@ private:
 	/// <summary>
 	/// Maximum value of the progress bar
 	/// </summary>
+	UPROPERTY()
 	float MaxProgressValue = 100.f;
 
 	/// <summary>
