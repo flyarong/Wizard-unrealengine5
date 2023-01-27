@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Wizard/Items/Item.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "WizardHUD.generated.h"
 
@@ -42,6 +43,13 @@ public:
 	/// </summary>
 	/// <param name="POIOwner">Point Of Interest's Owner</param>
 	void SetPOIOnMiniMap(class AActor* POIOwner);
+
+	/// <summary>
+	/// Function to show the currently browsed store's
+	/// catalog on the HUD
+	/// </summary>
+	/// <param name="Items">Items a store can offer</param>
+	void SetStoreCatalog(TArray<FItemDataTable> Items);
 
 private:
 	

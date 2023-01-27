@@ -19,6 +19,12 @@ class WIZARD_API UWizardOverlay : public UUserWidget
 	
 private:
 
+	/// <summary>
+	/// Widget class for the Catalog
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Catalog")
+	TSubclassOf<class UUserWidget> CatalogWidgetClass;
+
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CurrentDistrictText;
 
@@ -28,10 +34,15 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UMiniMapWidget* MiniMap;
 
+	UPROPERTY(meta = (BindWidget))
+	class UScaleBox* CenterBox;
+
 public:
+	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE void SetEnergyBarPercentage(float Energy, float MaxEnergy) { EnergyBar->SetWizardBarPercent(Energy, MaxEnergy); };
 	FORCEINLINE UWizardProgressBarWidget* GetEnergyBar() const { return EnergyBar; }
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
+	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 };

@@ -229,4 +229,12 @@ void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 		WizardHUD->SetPOIOnMiniMap(POIOwner);
 	}
 }
+
+void AWizardPlayerController::SetHUDStoreCatalog(TArray<FItemDataTable> Items)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardHUD->GetOverlay()) {
+		WizardHUD->SetStoreCatalog(Items);
+	}
+}
 #pragma endregion

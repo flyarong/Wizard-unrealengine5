@@ -3,7 +3,9 @@
 
 #include "WizardHUD.h"
 #include "Wizard/HUD/WizardWidgetClasses/MiniMapWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/CatalogWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
+#include "Components/ScaleBox.h"
 
 bool AWizardHUD::CreateWizardOverlay()
 {
@@ -32,4 +34,15 @@ void AWizardHUD::SetEnergy(float Energy, float MaxEnergy)
 void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)
 {
 	WizardOverlay->GetMiniMap()->AddPOI(POIOwner);
+}
+
+void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
+{
+	UCatalogWidget* Catalog = CreateWidget<UCatalogWidget>(GetOwningPlayerController(), WizardOverlay->GetCatalogWidgetClass());
+	if (Catalog) {
+		bool bCatalogCreated = Catalog->CreateCatalog(Items);
+		if (bCatalogCreated) {
+			WizardOverlay->GetCenterBox()->AddChild(Catalog);
+		}
+	}
 }

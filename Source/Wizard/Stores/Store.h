@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Wizard/Items/Item.h"
 #include "Store.generated.h"
 
 UCLASS()
@@ -14,12 +15,33 @@ class WIZARD_API AStore : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AStore();
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
+
+	/// <summary>
+	/// Name of the store
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Store")
+	FString StoreName;
+
+	/// <summary>
+	/// The array of Items a Store
+	/// can offer
+	/// </summary>
+	UPROPERTY()
+	TArray<FItemDataTable> Catalog;
+
+	/// <summary>
+	/// Function to create the Catalog
+	/// of the Store
+	/// </summary>
+	void CreateCatalog();
 
 #pragma region Components
 	/// <summary>
@@ -54,12 +76,7 @@ private:
 	class UOverheadWidget* OverheadWidget;
 #pragma endregion
 
-	/// <summary>
-	/// Name of the store
-	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Store")
-	FString StoreName;
-
+#pragma region Callbacks
 	UFUNCTION()
 	void OnStoreBeginOverlap(
 		UPrimitiveComponent* OverlappedComponent,
@@ -78,8 +95,13 @@ private:
 		int32 OtherBodyIndex
 	);
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	void OnStoreClicked(
+		UPrimitiveComponent* TouchedComp,
+		FKey ButtonPressed
+	);
+#pragma endregion	
 
+public:
+	FORCEINLINE TArray<FItemDataTable> GetStoreCatalog() const { return Catalog; }
 };

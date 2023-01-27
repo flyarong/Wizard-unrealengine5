@@ -1,0 +1,65 @@
+[
+	{
+		"Name": "BracersofWind",
+		"ItemName": "Bracers of Wind",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_06_b.Tex_spare_parts_06_b'",
+		"Cost": 50,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Combat",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "AmuletofGrief",
+		"ItemName": "Amulet of Grief",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_gemstone_03_b.Tex_gemstone_03_b'",
+		"Cost": 70,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__38_.Tex_ic__38_'",
+		"BoostType": "EB_Power",
+		"BoostAmount": 10
+	},
+	{
+		"Name": "BandofSpirit",
+		"ItemName": "Band of Spirit",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_11.Tex_recipes_11'",
+		"Cost": 25,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__40_.Tex_ic__40_'",
+		"BoostType": "EB_Energy",
+		"BoostAmount": 20
+	},
+	{
+		"Name": "CloakoftheScourge",
+		"ItemName": "Cloak of the Scourge",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_03_b.Tex_cloth_03_b'",
+		"Cost": 60,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "SpellboundMantle",
+		"ItemName": "Spellbound Mantle",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_08_b.Tex_cloth_08_b'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "GreavesofLifemending",
+		"ItemName": "Greaves of Lifemending",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_09.Tex_spare_parts_09'",
+		"Cost": 65,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 25
+	},
+	{
+		"Name": "PhilosopherRod",
+		"ItemName": "Philosopher's Rod",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_07_b.Tex_spare_parts_07_b'",
+		"Cost": 35,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	}
+]

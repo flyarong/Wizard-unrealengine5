@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
+#include "Wizard/Items/Item.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
@@ -46,6 +47,13 @@ public:
 	/// </summary>
 	/// <param name="POIOwner">The owner of the Point Of Interest</param>
 	void SetHUDPOIOnMiniMap(class AActor* POIOwner);
+
+	/// <summary>
+	/// Function to set the store's catalog
+	/// on the player's HUD
+	/// </summary>
+	/// <param name="Items">Items the store is offering</param>
+	void SetHUDStoreCatalog(TArray<FItemDataTable> Items);
 #pragma endregion
 
 #pragma region InputPointers
@@ -175,6 +183,7 @@ private:
 
 public:
 	void SetWizardCharacter(AWizardCharacter* WCharacter) { WizardCharacter = WCharacter; }
+	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
 };
 
 

@@ -3,6 +3,8 @@
 
 #include "ActionComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Wizard/Stores/Store.h"
+#include "Wizard/Items/Item.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/Districts/District.h"
@@ -37,6 +39,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
+	DOREPLIFETIME(UActionComponent, CurrentStore);
 }
 
 #pragma region Movement
@@ -61,3 +64,11 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 	}
 }
 #pragma endregion
+
+void UActionComponent::ShowStoreCatalog()
+{
+	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller && CurrentStore) {
+		Controller->SetHUDStoreCatalog(CurrentStore->GetStoreCatalog());
+	}
+}
