@@ -74,10 +74,7 @@ void AStore::OnStoreBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
-		Character->GetAction()->SetCurrentStore(this);
-		if (GEngine) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Blue, FString::Printf(TEXT("Session created successfully!")));
-		}
+		Character->GetAction()->SetCachedStore(this);
 	}
 }
 
@@ -86,9 +83,6 @@ void AStore::OnStoreEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
 		Character->GetAction()->LeaveStore();
-		if (GEngine) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("Session created successfully!")));
-		}
 	}	
 }
 
@@ -99,8 +93,8 @@ void AStore::OnStoreClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
-			Character->GetAction()->GetCurrentStore() == this) {
-			Character->GetAction()->ShowStoreCatalog();
+			Character->GetAction()->GetCachedStore() == this) {
+			Character->GetAction()->SetCurrentStore(this);
 		}
 	}
 }

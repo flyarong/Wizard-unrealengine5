@@ -63,7 +63,7 @@ void ALobbyGameMode::StartGame()
 
 	UWorld* World = GetWorld();
 	if (!GameMap.IsEmpty() && World) {
-		// bUseSeamlessTravel = true; // not working in PIE
+		bUseSeamlessTravel = true; // not working in PIE
 		World->ServerTravel(FString::Printf(TEXT("%s?listen"), *GameMap));
 	}
 }

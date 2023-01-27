@@ -39,6 +39,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
+	DOREPLIFETIME(UActionComponent, CachedStore);
 	DOREPLIFETIME(UActionComponent, CurrentStore);
 }
 
@@ -65,10 +66,28 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 }
 #pragma endregion
 
+void UActionComponent::SetCurrentStore(AStore* Store)
+{
+	CurrentStore = Store;
+
+	ShowStoreCatalog();
+}
+
+void UActionComponent::OnRep_CurrentStore()
+{
+	ShowStoreCatalog();
+}
+
 void UActionComponent::ShowStoreCatalog()
 {
 	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller && CurrentStore) {
 		Controller->SetHUDStoreCatalog(CurrentStore->GetStoreCatalog());
 	}
+}
+
+void UActionComponent::LeaveStore()
+{
+	CurrentStore = nullptr;
+	CachedStore = nullptr;
 }

@@ -19,11 +19,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/// <summary>
-	/// Function to show the currently
-	/// browsed store's catalog
-	/// </summary>
-	void ShowStoreCatalog();
+	void SetCurrentStore(class AStore* Store);
+
+	void LeaveStore();
 
 protected:
 	// Called when the game starts
@@ -65,16 +63,31 @@ private:
 	void UpdateHUDCurrentDistrict();
 
 	/// <summary>
+	/// Store the player is currently at
+	/// </summary>
+	UPROPERTY(Replicated)
+	AStore* CachedStore;
+
+	/// <summary>
 	/// Store the player is currently
 	/// browsing
 	/// </summary>
-	UPROPERTY(Replicated)
-	class AStore* CurrentStore;
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentStore)
+	AStore* CurrentStore;
+
+	UFUNCTION()
+	void OnRep_CurrentStore();
+
+	/// <summary>
+	/// Function to show the currently
+	/// browsed store's catalog
+	/// </summary>
+	void ShowStoreCatalog();
 
 public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
 	FORCEINLINE AStore* GetCurrentStore() const { return CurrentStore; }
-	FORCEINLINE void SetCurrentStore(AStore* Store) { if (Store) CurrentStore = Store; }
-	FORCEINLINE void LeaveStore() { CurrentStore = nullptr; }
+	FORCEINLINE AStore* GetCachedStore() const { return CachedStore; }
+	FORCEINLINE void SetCachedStore(AStore* Store) { if (Store) CachedStore = Store; }
 };
