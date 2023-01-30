@@ -76,6 +76,7 @@ void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	DOREPLIFETIME(AWizardCharacter, Items);
 }
 
 void AWizardCharacter::PostInitializeComponents()
@@ -133,5 +134,25 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		FInputModeGameAndUI InputModeData;
 		PlayerController->SetInputMode(InputModeData);
 		PlayerController->SetShowMouseCursor(true);
+	}
+}
+
+void AWizardCharacter::AddNewItem(FItemDataTable ItemRow)
+{
+	Items.Add(ItemRow);
+
+	AddHUDItem(ItemRow);
+}
+
+void AWizardCharacter::OnRep_Items()
+{
+	AddHUDItem(Items.Last());
+}
+
+void AWizardCharacter::AddHUDItem(FItemDataTable Item)
+{
+	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
+	if (PlayerController) {
+		PlayerController->AddHUDCharacterItem(Item);
 	}
 }

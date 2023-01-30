@@ -37,6 +37,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UScaleBox* CenterBox;
 
+	UPROPERTY(meta = (BindWidget))
+	class UCharacterItemPanelWidget* CharacterItemPanel;
+
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE void SetEnergyBarPercentage(float Energy, float MaxEnergy) { EnergyBar->SetWizardBarPercent(Energy, MaxEnergy); };
@@ -45,4 +48,5 @@ public:
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
+	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
 };

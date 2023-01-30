@@ -4,20 +4,49 @@
 #include "CatalogWidget.h"
 #include "CatalogItemWidget.h"
 #include "Components/HorizontalBox.h"
+#include "Components/Button.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 
 bool UCatalogWidget::CreateCatalog(TArray<FItemDataTable> Items)
 {
-	if (Items.Num() > 0 && ItemBox) {
-		for (auto & Item : Items) {
-			UCatalogItemWidget* CatalogItem = CreateWidget<UCatalogItemWidget>(GetOwningPlayer(), CatalogItemWidgetClass);
-			if (CatalogItem) {
-				CatalogItem->CreateCatalogItem(Item);
-				ItemBox->AddChildToHorizontalBox(CatalogItem);
-			}
-		}
+	APlayerController* PlayerController = GetOwningPlayer();
+	if (PlayerController) {
+		AddToViewport();
+		bIsFocusable = true;
+		FInputModeUIOnly InputModeData;
+		InputModeData.SetWidgetToFocus(TakeWidget());
+		PlayerController->SetInputMode(InputModeData);
 
-		return true;
+		if (Items.Num() > 0 && ItemBox && ExitButton && CatalogItemWidgetClass) {
+			ExitButton->OnClicked.AddDynamic(this, &UCatalogWidget::CloseCatalog);
+
+			for (auto & Item : Items) {
+				UCatalogItemWidget* CatalogItem = CreateWidget<UCatalogItemWidget>(PlayerController, CatalogItemWidgetClass);
+				if (CatalogItem) {
+					CatalogItem->CreateItem(Item);
+					ItemBox->AddChildToHorizontalBox(CatalogItem);
+				}
+			}
+
+			return true;
+		}
 	}
 
+
 	return false;
+}
+
+void UCatalogWidget::CloseCatalog()
+{
+	APlayerController* PlayerController = GetOwningPlayer();
+	if (PlayerController) {
+		AWizardCharacter* WCharacter = Cast<AWizardCharacter>(PlayerController->GetPawn());
+		if (WCharacter && WCharacter->GetAction()) {
+			RemoveFromParent();
+			WCharacter->GetAction()->CloseCatalog();
+			FInputModeGameAndUI InputModeData;
+			PlayerController->SetInputMode(InputModeData);
+		}
+	}
 }

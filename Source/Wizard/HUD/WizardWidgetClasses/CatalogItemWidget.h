@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Wizard/Items/Item.h"
+#include "ItemWidget.h"
 #include "CatalogItemWidget.generated.h"
 
 /**
@@ -12,7 +11,7 @@
  * in the Catalog
  */
 UCLASS()
-class WIZARD_API UCatalogItemWidget : public UUserWidget
+class WIZARD_API UCatalogItemWidget : public UItemWidget
 {
 	GENERATED_BODY()
 
@@ -22,15 +21,9 @@ public:
 	/// Function to create an Item on the Catalog
 	/// </summary>
 	/// <param name="ItemActor">DataTable Row to create the widget from</param>
-	void CreateCatalogItem(FItemDataTable ItemActor);
+	virtual void CreateItem(FItemDataTable ItemRow) override;
 
 private:
-
-	/// <summary>
-	/// Item this widget is based on
-	/// </summary>
-	UPROPERTY()
-	FItemDataTable Item;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ItemImage;
@@ -52,4 +45,7 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* BuyButton;
+
+	UFUNCTION()
+	void BuyItem();
 };

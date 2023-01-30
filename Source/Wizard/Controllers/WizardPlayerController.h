@@ -54,6 +54,12 @@ public:
 	/// </summary>
 	/// <param name="Items">Items the store is offering</param>
 	void SetHUDStoreCatalog(TArray<FItemDataTable> Items);
+
+	/// <summary>
+	/// Function to add a new Item
+	/// to the Character's Items list on the HUD
+	/// </summary>
+	void AddHUDCharacterItem(FItemDataTable Item);
 #pragma endregion
 
 #pragma region InputPointers

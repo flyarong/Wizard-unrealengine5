@@ -39,7 +39,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
-	DOREPLIFETIME(UActionComponent, CachedStore);
+	DOREPLIFETIME(UActionComponent, bCanBrowse);
 	DOREPLIFETIME(UActionComponent, CurrentStore);
 }
 
@@ -66,28 +66,42 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 }
 #pragma endregion
 
-void UActionComponent::SetCurrentStore(AStore* Store)
+void UActionComponent::OpenCatalog()
 {
-	CurrentStore = Store;
+	bCanBrowse = true;
 
 	ShowStoreCatalog();
 }
 
-void UActionComponent::OnRep_CurrentStore()
+void UActionComponent::OnRep_CanBrowse()
 {
 	ShowStoreCatalog();
 }
 
 void UActionComponent::ShowStoreCatalog()
 {
-	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
-	if (Controller && CurrentStore) {
-		Controller->SetHUDStoreCatalog(CurrentStore->GetStoreCatalog());
+	if (bCanBrowse) {
+		Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
+		if (Controller && CurrentStore) {
+			Controller->SetHUDStoreCatalog(CurrentStore->GetStoreCatalog());
+		}
 	}
+}
+
+void UActionComponent::CloseCatalog()
+{
+	bCanBrowse = false;
 }
 
 void UActionComponent::LeaveStore()
 {
+	bCanBrowse = false;
 	CurrentStore = nullptr;
-	CachedStore = nullptr;
+}
+
+void UActionComponent::BuyItem(FItemDataTable ItemRow)
+{
+	if (Character) {
+		Character->AddNewItem(ItemRow);
+	}
 }

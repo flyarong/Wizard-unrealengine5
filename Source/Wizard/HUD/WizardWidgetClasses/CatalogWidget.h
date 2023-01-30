@@ -35,4 +35,10 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UHorizontalBox* ItemBox;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* ExitButton;
+
+	UFUNCTION()
+	void CloseCatalog();
 };

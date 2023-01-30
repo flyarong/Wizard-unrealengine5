@@ -74,7 +74,7 @@ void AStore::OnStoreBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
-		Character->GetAction()->SetCachedStore(this);
+		Character->GetAction()->SetCurrentStore(this);
 	}
 }
 
@@ -93,8 +93,8 @@ void AStore::OnStoreClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
-			Character->GetAction()->GetCachedStore() == this) {
-			Character->GetAction()->SetCurrentStore(this);
+			Character->GetAction()->GetCurrentStore() == this) {
+			Character->GetAction()->OpenCatalog();
 		}
 	}
 }

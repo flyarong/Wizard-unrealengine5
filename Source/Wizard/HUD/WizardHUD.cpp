@@ -4,6 +4,7 @@
 #include "WizardHUD.h"
 #include "Wizard/HUD/WizardWidgetClasses/MiniMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/CatalogWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/CharacterItemPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Components/ScaleBox.h"
 
@@ -41,8 +42,15 @@ void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
 	UCatalogWidget* Catalog = CreateWidget<UCatalogWidget>(GetOwningPlayerController(), WizardOverlay->GetCatalogWidgetClass());
 	if (Catalog) {
 		bool bCatalogCreated = Catalog->CreateCatalog(Items);
-		if (bCatalogCreated) {
+		if (bCatalogCreated && WizardOverlay->GetCenterBox()) {
 			WizardOverlay->GetCenterBox()->AddChild(Catalog);
 		}
+	}
+}
+
+void AWizardHUD::AddCharacterItem(FItemDataTable Item)
+{
+	if (WizardOverlay->GetCharacterItemPanel()) {
+		WizardOverlay->GetCharacterItemPanel()->AddCharacterItem(Item);
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Wizard/Items/Item.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "WizardCharacter.generated.h"
 
@@ -72,9 +73,25 @@ private:
 	class UCharacterPOIComponent* POI;
 #pragma endregion
 
+	/// <summary>
+	/// Items of the character
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_Items)
+	TArray<FItemDataTable> Items;
+
+	UFUNCTION()
+	void OnRep_Items();
+
+	/// <summary>
+	/// Function to add the new Item
+	/// to the HUD
+	/// </summary>
+	void AddHUDItem(FItemDataTable Item);
+
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
 	FORCEINLINE UAttributeComponent* GetAttribute() const { return Attribute; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
+	void AddNewItem(FItemDataTable ItemRow);
 };
 

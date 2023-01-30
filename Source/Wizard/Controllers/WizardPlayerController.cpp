@@ -237,4 +237,12 @@ void AWizardPlayerController::SetHUDStoreCatalog(TArray<FItemDataTable> Items)
 		WizardHUD->SetStoreCatalog(Items);
 	}
 }
+
+void AWizardPlayerController::AddHUDCharacterItem(FItemDataTable Item)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardHUD->GetOverlay()) {
+		WizardHUD->AddCharacterItem(Item);
+	}
+}
 #pragma endregion

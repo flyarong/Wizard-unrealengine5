@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Wizard/Items/Item.h"
 #include "ActionComponent.generated.h"
 
 
@@ -19,9 +20,30 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void SetCurrentStore(class AStore* Store);
+	/// <summary>
+	/// Function to open the current store's
+	/// catalog
+	/// </summary>
+	void OpenCatalog();
 
+	/// <summary>
+	/// Function to close the current store's
+	/// catalog
+	/// </summary>
+	void CloseCatalog();
+
+	/// <summary>
+	/// Function to leave the currently visited
+	/// store
+	/// </summary>
 	void LeaveStore();
+
+	/// <summary>
+	/// Function to buy an item from
+	/// the current store's catalog
+	/// </summary>
+	/// <param name="ItemRow">Item to buy</param>
+	void BuyItem(FItemDataTable ItemRow);
 
 protected:
 	// Called when the game starts
@@ -29,6 +51,7 @@ protected:
 
 private:
 
+#pragma region Pointers
 	/// <summary>
 	/// Pointer to the player character
 	/// </summary>
@@ -46,7 +69,9 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AWizardPlayerState* PlayerState;
+#pragma endregion
 
+#pragma region Movement
 	/// <summary>
 	/// District the player is currently at
 	/// </summary>
@@ -61,33 +86,37 @@ private:
 	/// on the HUD
 	/// </summary>
 	void UpdateHUDCurrentDistrict();
+#pragma endregion
 
-	/// <summary>
-	/// Store the player is currently at
-	/// </summary>
-	UPROPERTY(Replicated)
-	AStore* CachedStore;
-
+#pragma region Buying
 	/// <summary>
 	/// Store the player is currently
 	/// browsing
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_CurrentStore)
-	AStore* CurrentStore;
+	UPROPERTY(Replicated)
+	class AStore* CurrentStore;
+
+	/// <summary>
+	/// Whether the player can browse the
+	/// store's catalog or not
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_CanBrowse)
+	bool bCanBrowse = false;
 
 	UFUNCTION()
-	void OnRep_CurrentStore();
+	void OnRep_CanBrowse();
 
 	/// <summary>
 	/// Function to show the currently
 	/// browsed store's catalog
 	/// </summary>
 	void ShowStoreCatalog();
+#pragma endregion
 
 public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
 	FORCEINLINE AStore* GetCurrentStore() const { return CurrentStore; }
-	FORCEINLINE AStore* GetCachedStore() const { return CachedStore; }
-	FORCEINLINE void SetCachedStore(AStore* Store) { if (Store) CachedStore = Store; }
+	FORCEINLINE void SetCurrentStore(AStore* Store) { CurrentStore = Store; };
+
 };

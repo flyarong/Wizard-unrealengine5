@@ -51,6 +51,12 @@ public:
 	/// <param name="Items">Items a store can offer</param>
 	void SetStoreCatalog(TArray<FItemDataTable> Items);
 
+	/// <summary>
+	/// Function to add a new item to the
+	/// Character's Item Panel
+	/// </summary>
+	void AddCharacterItem(FItemDataTable Item);
+
 private:
 	
 	/// <summary>
