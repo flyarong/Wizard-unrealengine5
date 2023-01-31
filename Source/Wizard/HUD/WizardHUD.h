@@ -57,6 +57,12 @@ public:
 	/// </summary>
 	void AddCharacterItem(FItemDataTable Item);
 
+	/// <summary>
+	/// Function to set the new XP value
+	/// on the HUD
+	/// </summary>
+	void SetXP(int32 NewXP);
+
 private:
 	
 	/// <summary>

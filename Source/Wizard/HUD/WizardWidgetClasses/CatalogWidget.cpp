@@ -21,7 +21,7 @@ bool UCatalogWidget::CreateCatalog(TArray<FItemDataTable> Items)
 		if (Items.Num() > 0 && ItemBox && ExitButton && CatalogItemWidgetClass) {
 			ExitButton->OnClicked.AddDynamic(this, &UCatalogWidget::CloseCatalog);
 
-			for (auto & Item : Items) {
+			for (auto& Item : Items) {
 				UCatalogItemWidget* CatalogItem = CreateWidget<UCatalogItemWidget>(PlayerController, CatalogItemWidgetClass);
 				if (CatalogItem) {
 					CatalogItem->CreateItem(Item);
@@ -32,7 +32,6 @@ bool UCatalogWidget::CreateCatalog(TArray<FItemDataTable> Items)
 			return true;
 		}
 	}
-
 
 	return false;
 }

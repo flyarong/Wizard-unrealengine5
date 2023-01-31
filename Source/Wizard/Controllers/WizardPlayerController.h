@@ -60,6 +60,12 @@ public:
 	/// to the Character's Items list on the HUD
 	/// </summary>
 	void AddHUDCharacterItem(FItemDataTable Item);
+
+	/// <summary>
+	/// Function to set the new value of
+	/// XP on the HUD
+	/// </summary>
+	void SetHUDXP(int32 NewXP);
 #pragma endregion
 
 #pragma region InputPointers

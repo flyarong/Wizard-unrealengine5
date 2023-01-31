@@ -21,6 +21,12 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
+	/// Function to set the Store the
+	/// Player is currently at
+	/// </summary>
+	void SetCurrentStore(AStore* Store);
+
+	/// <summary>
 	/// Function to open the current store's
 	/// catalog
 	/// </summary>
@@ -93,8 +99,11 @@ private:
 	/// Store the player is currently
 	/// browsing
 	/// </summary>
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentStore)
 	class AStore* CurrentStore;
+
+	UFUNCTION()
+	void OnRep_CurrentStore(AStore* PreviousStore);
 
 	/// <summary>
 	/// Whether the player can browse the
@@ -117,6 +126,5 @@ public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
 	FORCEINLINE AStore* GetCurrentStore() const { return CurrentStore; }
-	FORCEINLINE void SetCurrentStore(AStore* Store) { CurrentStore = Store; };
 
 };

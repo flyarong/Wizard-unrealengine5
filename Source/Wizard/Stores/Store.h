@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Wizard/Items/Item.h"
+#include "Wizard/WizardTypes/StoreType.h"
 #include "Store.generated.h"
 
 UCLASS()
@@ -17,6 +18,12 @@ public:
 	AStore();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	/// <summary>
+	/// Function to show/hide the Interact Widget
+	/// </summary>
+	/// <param name="bShowInteractWidget">Whether to show or hide the widget</param>
+	void ShowInteractWidget(bool bShowInteractWidget);
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,17 +38,50 @@ private:
 	FString StoreName;
 
 	/// <summary>
+	/// Type of the store
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Store")
+	EStore StoreType;
+
+	/// <summary>
+	/// The array of Items a Store
+	/// is currently offer
+	/// </summary>
+	UPROPERTY()
+	TArray<FItemDataTable> Catalog;
+
+	/// <summary>
+	/// Number of items a Store is
+	/// currently offering
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Store")
+	int32 NumOfCatalogItems = 5;
+
+	/// <summary>
 	/// The array of Items a Store
 	/// can offer
 	/// </summary>
 	UPROPERTY()
-	TArray<FItemDataTable> Catalog;
+	TArray<FItemDataTable> Products;
 
 	/// <summary>
 	/// Function to create the Catalog
 	/// of the Store
 	/// </summary>
 	void CreateCatalog();
+
+	/// <summary>
+	/// Function that gets all the products
+	/// from the Datatables
+	/// </summary>
+	void GetProducts();
+
+	/// <summary>
+	/// Function that gets all the product variations
+	/// based on Store Type
+	/// </summary>
+	/// <returns>Datatables holding the products of the Store</returns>
+	TArray<class UDataTable*> GetProductTables();
 
 #pragma region Components
 	/// <summary>
@@ -70,10 +110,23 @@ private:
 	class UWidgetComponent* OverheadComponent;
 
 	/// <summary>
+	/// Interact widget component
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UWidgetComponent* InteractComponent;
+
+	/// <summary>
 	/// Overhead widget for showing the store's name
 	/// </summary>
 	UPROPERTY()
 	class UOverheadWidget* OverheadWidget;
+
+	/// <summary>
+	/// Interact widget for showing the instruction on how
+	/// to interact with the Store Catalog
+	/// </summary>
+	UPROPERTY()
+	class UOverheadWidget* InteractWidget;
 #pragma endregion
 
 #pragma region Callbacks

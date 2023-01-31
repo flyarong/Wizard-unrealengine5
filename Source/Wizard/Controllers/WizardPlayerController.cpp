@@ -12,7 +12,6 @@
 #include "Wizard/Pawns/GameplayCamera.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/HUD/WizardHUD.h"
-#include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/GameModes/WizardGameMode.h"
 #include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
@@ -67,7 +66,7 @@ void AWizardPlayerController::InitOverlay()
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
-		if (WizardHUD->GetOverlay() && bWizardOverlayInitialized) {
+		if (bWizardOverlayInitialized) {
 			SetHUDCurrentDistrict(EDistrict::ED_None);
 		}
 	}
@@ -209,7 +208,7 @@ void AWizardPlayerController::OnKeyMoveRight(float Value)
 void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetCurrentDistrictText()) {
+	if (WizardHUD) {
 		WizardHUD->SetCurrentDistrict(District);
 	}
 }
@@ -217,7 +216,7 @@ void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
 void AWizardPlayerController::SetHUDEnergy(float Energy, float MaxEnergy)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetEnergyBar()) {
+	if (WizardHUD) {
 		WizardHUD->SetEnergy(Energy, MaxEnergy);
 	}
 }
@@ -225,7 +224,7 @@ void AWizardPlayerController::SetHUDEnergy(float Energy, float MaxEnergy)
 void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (POIOwner && WizardHUD && WizardHUD->GetOverlay() && WizardHUD->GetOverlay()->GetMiniMap()) {
+	if (POIOwner && WizardHUD) {
 		WizardHUD->SetPOIOnMiniMap(POIOwner);
 	}
 }
@@ -233,7 +232,7 @@ void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 void AWizardPlayerController::SetHUDStoreCatalog(TArray<FItemDataTable> Items)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay()) {
+	if (WizardHUD) {
 		WizardHUD->SetStoreCatalog(Items);
 	}
 }
@@ -241,8 +240,16 @@ void AWizardPlayerController::SetHUDStoreCatalog(TArray<FItemDataTable> Items)
 void AWizardPlayerController::AddHUDCharacterItem(FItemDataTable Item)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD && WizardHUD->GetOverlay()) {
+	if (WizardHUD) {
 		WizardHUD->AddCharacterItem(Item);
+	}
+}
+
+void AWizardPlayerController::SetHUDXP(int32 NewXP)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetXP(NewXP);
 	}
 }
 #pragma endregion

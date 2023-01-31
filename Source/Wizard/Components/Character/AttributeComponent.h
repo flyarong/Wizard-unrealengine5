@@ -27,6 +27,13 @@ public:
 	/// <param name="Cost">The number of energy to be lost</param>
 	void SpendEnergy(float Cost);
 
+	/// <summary>
+	/// Function to handle XP expenditure
+	/// </summary>
+	/// <param name="Cost">The number of XP to be spent</param>
+	UFUNCTION(Server, Reliable)
+	void ServerSpendXP(int32 Cost);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -56,6 +63,20 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Power;
+
+#pragma region XP
+	UPROPERTY(ReplicatedUsing = OnRep_XP, EditAnywhere, Category = "Wizard Attributes")
+	int32 XP;
+
+	UFUNCTION()
+	void OnRep_XP();
+
+	/// <summary>
+	/// Function to update the XP
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDXP();
+#pragma endregion
 
 #pragma region Energy
 	UPROPERTY(ReplicatedUsing = OnRep_Energy, VisibleAnywhere, Category = "Wizard Attributes")
@@ -94,5 +115,7 @@ public:
 	FORCEINLINE void SetIntelligence(int32 IntelligenceToSet) { Intelligence = IntelligenceToSet; }
 	FORCEINLINE void SetCombat(int32 CombatToSet) { Combat = CombatToSet; }
 	FORCEINLINE void SetAgility(int32 AgilityToSet) { Agility = AgilityToSet; }
+	/** Whether the player has enough XP to handle the Cost of an action */
+	FORCEINLINE bool HasEnoughXP(int32 Cost) const { return (XP - Cost) >= 0; }
 		
 };

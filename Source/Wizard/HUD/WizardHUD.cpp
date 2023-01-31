@@ -24,33 +24,48 @@ bool AWizardHUD::CreateWizardOverlay()
 
 void AWizardHUD::SetCurrentDistrict(EDistrict District)
 {
-	WizardOverlay->SetCurrentDistrictText(UEnum::GetDisplayValueAsText<EDistrict>(District));
+	if (WizardOverlay && WizardOverlay->GetCurrentDistrictText()) {
+		WizardOverlay->SetCurrentDistrictText(UEnum::GetDisplayValueAsText<EDistrict>(District));
+	}
 }
 
 void AWizardHUD::SetEnergy(float Energy, float MaxEnergy)
 {
-	WizardOverlay->SetEnergyBarPercentage(Energy, MaxEnergy);
+	if (WizardOverlay && WizardOverlay->GetEnergyBar()) {
+		WizardOverlay->SetEnergyBarPercentage(Energy, MaxEnergy);
+	}
 }
 
 void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)
 {
-	WizardOverlay->GetMiniMap()->AddPOI(POIOwner);
+	if (WizardOverlay && WizardOverlay->GetMiniMap()) {
+		WizardOverlay->GetMiniMap()->AddPOI(POIOwner);
+	}
 }
 
 void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
 {
-	UCatalogWidget* Catalog = CreateWidget<UCatalogWidget>(GetOwningPlayerController(), WizardOverlay->GetCatalogWidgetClass());
-	if (Catalog) {
-		bool bCatalogCreated = Catalog->CreateCatalog(Items);
-		if (bCatalogCreated && WizardOverlay->GetCenterBox()) {
-			WizardOverlay->GetCenterBox()->AddChild(Catalog);
+	if (WizardOverlay) {
+		UCatalogWidget* Catalog = CreateWidget<UCatalogWidget>(GetOwningPlayerController(), WizardOverlay->GetCatalogWidgetClass());
+		if (Catalog) {
+			bool bCatalogCreated = Catalog->CreateCatalog(Items);
+			if (bCatalogCreated && WizardOverlay->GetCenterBox()) {
+				WizardOverlay->GetCenterBox()->AddChild(Catalog);
+			}
 		}
 	}
 }
 
 void AWizardHUD::AddCharacterItem(FItemDataTable Item)
 {
-	if (WizardOverlay->GetCharacterItemPanel()) {
+	if (WizardOverlay && WizardOverlay->GetCharacterItemPanel()) {
 		WizardOverlay->GetCharacterItemPanel()->AddCharacterItem(Item);
+	}
+}
+
+void AWizardHUD::SetXP(int32 NewXP)
+{
+	if (WizardOverlay && WizardOverlay->GetXPText()) {
+		WizardOverlay->SetXPText(FText::AsNumber(NewXP));
 	}
 }

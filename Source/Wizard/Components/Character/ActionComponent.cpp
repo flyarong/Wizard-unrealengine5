@@ -66,6 +66,25 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 }
 #pragma endregion
 
+#pragma region Buying
+void UActionComponent::SetCurrentStore(AStore* Store)
+{
+	CurrentStore = Store;
+	if (Character && Character->IsLocallyControlled() && CurrentStore) {
+		CurrentStore->ShowInteractWidget(true);
+	}
+}
+
+void UActionComponent::OnRep_CurrentStore(AStore* PreviousStore)
+{
+	if (Character && Character->IsLocallyControlled() && CurrentStore) {
+		CurrentStore->ShowInteractWidget(true);
+	}
+	else if (PreviousStore) {
+		PreviousStore->ShowInteractWidget(false);
+	}
+}
+
 void UActionComponent::OpenCatalog()
 {
 	bCanBrowse = true;
@@ -95,13 +114,26 @@ void UActionComponent::CloseCatalog()
 
 void UActionComponent::LeaveStore()
 {
+	if (Character && Character->IsLocallyControlled() && CurrentStore) {
+		CurrentStore->ShowInteractWidget(false);
+	}
 	bCanBrowse = false;
 	CurrentStore = nullptr;
 }
 
 void UActionComponent::BuyItem(FItemDataTable ItemRow)
 {
-	if (Character) {
-		Character->AddNewItem(ItemRow);
+	if (Character && Character->GetAttribute()) {
+		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost)) {
+			Character->GetAttribute()->ServerSpendXP(ItemRow.Cost);
+			Character->AddNewItem(ItemRow);
+		}
+		else {
+			// TODO Client RPC to notify
+			if (GEngine) {
+				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("you don't have enough xp")));
+			}
+		}
 	}
 }
+#pragma endregion

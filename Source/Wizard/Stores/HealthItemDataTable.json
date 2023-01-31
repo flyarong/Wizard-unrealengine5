@@ -1,0 +1,47 @@
+[
+	{
+		"Name": "GreavesofLifemending",
+		"ItemName": "Greaves of Lifemending",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_09.Tex_spare_parts_09'",
+		"Cost": 65,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 30
+	},
+	{
+		"Name": "Cerrioshell",
+		"ItemName": "Cerrioshell",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_container_01_b.Tex_container_01_b'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 15
+	},
+	{
+		"Name": "HazelTurmeric",
+		"ItemName": "Hazel Turmeric",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_07_b.Tex_herbs_07_b'",
+		"Cost": 45,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 25
+	},
+	{
+		"Name": "SeaAniseed",
+		"ItemName": "Sea Aniseed",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_11_b.Tex_herbs_11_b'",
+		"Cost": 20,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 10
+	},
+	{
+		"Name": "Kepeoce",
+		"ItemName": "Kepeoce",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_container_08_b.Tex_container_08_b'",
+		"Cost": 35,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 20
+	}
+]

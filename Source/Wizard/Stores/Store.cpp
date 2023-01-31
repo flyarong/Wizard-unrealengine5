@@ -36,6 +36,10 @@ AStore::AStore()
 	OverheadComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadComponent->SetupAttachment(RootComponent);
 	OverheadComponent->SetTwoSided(true);
+
+	// Create Interact widget
+	InteractComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractWidget"));
+	InteractComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +47,7 @@ void AStore::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// Setup Store
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
@@ -52,24 +57,117 @@ void AStore::BeginPlay()
 	}
 	AreaSphere->OnClicked.AddDynamic(this, &AStore::OnStoreClicked);
 
+	if (InteractComponent) InteractComponent->SetVisibility(false);
+
 	POI->SetupPOI(this);
 
 	CreateCatalog();
 }
 
-void AStore::CreateCatalog()
+// Called every frame
+void AStore::Tick(float DeltaTime)
 {
-	const FString ItemSelectorTablePath{ ITEM_DATA_TABLE_PATH };
-	UDataTable* ItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *ItemSelectorTablePath));
+	Super::Tick(DeltaTime);
 
-	if (ItemSelectorTableObject) {
-		for (FName RowName : ItemSelectorTableObject->GetRowNames()) {
-			FItemDataTable* ItemRow = ItemSelectorTableObject->FindRow<FItemDataTable>(RowName, TEXT(""));
-			Catalog.Add(*ItemRow);
+	// Init Overhead widget
+	if (OverheadWidget == nullptr && OverheadComponent) {
+		OverheadWidget = Cast<UOverheadWidget>(OverheadComponent->GetWidget());
+		if (OverheadWidget) {
+			OverheadWidget->SetDisplayText(StoreName);
+		}
+	}
+
+	// Init Interact widget
+	if (InteractWidget == nullptr && InteractComponent) {
+		InteractWidget = Cast<UOverheadWidget>(InteractComponent->GetWidget());
+		if (InteractWidget) {
+			InteractWidget->SetDisplayText(FString::Printf(TEXT("[Left Click] to Interact")));
 		}
 	}
 }
 
+#pragma region Catalog
+void AStore::CreateCatalog()
+{
+	GetProducts();
+	if (Products.Num() > NumOfCatalogItems) {
+		for (int32 i = 0; i < NumOfCatalogItems; i++) {
+			int32 index = FMath::RandRange(0, Products.Num() - 1);
+			Catalog.Add(Products[index]);
+		}
+	}
+}
+
+void AStore::GetProducts()
+{
+	TArray<UDataTable*> Tables = GetProductTables();
+
+	for (auto& Table : Tables) {
+		if (Table) {
+			for (FName RowName : Table->GetRowNames()) {
+				FItemDataTable* ItemRow = Table->FindRow<FItemDataTable>(RowName, TEXT(""));
+				Products.Add(*ItemRow);
+			}
+		}
+	}
+}
+
+TArray<UDataTable*> AStore::GetProductTables()
+{
+	TArray<UDataTable*> TableObjects;
+	const FString HealthItemSelectorTablePath{ HEALTH_ITEM_DATA_TABLE_PATH };
+	UDataTable* HealthItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *HealthItemSelectorTablePath));
+	const FString PowerItemSelectorTablePath{ POWER_ITEM_DATA_TABLE_PATH };
+	UDataTable* PowerItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *PowerItemSelectorTablePath));
+	const FString EnergyItemSelectorTablePath{ ENERGY_ITEM_DATA_TABLE_PATH };
+	UDataTable* EnergyItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *EnergyItemSelectorTablePath));
+	const FString AgilityItemSelectorTablePath{ AGILITY_ITEM_DATA_TABLE_PATH };
+	UDataTable* AgilityItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *AgilityItemSelectorTablePath));
+	const FString CombatItemSelectorTablePath{ COMBAT_ITEM_DATA_TABLE_PATH };
+	UDataTable* CombatItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *CombatItemSelectorTablePath));
+	const FString IntelligenceItemSelectorTablePath{ INTELLIGENCE_ITEM_DATA_TABLE_PATH };
+	UDataTable* IntelligenceItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *IntelligenceItemSelectorTablePath));
+	const FString WisdomItemSelectorTablePath{ WISDOM_ITEM_DATA_TABLE_PATH };
+	UDataTable* WisdomItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *WisdomItemSelectorTablePath));
+
+	switch (StoreType)
+	{
+	case EStore::ES_General:
+		if (HealthItemSelectorTableObject) {
+			TableObjects.Add(HealthItemSelectorTableObject);
+		}
+		if (PowerItemSelectorTableObject) {
+			TableObjects.Add(PowerItemSelectorTableObject);
+		}
+		if (EnergyItemSelectorTableObject) {
+			TableObjects.Add(EnergyItemSelectorTableObject);
+		}
+		break;
+	case EStore::ES_Forge:
+		if (AgilityItemSelectorTableObject) {
+			TableObjects.Add(AgilityItemSelectorTableObject);
+		}
+		if (CombatItemSelectorTableObject) {
+			TableObjects.Add(CombatItemSelectorTableObject);
+		}
+		if (IntelligenceItemSelectorTableObject) {
+			TableObjects.Add(IntelligenceItemSelectorTableObject);
+		}
+		if (WisdomItemSelectorTableObject) {
+			TableObjects.Add(WisdomItemSelectorTableObject);
+		}
+		break;
+	case EStore::EA_MAX:
+		break;
+	default:
+		break;
+	}
+
+	return TableObjects;
+}
+#pragma endregion
+
+#pragma region Events
 void AStore::OnStoreBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
@@ -99,17 +197,10 @@ void AStore::OnStoreClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 	}
 }
 
-// Called every frame
-void AStore::Tick(float DeltaTime)
+void AStore::ShowInteractWidget(bool bShowInteractWidget)
 {
-	Super::Tick(DeltaTime);
-
-	// Init Overhead widget
-	if (OverheadWidget == nullptr && OverheadComponent) {
-		OverheadWidget = Cast<UOverheadWidget>(OverheadComponent->GetWidget());
-		if (OverheadWidget) {
-			OverheadWidget->SetDisplayText(StoreName);
-		}
+	if (InteractComponent) {
+		InteractComponent->SetVisibility(bShowInteractWidget);
 	}
 }
-
+#pragma endregion

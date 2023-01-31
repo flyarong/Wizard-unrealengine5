@@ -32,6 +32,9 @@ private:
 	class UWizardProgressBarWidget* EnergyBar;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* XPText;
+
+	UPROPERTY(meta = (BindWidget))
 	class UMiniMapWidget* MiniMap;
 
 	UPROPERTY(meta = (BindWidget))
@@ -46,6 +49,8 @@ public:
 	FORCEINLINE UWizardProgressBarWidget* GetEnergyBar() const { return EnergyBar; }
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
+	FORCEINLINE void SetXPText(FText XP) { XPText->SetText(XP); };
+	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }

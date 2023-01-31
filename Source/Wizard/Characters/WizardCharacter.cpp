@@ -56,6 +56,7 @@ AWizardCharacter::AWizardCharacter()
 	// Create Magic Staff
 	MagicStaff = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MagicStaff"));
 	MagicStaff->SetupAttachment(GetMesh(), FName("WeaponSocket"));
+	MagicStaff->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
@@ -102,7 +103,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		if (Attribute && GetMesh() && MagicStaff && SelectedCharacter) {
 			GetMesh()->SetSkeletalMesh(SelectedCharacter->CharacterMesh);
 			MagicStaff->SetStaticMesh(SelectedCharacter->MagicStaff);
-
+			
 			Attribute->SetName(SelectedCharacter->CharacterName);
 			Attribute->SetHealth(SelectedCharacter->Health);
 			Attribute->SetPower(SelectedCharacter->Power);

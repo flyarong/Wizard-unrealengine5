@@ -12,8 +12,8 @@ UAttributeComponent::UAttributeComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	Energy = MaxEnergy;
+	XP = 0;
 }
 
 
@@ -21,8 +21,6 @@ UAttributeComponent::UAttributeComponent()
 void UAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	Energy = MaxEnergy;
 	
 }
 
@@ -41,6 +39,7 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UAttributeComponent, Name);
 	DOREPLIFETIME(UAttributeComponent, Health);
 	DOREPLIFETIME(UAttributeComponent, Power);
+	DOREPLIFETIME(UAttributeComponent, XP);
 	DOREPLIFETIME(UAttributeComponent, Energy);
 	DOREPLIFETIME(UAttributeComponent, Wisdom);
 	DOREPLIFETIME(UAttributeComponent, Intelligence);
@@ -48,9 +47,10 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UAttributeComponent, Agility);
 }
 
+#pragma region Energy
 void UAttributeComponent::SpendEnergy(float Cost)
 {
-	if (Character->HasAuthority()) {
+	if (Character && Character->HasAuthority()) {
 		Energy = FMath::Clamp(Energy - Cost, 0.f, MaxEnergy);
 		UpdateHUDEnergy();
 	}
@@ -67,5 +67,28 @@ void UAttributeComponent::UpdateHUDEnergy()
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDEnergy(Energy, MaxEnergy);
+	}
+}
+#pragma endregion
+
+void UAttributeComponent::ServerSpendXP_Implementation(int32 Cost)
+{
+	if (Character && Character->HasAuthority()) {
+		XP = FMath::Clamp(XP - Cost, 0.f, XP);
+		UpdateHUDXP();
+	}
+}
+
+void UAttributeComponent::OnRep_XP()
+{
+	UpdateHUDXP();
+}
+
+void UAttributeComponent::UpdateHUDXP()
+{
+	Controller = (Controller == nullptr) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDXP(XP);
 	}
 }
