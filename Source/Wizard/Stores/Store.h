@@ -25,6 +25,24 @@ public:
 	/// <param name="bShowInteractWidget">Whether to show or hide the widget</param>
 	void ShowInteractWidget(bool bShowInteractWidget);
 
+	/// <summary>
+	/// Function to get the store's catalog
+	/// </summary>
+	/// <returns>Catalog array holding all the Item structs the Store is offering</returns>
+	TArray<FItemDataTable> GetStoreCatalog();
+
+	/// <summary>
+	/// Function to add a new random
+	/// Item to the catalog
+	/// </summary>
+	void AddItemToCatalog();
+
+	/// <summary>
+	/// Function to remove an Item from the catalog
+	/// </summary>
+	/// <param name="Item">Item to remove</param>
+	void RemoveItemFromCatalog(FItemDataTable Item);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -48,7 +66,7 @@ private:
 	/// is currently offer
 	/// </summary>
 	UPROPERTY()
-	TArray<FItemDataTable> Catalog;
+	TArray<FString> CatalogItems;
 
 	/// <summary>
 	/// Number of items a Store is
@@ -62,7 +80,13 @@ private:
 	/// can offer
 	/// </summary>
 	UPROPERTY()
-	TArray<FItemDataTable> Products;
+	TMap<FString, FItemDataTable> Products;
+
+	/// <summary>
+	/// Array containing all the store's product names
+	/// </summary>
+	UPROPERTY()
+	TArray<FString> ProductKeys;
 
 	/// <summary>
 	/// Function to create the Catalog
@@ -155,6 +179,4 @@ private:
 	);
 #pragma endregion	
 
-public:
-	FORCEINLINE TArray<FItemDataTable> GetStoreCatalog() const { return Catalog; }
 };

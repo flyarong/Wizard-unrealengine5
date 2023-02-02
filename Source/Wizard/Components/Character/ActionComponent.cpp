@@ -124,7 +124,9 @@ void UActionComponent::LeaveStore()
 void UActionComponent::BuyItem(FItemDataTable ItemRow)
 {
 	if (Character && Character->GetAttribute()) {
-		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost)) {
+		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && CurrentStore) {
+			CurrentStore->RemoveItemFromCatalog(ItemRow);
+			CurrentStore->AddItemToCatalog();
 			Character->GetAttribute()->ServerSpendXP(ItemRow.Cost);
 			Character->AddNewItem(ItemRow);
 		}

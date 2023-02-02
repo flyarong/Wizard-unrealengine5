@@ -46,6 +46,10 @@ void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)
 void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
 {
 	if (WizardOverlay) {
+		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetCenterBox()->ClearChildren();
+		}
+
 		UCatalogWidget* Catalog = CreateWidget<UCatalogWidget>(GetOwningPlayerController(), WizardOverlay->GetCatalogWidgetClass());
 		if (Catalog) {
 			bool bCatalogCreated = Catalog->CreateCatalog(Items);

@@ -89,13 +89,37 @@ void AStore::Tick(float DeltaTime)
 #pragma region Catalog
 void AStore::CreateCatalog()
 {
-	GetProducts();
+	if (Products.Num() == 0) {
+		GetProducts();
+	}
+
 	if (Products.Num() > NumOfCatalogItems) {
 		for (int32 i = 0; i < NumOfCatalogItems; i++) {
-			int32 index = FMath::RandRange(0, Products.Num() - 1);
-			Catalog.Add(Products[index]);
+			AddItemToCatalog();
 		}
 	}
+}
+
+void AStore::AddItemToCatalog()
+{
+	int32 index = FMath::RandRange(0, Products.Num() - 1);
+	CatalogItems.Add(ProductKeys[index]);
+}
+
+TArray<FItemDataTable> AStore::GetStoreCatalog()
+{
+	TArray<FItemDataTable> Catalog;
+
+	for (auto& ItemName : CatalogItems) {
+		Catalog.Add(Products[ItemName]);
+	}
+
+	return Catalog;
+}
+
+void AStore::RemoveItemFromCatalog(FItemDataTable Item)
+{
+	if (CatalogItems.Contains(Item.ItemName)) CatalogItems.Remove(Item.ItemName);
 }
 
 void AStore::GetProducts()
@@ -106,7 +130,8 @@ void AStore::GetProducts()
 		if (Table) {
 			for (FName RowName : Table->GetRowNames()) {
 				FItemDataTable* ItemRow = Table->FindRow<FItemDataTable>(RowName, TEXT(""));
-				Products.Add(*ItemRow);
+				ProductKeys.Add(*ItemRow->ItemName);
+				Products.Add(*ItemRow->ItemName, *ItemRow);
 			}
 		}
 	}
