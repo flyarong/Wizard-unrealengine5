@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardProgressBarWidget.h"
 #include "Components/TextBlock.h"
+#include "Components/Image.h"
 #include "WizardOverlay.generated.h"
 
 /**
@@ -46,6 +47,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurrentDistrictText;
 
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* DistrictPanelFadeIn;
+
 	UPROPERTY(meta = (BindWidget))
 	class UWizardProgressBarWidget* EnergyBar;
 
@@ -63,12 +67,25 @@ private:
 
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
+	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
+	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
 	FORCEINLINE void SetEnergyBarPercentage(float Energy, float MaxEnergy) { EnergyBar->SetWizardBarPercent(Energy, MaxEnergy); };
 	FORCEINLINE UWizardProgressBarWidget* GetEnergyBar() const { return EnergyBar; }
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
+	FORCEINLINE void PlayDistrictPanelFadeIn() { PlayAnimation(DistrictPanelFadeIn); }
 	FORCEINLINE void SetXPText(FText XP) { XPText->SetText(XP); };
 	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
+	FORCEINLINE void SetCharacterNameText(FText Name) { CharacterNameText->SetText(Name); };
+	FORCEINLINE UTextBlock* GetCharacterNameText() const { return CharacterNameText; }
+	FORCEINLINE void SetCombatText(FText Combat) { CombatText->SetText(Combat); };
+	FORCEINLINE UTextBlock* GetCombatText() const { return CombatText; }
+	FORCEINLINE void SetWisdomText(FText Wisdom) { WisdomText->SetText(Wisdom); };
+	FORCEINLINE UTextBlock* GetWisdomText() const { return WisdomText; }
+	FORCEINLINE void SetIntelligenceText(FText Intelligence) { IntelligenceText->SetText(Intelligence); };
+	FORCEINLINE UTextBlock* GetIntelligenceText() const { return IntelligenceText; }
+	FORCEINLINE void SetAgilityText(FText Agility) { AgilityText->SetText(Agility); };
+	FORCEINLINE UTextBlock* GetAgilityText() const { return AgilityText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }

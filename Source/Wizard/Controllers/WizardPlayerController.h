@@ -28,7 +28,7 @@ public:
 	/// </summary>
 	void InitOverlay();
 
-#pragma region HUD
+#pragma region HUD/Player
 	/// <summary>
 	/// Function for setting the current district
 	/// in the HUD
@@ -42,12 +42,49 @@ public:
 	void SetHUDEnergy(float Energy, float MaxEnergy);
 
 	/// <summary>
-	/// Set Point Of Interest on MiniMap
-	/// in the HUD
+	/// Function to set the Character's image
+	/// on the HUD
 	/// </summary>
-	/// <param name="POIOwner">The owner of the Point Of Interest</param>
-	void SetHUDPOIOnMiniMap(class AActor* POIOwner);
+	void SetHUDCharacterImage(UTexture2D* CharacterImage);
 
+	/// <summary>
+	/// Function to set the Character's name
+	/// on the HUD
+	/// </summary>
+	void SetHUDCharacterName(FString CharacterName);
+
+	/// <summary>
+	/// Function to set the new value of
+	/// XP on the HUD
+	/// </summary>
+	void SetHUDXP(int32 NewXP);
+
+	/// <summary>
+	/// Function to set the new Combat value
+	/// on the HUD
+	/// </summary>
+	void SetHUDCombat(int32 NewCombat);
+
+	/// <summary>
+	/// Function to set the new Wisdom value
+	/// on the HUD
+	/// </summary>
+	void SetHUDWisdom(int32 NewWisdom);
+
+	/// <summary>
+	/// Function to set the new Intelligence value
+	/// on the HUD
+	/// </summary>
+	void SetHUDIntelligence(int32 NewIntelligence);
+
+	/// <summary>
+	/// Function to set the new Agility value
+	/// on the HUD
+	/// </summary>
+	void SetHUDAgility(int32 NewAgility);
+#pragma endregion
+
+#pragma region HUD/Store/Catalog
 	/// <summary>
 	/// Function to set the store's catalog
 	/// on the player's HUD
@@ -60,12 +97,15 @@ public:
 	/// to the Character's Items list on the HUD
 	/// </summary>
 	void AddHUDCharacterItem(FItemDataTable Item);
+#pragma endregion
 
+#pragma region HUD/MiniMap
 	/// <summary>
-	/// Function to set the new value of
-	/// XP on the HUD
+	/// Set Point Of Interest on MiniMap
+	/// in the HUD
 	/// </summary>
-	void SetHUDXP(int32 NewXP);
+	/// <param name="POIOwner">The owner of the Point Of Interest</param>
+	void SetHUDPOIOnMiniMap(class AActor* POIOwner);
 #pragma endregion
 
 #pragma region InputPointers

@@ -35,6 +35,7 @@ void ALobbyHUD::CreateCharacterButtons() {
 				// Setup the button
 				CharacterButton->SetDataTableRowIndex(Index);
 				CharacterButton->SetDataTableRowName(RowName);
+				CharacterButton->SetCharacterSelectImage(Row->MiniMapIcon);
 				CharacterButton->SetCharacterNameText(Row->CharacterName);
 				CharacterButton->SetCharacterStruct(*Row);
 

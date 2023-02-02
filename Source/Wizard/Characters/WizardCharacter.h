@@ -91,6 +91,7 @@ private:
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
 	FORCEINLINE UAttributeComponent* GetAttribute() const { return Attribute; }
+	FORCEINLINE UCharacterPOIComponent* GetPOI() const { return POI; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
 	void AddNewItem(FItemDataTable ItemRow);
 };

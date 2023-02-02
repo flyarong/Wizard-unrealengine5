@@ -66,7 +66,7 @@ private:
 
 #pragma region XP
 	UPROPERTY(ReplicatedUsing = OnRep_XP, EditAnywhere, Category = "Wizard Attributes")
-	int32 XP;
+	int32 XP = 20;
 
 	UFUNCTION()
 	void OnRep_XP();
@@ -109,12 +109,22 @@ private:
 
 public:	
 	FORCEINLINE void SetName(FString NameToSet) { Name = NameToSet; }
+	FORCEINLINE FString GetName() const { return Name; }
 	FORCEINLINE void SetHealth(int32 HealthToSet) { Health = HealthToSet; }
+	FORCEINLINE int32 GetHealth() const { return Health; }
 	FORCEINLINE void SetPower(int32 PowerToSet) { Power = PowerToSet; }
+	FORCEINLINE int32 GetPower() const { return Power; }
 	FORCEINLINE void SetWisdom(int32 WisdomToSet) { Wisdom = WisdomToSet; }
+	FORCEINLINE int32 GetWisdom() const { return Wisdom; }
 	FORCEINLINE void SetIntelligence(int32 IntelligenceToSet) { Intelligence = IntelligenceToSet; }
+	FORCEINLINE int32 GetIntelligence() const { return Intelligence; }
 	FORCEINLINE void SetCombat(int32 CombatToSet) { Combat = CombatToSet; }
+	FORCEINLINE int32 GetCombat() const { return Combat; }
 	FORCEINLINE void SetAgility(int32 AgilityToSet) { Agility = AgilityToSet; }
+	FORCEINLINE int32 GetAgility() const { return Agility; }
+	FORCEINLINE float GetEnergy() const { return Energy; }
+	FORCEINLINE float GetMaxEnergy() const { return MaxEnergy; }
+	FORCEINLINE int32 GetXP() const { return XP; }
 	/** Whether the player has enough XP to handle the Cost of an action */
 	FORCEINLINE bool HasEnoughXP(int32 Cost) const { return (XP - Cost) >= 0; }
 		

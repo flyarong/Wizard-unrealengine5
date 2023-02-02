@@ -49,6 +49,12 @@ private:
 	class UVerticalBox* CharacterSelectBox;
 
 	/// <summary>
+	/// The character's image
+	/// </summary>
+	UPROPERTY(meta = (BindWidget))
+	class UImage* CharacterSelectImage;
+
+	/// <summary>
 	/// The character's button
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
@@ -85,6 +91,7 @@ public:
 	FORCEINLINE FName GetDataTableRowName() const { return RowName; }
 	FORCEINLINE void SetDataTableRowName(FName Name) { RowName = Name; };
 	FORCEINLINE void SetCharacterNameText(FString CharacterName) { CharacterNameText->SetText(FText::FromString(*CharacterName)); };
+	FORCEINLINE void SetCharacterSelectImage(UTexture2D* CharacterIcon) { CharacterSelectImage->SetBrushFromTexture(CharacterIcon); };
 	FORCEINLINE FCharacterDataTable GetCharacterStruct() { return CharacterStruct; }
 	FORCEINLINE void SetCharacterStruct(FCharacterDataTable Character) { CharacterStruct = Character; }
 };

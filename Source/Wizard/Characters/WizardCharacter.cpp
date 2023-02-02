@@ -128,8 +128,10 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController) {
 		PlayerController->SetWizardCharacter(this);
+		// Init WizardOverlay
 		PlayerController->InitOverlay();
-		PlayerController->SetHUDEnergy(Attribute->Energy, Attribute->MaxEnergy);
+
+		// Setup Point of Interest on Minimap
 		POI->SetupPOI(this);
 
 		FInputModeGameAndUI InputModeData;

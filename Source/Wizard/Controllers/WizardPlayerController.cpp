@@ -9,6 +9,7 @@
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
+#include "Wizard/Components/MiniMap/CharacterPOIComponent.h"
 #include "Wizard/Pawns/GameplayCamera.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/HUD/WizardHUD.h"
@@ -66,8 +67,16 @@ void AWizardPlayerController::InitOverlay()
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
-		if (bWizardOverlayInitialized) {
+		if (bWizardOverlayInitialized && WizardCharacter && WizardCharacter->GetAttribute()) {
 			SetHUDCurrentDistrict(EDistrict::ED_None);
+			SetHUDEnergy(WizardCharacter->GetAttribute()->GetEnergy(), WizardCharacter->GetAttribute()->GetMaxEnergy());
+			SetHUDXP(WizardCharacter->GetAttribute()->GetXP());
+			SetHUDCharacterImage(WizardCharacter->GetPOI()->GetIconImage());
+			SetHUDCharacterName(WizardCharacter->GetAttribute()->GetName());
+			SetHUDCombat(WizardCharacter->GetAttribute()->GetCombat());
+			SetHUDWisdom(WizardCharacter->GetAttribute()->GetWisdom());
+			SetHUDIntelligence(WizardCharacter->GetAttribute()->GetIntelligence());
+			SetHUDAgility(WizardCharacter->GetAttribute()->GetAgility());
 		}
 	}
 }
@@ -204,11 +213,27 @@ void AWizardPlayerController::OnKeyMoveRight(float Value)
 }
 #pragma endregion
 
-#pragma region HUD
-void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
+#pragma region HUD/Player
+void AWizardPlayerController::SetHUDCharacterImage(UTexture2D* CharacterImage)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
+		WizardHUD->SetCharacterImage(CharacterImage);
+	}
+}
+
+void AWizardPlayerController::SetHUDCharacterName(FString CharacterName)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetCharacterName(CharacterName);
+	}
+}
+
+void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && District != EDistrict::ED_None) {
 		WizardHUD->SetCurrentDistrict(District);
 	}
 }
@@ -221,14 +246,49 @@ void AWizardPlayerController::SetHUDEnergy(float Energy, float MaxEnergy)
 	}
 }
 
-void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
+void AWizardPlayerController::SetHUDXP(int32 NewXP)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (POIOwner && WizardHUD) {
-		WizardHUD->SetPOIOnMiniMap(POIOwner);
+	if (WizardHUD) {
+		WizardHUD->SetXP(NewXP);
 	}
 }
 
+void AWizardPlayerController::SetHUDCombat(int32 NewCombat)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetCombat(NewCombat);
+	}
+}
+
+void AWizardPlayerController::SetHUDWisdom(int32 NewWisdom)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetWisdom(NewWisdom);
+	}
+}
+
+void AWizardPlayerController::SetHUDIntelligence(int32 NewIntelligence)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetIntelligence(NewIntelligence);
+	}
+}
+
+void AWizardPlayerController::SetHUDAgility(int32 NewAgility)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetAgility(NewAgility);
+	}
+}
+
+#pragma endregion
+
+#pragma region HUD/Store/Catalog
 void AWizardPlayerController::SetHUDStoreCatalog(TArray<FItemDataTable> Items)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
@@ -244,12 +304,14 @@ void AWizardPlayerController::AddHUDCharacterItem(FItemDataTable Item)
 		WizardHUD->AddCharacterItem(Item);
 	}
 }
+#pragma endregion
 
-void AWizardPlayerController::SetHUDXP(int32 NewXP)
+#pragma region HUD/MiniMap
+void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
-	if (WizardHUD) {
-		WizardHUD->SetXP(NewXP);
+	if (POIOwner && WizardHUD) {
+		WizardHUD->SetPOIOnMiniMap(POIOwner);
 	}
 }
 #pragma endregion
