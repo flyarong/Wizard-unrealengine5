@@ -107,6 +107,12 @@ public:
 	void RemoveCharacterSelector();
 
 	/// <summary>
+	/// Function to set the selector's
+	/// text in Ready state
+	/// </summary>
+	void SetReadyText();
+
+	/// <summary>
 	/// Function spawning the Ready button
 	/// onto the menu
 	/// </summary>

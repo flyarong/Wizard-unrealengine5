@@ -115,6 +115,7 @@ void ALobbyController::OnReadyButtonClicked() {
 	if (LobbyHUD && LobbyGameState) {
 		if (bReady) {
 			LobbyHUD->RemoveCharacterSelector();
+			LobbyHUD->SetReadyText();
 		}
 		else {
 			LobbyHUD->SpawnCharacterSelector(LobbyGameState->SelectionStatus);

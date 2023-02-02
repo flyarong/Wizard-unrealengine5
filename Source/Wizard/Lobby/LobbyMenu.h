@@ -24,34 +24,42 @@ private:
 	class UTextBlock* CharacterSelectorTitleText;
 
 	/// <summary>
-	/// Character selector horizontal box
+	/// Character selector grid panel
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
-	class UHorizontalBox* CharacterSelector;
+	class UUniformGridPanel* CharacterSelectorPanel;
 
 	/// <summary>
-	/// Vertical box to list the connected players
+	/// Grid panel to list the connected players
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
-	class UVerticalBox* ConnectedPlayersBox;
+	UUniformGridPanel* ConnectedPlayersPanel;
 
 	/// <summary>
-	/// Horizontal box for placing the Ready button in
+	/// Vertical box for placing the Ready button in
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
-	UVerticalBox* ReadyParent;
+	class UVerticalBox* ReadyParent;
 
 	/// <summary>
-	/// Horizontal box for placing the server's
+	/// Vertical box for placing the server's
 	/// Start Game button in
 	/// </summary>
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* StartGameParent;
 
+	/// <summary>
+	/// Vertical box containing the Character
+	/// Selector Panel
+	/// </summary>
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* CharacterSelectorBaseBox;
+
 public:
 	FORCEINLINE UTextBlock* GetCharacterSelectorTitleText() const { return CharacterSelectorTitleText; }
-	FORCEINLINE UHorizontalBox* GetCharacterSelector() const { return CharacterSelector; }
-	FORCEINLINE UVerticalBox* GetConnectedPlayersBox() const { return ConnectedPlayersBox; }
+	FORCEINLINE UUniformGridPanel* GetCharacterSelectorPanel() const { return CharacterSelectorPanel; }
+	FORCEINLINE UUniformGridPanel* GetConnectedPlayersPanel() const { return ConnectedPlayersPanel; }
 	FORCEINLINE UVerticalBox* GetReadyParent() const { return ReadyParent; }
 	FORCEINLINE UVerticalBox* GetStartGameParent() const { return StartGameParent; }
+	FORCEINLINE UVerticalBox* GetCharacterSelectorBaseBox() const { return CharacterSelectorBaseBox; }
 };

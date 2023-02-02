@@ -3,8 +3,8 @@
 
 #include "LobbyHUD.h"
 #include "Wizard/Wizard.h"
-#include "Components/HorizontalBox.h"
 #include "Components/VerticalBox.h"
+#include "Components/UniformGridPanel.h"
 #include "Wizard/Lobby/CharacterButton.h"
 #include "Wizard/Lobby/LobbyMenu.h"
 #include "Wizard/Lobby/ServerStartButton.h"
@@ -83,17 +83,15 @@ void ALobbyHUD::SpawnCharacterSelector(TArray<bool> SelectionStatus)
 {
 	bool bSelectorValid = CharacterButtons.Num() > 0 &&
 		LobbyMenu &&
-		LobbyMenu->GetCharacterSelector() &&
+		LobbyMenu->GetCharacterSelectorPanel() &&
 		LobbyMenu->GetCharacterSelectorTitleText();
 	if (bSelectorValid) {
-		if (LobbyMenu->GetCharacterSelectorTitleText()->GetVisibility() == ESlateVisibility::Hidden) {
-			LobbyMenu->GetCharacterSelectorTitleText()->SetVisibility(ESlateVisibility::Visible);
-		}
+		LobbyMenu->GetCharacterSelectorTitleText()->SetText(FText::FromString(TEXT("Choose your character:")));
 
 		for (int32 i = 0; i < CharacterButtons.Num(); i++) {
 			if (CharacterButtons[i]) {
 				if (SelectionStatus.Num() > 0) CharacterButtons[i]->SetIsEnabled(SelectionStatus[i]);
-				LobbyMenu->GetCharacterSelector()->AddChildToHorizontalBox(CharacterButtons[i]);
+				LobbyMenu->GetCharacterSelectorPanel()->AddChildToUniformGrid(CharacterButtons[i], 0, i);
 			}
 		}
 	}
@@ -102,18 +100,23 @@ void ALobbyHUD::SpawnCharacterSelector(TArray<bool> SelectionStatus)
 void ALobbyHUD::RemoveCharacterSelector()
 {
 	bool bSelectorValid = LobbyMenu &&
-		LobbyMenu->GetCharacterSelector() &&
-		LobbyMenu->GetCharacterSelectorTitleText() &&
-		LobbyMenu->GetCharacterSelector()->HasAnyChildren();
+		LobbyMenu->GetCharacterSelectorPanel() &&
+		LobbyMenu->GetCharacterSelectorPanel()->HasAnyChildren();
 	if (bSelectorValid) {
-		LobbyMenu->GetCharacterSelectorTitleText()->SetVisibility(ESlateVisibility::Hidden);
-		LobbyMenu->GetCharacterSelector()->ClearChildren();
+		LobbyMenu->GetCharacterSelectorPanel()->ClearChildren();
+	}
+}
+
+void ALobbyHUD::SetReadyText()
+{
+	if (LobbyMenu && LobbyMenu->GetCharacterSelectorTitleText()) {
+		LobbyMenu->GetCharacterSelectorTitleText()->SetText(FText::FromString(TEXT("Waiting for the other players...")));
 	}
 }
 
 void ALobbyHUD::SpawnPlayerList(TArray<FString> BusyPlayers)
 {
-	if (LobbyMenu && LobbyMenu->GetConnectedPlayersBox()) {
+	if (LobbyMenu && LobbyMenu->GetConnectedPlayersPanel()) {
 
 		// Player is not ready
 		for (auto PlayerName : BusyPlayers) {
@@ -145,11 +148,13 @@ void ALobbyHUD::SpawnPlayerList(TArray<FString> BusyPlayers)
 		}
 
 		// (Re)Spawn Player List
-		if (LobbyMenu->GetConnectedPlayersBox()->HasAnyChildren()) {
-			LobbyMenu->GetConnectedPlayersBox()->ClearChildren();
+		if (LobbyMenu->GetConnectedPlayersPanel()->HasAnyChildren()) {
+			LobbyMenu->GetConnectedPlayersPanel()->ClearChildren();
 		}
+		int32 Row = 0;
 		for (auto Element : Players) {
-			LobbyMenu->GetConnectedPlayersBox()->AddChildToVerticalBox(Element);
+			LobbyMenu->GetConnectedPlayersPanel()->AddChildToUniformGrid(Element, Row, 0);
+			Row++;
 		}
 	}
 }

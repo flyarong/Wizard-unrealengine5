@@ -26,7 +26,25 @@ private:
 	TSubclassOf<class UUserWidget> CatalogWidgetClass;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* CurrentDistrictText;
+	class UTextBlock* CharacterNameText;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* ProfileImage;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CombatText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WisdomText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* IntelligenceText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* AgilityText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CurrentDistrictText;
 
 	UPROPERTY(meta = (BindWidget))
 	class UWizardProgressBarWidget* EnergyBar;
