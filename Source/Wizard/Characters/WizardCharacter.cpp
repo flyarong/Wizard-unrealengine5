@@ -143,11 +143,13 @@ void AWizardCharacter::AddNewItem(FItemDataTable ItemRow)
 	Items.Add(ItemRow);
 
 	AddHUDItem(ItemRow);
+	Action->ShowStoreCatalog();
 }
 
 void AWizardCharacter::OnRep_Items()
 {
 	AddHUDItem(Items.Last());
+	Action->ShowStoreCatalog();
 }
 
 void AWizardCharacter::AddHUDItem(FItemDataTable Item)

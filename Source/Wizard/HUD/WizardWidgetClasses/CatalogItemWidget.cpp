@@ -23,8 +23,10 @@ void UCatalogItemWidget::CreateItem(FItemDataTable ItemRow)
 
 void UCatalogItemWidget::BuyItem()
 {
+	BuyButton->SetIsEnabled(false);
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter && WCharacter->GetAction()) {
 		WCharacter->GetAction()->BuyItem(Item);
 	}
+	BuyButton->SetIsEnabled(true);
 }

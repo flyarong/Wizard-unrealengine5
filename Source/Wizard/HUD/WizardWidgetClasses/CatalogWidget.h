@@ -34,7 +34,7 @@ private:
 	TSubclassOf<class UUserWidget> CatalogItemWidgetClass;
 
 	UPROPERTY(meta = (BindWidget))
-	class UHorizontalBox* ItemBox;
+	class UUniformGridPanel* ItemPanel;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ExitButton;
