@@ -51,8 +51,8 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 void UAttributeComponent::SpendEnergy(float Cost)
 {
 	if (Character && Character->HasAuthority()) {
-		int32 Divider = Agility == 0 ? 1 : Agility;
-		Energy = (FMath::Clamp(Energy - Cost, 0.f, MaxEnergy)) / Divider;
+		int32 Subtrahend = Agility == 0 ? Cost : Cost / Agility;
+		Energy = (FMath::Clamp(Energy - Subtrahend, 0.f, MaxEnergy));
 		UpdateHUDEnergy();
 	}
 }
