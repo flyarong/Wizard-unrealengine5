@@ -3,6 +3,7 @@
 
 #include "Menu.h"
 #include "Components/Button.h"
+#include "Sound/SoundCue.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
@@ -165,6 +166,10 @@ void UMenu::OnStartSession(bool bWasSuccessful)
 
 void UMenu::HostButtonClicked()
 {
+	if (SessionClickSound) {
+		PlaySound(SessionClickSound);
+	}
+
 	// as soon as we clicked this button (and join game button) we want to disable them so we don't call join session or create session
 	HostButton->SetIsEnabled(false);
 	if (MultiplayerSessionsSubsystem) {
@@ -174,6 +179,10 @@ void UMenu::HostButtonClicked()
 
 void UMenu::JoinButtonClicked()
 {
+	if (SessionClickSound) {
+		PlaySound(SessionClickSound);
+	}
+
 	JoinButton->SetIsEnabled(false);
 	if (MultiplayerSessionsSubsystem) {
 		MultiplayerSessionsSubsystem->FindSessions(10000); // since we are using the steam dev id 480, there must a lot of sessions, so we give this a high number

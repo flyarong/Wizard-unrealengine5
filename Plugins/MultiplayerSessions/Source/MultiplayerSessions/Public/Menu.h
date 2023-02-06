@@ -42,6 +42,11 @@ protected:
 	UFUNCTION()
 	void OnStartSession(bool bWasSuccessful);
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class USoundCue* SelectSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	USoundCue* SessionClickSound;
 
 private:
 	UPROPERTY(meta = (BindWidget))

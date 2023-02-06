@@ -20,7 +20,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void MenuSetup();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	class USoundCue* ClickSound;
+
 private:
+
 	/// <summary>
 	/// Fade in animation to play at startup
 	/// </summary>
