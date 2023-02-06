@@ -28,11 +28,16 @@ public:
 	void SpendEnergy(float Cost);
 
 	/// <summary>
+	/// Function to add more Energy
+	/// </summary>
+	/// <param name="AmountToAdd">Amount of Energy to add</param>
+	void AddEnergy(int32 AmountToAdd);
+
+	/// <summary>
 	/// Function to handle XP expenditure
 	/// </summary>
 	/// <param name="Cost">The number of XP to be spent</param>
-	UFUNCTION(Server, Reliable)
-	void ServerSpendXP(int32 Cost);
+	void SpendXP(int32 Cost);
 
 protected:
 	// Called when the game starts

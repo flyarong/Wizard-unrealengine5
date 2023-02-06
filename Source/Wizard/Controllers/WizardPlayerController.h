@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Templates/SubclassOf.h"
-#include "Wizard/Items/Item.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
@@ -89,14 +88,14 @@ public:
 	/// Function to set the store's catalog
 	/// on the player's HUD
 	/// </summary>
-	/// <param name="Items">Items the store is offering</param>
-	void SetHUDStoreCatalog(TArray<FItemDataTable> Items);
+	/// <param name="Store">The store</param>
+	void SetHUDStoreCatalog(class AStore* Store);
 
 	/// <summary>
 	/// Function to add a new Item
 	/// to the Character's Items list on the HUD
 	/// </summary>
-	void AddHUDCharacterItem(FItemDataTable Item);
+	void AddHUDCharacterItem(int32 ItemIndex);
 #pragma endregion
 
 #pragma region HUD/MiniMap

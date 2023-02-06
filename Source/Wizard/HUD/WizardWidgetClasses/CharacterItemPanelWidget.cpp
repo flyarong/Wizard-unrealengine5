@@ -4,13 +4,16 @@
 #include "CharacterItemPanelWidget.h"
 #include "Components/HorizontalBox.h"
 #include "CharacterItemWidget.h"
+#include "Wizard/Characters/WizardCharacter.h"
 
-void UCharacterItemPanelWidget::AddCharacterItem(FItemDataTable Item)
+void UCharacterItemPanelWidget::AddCharacterItem(int32 ItemIndex)
 {
-	if (CharacterItemBox && CharacterItemWidgetClass) {
+	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
+	if (CharacterItemBox && CharacterItemWidgetClass && WCharacter) {
+		FItemDataTable Item = WCharacter->GetLatestItem();
 		UCharacterItemWidget* CharacterItem = CreateWidget<UCharacterItemWidget>(GetOwningPlayer(), CharacterItemWidgetClass);
 		if (CharacterItem) {
-			CharacterItem->CreateItem(Item);
+			CharacterItem->CreateItem(WCharacter, ItemIndex, Item);
 			CharacterItemBox->AddChildToHorizontalBox(CharacterItem);
 		}
 	}

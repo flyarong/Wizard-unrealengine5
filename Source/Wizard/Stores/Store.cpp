@@ -4,6 +4,7 @@
 #include "Store.h"
 #include "Wizard/Wizard.h"
 #include "Engine/DataTable.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
 #include "Wizard/Characters/WizardCharacter.h"
@@ -17,6 +18,7 @@ AStore::AStore()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = true;
 
 	// Creating the Point Of Interest Component
 	POI = CreateDefaultSubobject<UPointOfInterestComponent>(TEXT("PointOfInterest"));
@@ -61,7 +63,9 @@ void AStore::BeginPlay()
 
 	POI->SetupPOI(this);
 
-	CreateCatalog();
+	if (HasAuthority()) {
+		CreateCatalog();
+	}
 }
 
 // Called every frame
@@ -86,6 +90,14 @@ void AStore::Tick(float DeltaTime)
 	}
 }
 
+void AStore::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AStore, CatalogIndexes);
+	DOREPLIFETIME(AStore, Products);
+}
+
 #pragma region Catalog
 void AStore::CreateCatalog()
 {
@@ -102,24 +114,32 @@ void AStore::CreateCatalog()
 
 void AStore::AddItemToCatalog()
 {
-	int32 index = FMath::RandRange(0, Products.Num() - 1);
-	CatalogItems.Add(ProductKeys[index]);
+	int32 Index = FMath::RandRange(0, Products.Num() - 1);
+	while (CatalogIndexes.Contains(Index)) {
+		Index = FMath::RandRange(0, Products.Num() - 1);
+	}
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%d"), Index));
+	}
+	CatalogIndexes.Add(Index);
 }
 
-TArray<FItemDataTable> AStore::GetStoreCatalog()
+void AStore::RemoveItemFromCatalog(int32 ItemIndex)
 {
-	TArray<FItemDataTable> Catalog;
+	if (CatalogIndexes.Contains(ItemIndex)) {
+		CatalogIndexes.Remove(ItemIndex);
+	}
+}
 
-	for (auto& ItemName : CatalogItems) {
-		Catalog.Add(Products[ItemName]);
+TMap<int32, FItemDataTable> AStore::GetStoreCatalog()
+{
+	TMap<int32, FItemDataTable> Catalog;
+
+	for (auto& ProductIndex : CatalogIndexes) {
+		Catalog.Add(ProductIndex, Products[ProductIndex]);
 	}
 
 	return Catalog;
-}
-
-void AStore::RemoveItemFromCatalog(FItemDataTable Item)
-{
-	if (CatalogItems.Contains(Item.ItemName)) CatalogItems.Remove(Item.ItemName);
 }
 
 void AStore::GetProducts()
@@ -130,8 +150,7 @@ void AStore::GetProducts()
 		if (Table) {
 			for (FName RowName : Table->GetRowNames()) {
 				FItemDataTable* ItemRow = Table->FindRow<FItemDataTable>(RowName, TEXT(""));
-				ProductKeys.Add(*ItemRow->ItemName);
-				Products.Add(*ItemRow->ItemName, *ItemRow);
+				Products.Add(*ItemRow);
 			}
 		}
 	}

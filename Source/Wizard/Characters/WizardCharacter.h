@@ -29,6 +29,22 @@ public:
 	/// <param name="RowName">Selected character's name</param>
 	void InitGameplayCharacter(FString PlayerName, FName RowName);
 
+	/// <summary>
+	/// Function to add a new Item to the
+	/// Character's Items
+	/// </summary>
+	/// <param name="ItemIndex">Items index</param>
+	/// <param name="ItemRow">Item DataTable row element</param>
+	void AddNewItem(int32 ItemIndex, FItemDataTable ItemRow);
+
+	/// <summary>
+	/// Server RPC to use an Item from
+	/// the Character's Items
+	/// </summary>
+	/// <param name="ItemIndex">Item's index the Character wants to use</param>
+	UFUNCTION(Server, Reliable)
+	void ServerUseItem(int32 ItemIndex);
+
 private:
 
 	/// <summary>
@@ -73,26 +89,43 @@ private:
 	class UCharacterPOIComponent* POI;
 #pragma endregion
 
+#pragma region Items
 	/// <summary>
-	/// Items of the character
+	/// Replicated array used to control
+	/// the Character's Items from the server
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_Items)
-	TArray<FItemDataTable> Items;
+	UPROPERTY(ReplicatedUsing = OnRep_ItemIndexes)
+	TArray<int32> ItemIndexes;
 
 	UFUNCTION()
-	void OnRep_Items();
+	void OnRep_ItemIndexes();
+
+	/// <summary>
+	/// Last Item that has been added
+	/// to the Character's Items
+	/// </summary>
+	UPROPERTY(Replicated)
+	FItemDataTable LatestItem;
+
+	/// <summary>
+	/// Map that contains the Character's Items
+	/// on the server
+	/// </summary>
+	UPROPERTY()
+	TMap<int32, FItemDataTable> Items;
 
 	/// <summary>
 	/// Function to add the new Item
 	/// to the HUD
 	/// </summary>
-	void AddHUDItem(FItemDataTable Item);
+	void AddHUDItem(int32 ItemIndex);
+#pragma endregion
 
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
 	FORCEINLINE UAttributeComponent* GetAttribute() const { return Attribute; }
 	FORCEINLINE UCharacterPOIComponent* GetPOI() const { return POI; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
-	void AddNewItem(FItemDataTable ItemRow);
+	FORCEINLINE FItemDataTable GetLatestItem() const { return LatestItem; }
 };
 

@@ -13,7 +13,7 @@ UAttributeComponent::UAttributeComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	Energy = MaxEnergy;
-	XP = 0;
+	XP = 20;
 }
 
 
@@ -57,6 +57,14 @@ void UAttributeComponent::SpendEnergy(float Cost)
 	}
 }
 
+void UAttributeComponent::AddEnergy(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Energy = FMath::Clamp(Energy + AmountToAdd, 0.f, MaxEnergy);
+		UpdateHUDEnergy();
+	}
+}
+
 void UAttributeComponent::OnRep_Energy()
 {
 	UpdateHUDEnergy();
@@ -72,7 +80,7 @@ void UAttributeComponent::UpdateHUDEnergy()
 }
 #pragma endregion
 
-void UAttributeComponent::ServerSpendXP_Implementation(int32 Cost)
+void UAttributeComponent::SpendXP(int32 Cost)
 {
 	if (Character && Character->HasAuthority()) {
 		XP = FMath::Clamp(XP - Cost, 0.f, XP);

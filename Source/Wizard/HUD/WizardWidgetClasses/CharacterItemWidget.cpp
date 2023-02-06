@@ -2,10 +2,29 @@
 
 
 #include "CharacterItemWidget.h"
+#include "Components/Image.h"
+#include "Components/Button.h"
+#include "Wizard/Characters/WizardCharacter.h"
 
-void UCharacterItemWidget::CreateItem(FItemDataTable ItemRow)
+void UCharacterItemWidget::CreateItem(AWizardCharacter* Owner, int32 Index, FItemDataTable ItemElement)
 {
-	Super::CreateItem(ItemRow);
+	WCharacter = Owner;
 
+	ItemIndex = Index;
+	Item = ItemElement;
 	ItemImage->SetBrushFromTexture(Item.ItemImage);
+	ItemButton->OnClicked.AddDynamic(this, &UCharacterItemWidget::OnItemButtonClicked);
+}
+
+void UCharacterItemWidget::OnItemButtonClicked()
+{
+	ItemButton->SetIsEnabled(false);
+	WCharacter = WCharacter == nullptr ? Cast<AWizardCharacter>(GetOwningPlayerPawn()) : WCharacter;
+	if (WCharacter) {
+		WCharacter->ServerUseItem(ItemIndex);
+		RemoveFromParent();
+		if (ItemButton->OnClicked.IsBound()) {
+			ItemButton->OnClicked.RemoveDynamic(this, &UCharacterItemWidget::OnItemButtonClicked);
+		}
+	}
 }

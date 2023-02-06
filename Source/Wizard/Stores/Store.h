@@ -18,6 +18,7 @@ public:
 	AStore();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
 	/// Function to show/hide the Interact Widget
@@ -28,8 +29,8 @@ public:
 	/// <summary>
 	/// Function to get the store's catalog
 	/// </summary>
-	/// <returns>Catalog array holding all the Item structs the Store is offering</returns>
-	TArray<FItemDataTable> GetStoreCatalog();
+	/// <returns>Catalog map holding all the Item structs the Store is offering</returns>
+	TMap<int32, FItemDataTable> GetStoreCatalog();
 
 	/// <summary>
 	/// Function to add a new random
@@ -40,8 +41,8 @@ public:
 	/// <summary>
 	/// Function to remove an Item from the catalog
 	/// </summary>
-	/// <param name="Item">Item to remove</param>
-	void RemoveItemFromCatalog(FItemDataTable Item);
+	/// <param name="ItemIndex">Item Index to remove</param>
+	void RemoveItemFromCatalog(int32 ItemIndex);
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,8 +66,8 @@ private:
 	/// The array of Items a Store
 	/// is currently offer
 	/// </summary>
-	UPROPERTY()
-	TArray<FString> CatalogItems;
+	UPROPERTY(Replicated)
+	TArray<int32> CatalogIndexes;
 
 	/// <summary>
 	/// Number of items a Store is
@@ -79,14 +80,8 @@ private:
 	/// The array of Items a Store
 	/// can offer
 	/// </summary>
-	UPROPERTY()
-	TMap<FString, FItemDataTable> Products;
-
-	/// <summary>
-	/// Array containing all the store's product names
-	/// </summary>
-	UPROPERTY()
-	TArray<FString> ProductKeys;
+	UPROPERTY(Replicated)
+	TArray<FItemDataTable> Products;
 
 	/// <summary>
 	/// Function to create the Catalog

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Wizard/Items/Item.h"
 #include "CatalogWidget.generated.h"
 
 /**
@@ -23,7 +22,7 @@ public:
 	/// </summary>
 	/// <param name="Items">Catalog Items</param>
 	/// <returns>Whether the creation was successful or not</returns>
-	bool CreateCatalog(TArray<FItemDataTable> Items);
+	bool CreateCatalog(class AStore* Store);
 
 private:
 

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ItemWidget.h"
-#include "Components/Image.h"
+#include "Wizard/Items/Item.h"
+#include "Blueprint/UserWidget.h"
 #include "CharacterItemWidget.generated.h"
 
 /**
@@ -12,23 +12,39 @@
  * the Character's items
  */
 UCLASS()
-class WIZARD_API UCharacterItemWidget : public UItemWidget
+class WIZARD_API UCharacterItemWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
 public:
 
 	/// <summary>
 	/// Function to create the Character Item widget
 	/// </summary>
-	virtual void CreateItem(FItemDataTable ItemRow) override;
+	void CreateItem(class AWizardCharacter* Owner, int32 Index, FItemDataTable ItemElement);
 
 private:
+
+	/// <summary>
+	/// Item's owner
+	/// </summary>
+	AWizardCharacter* WCharacter;
+
+	UPROPERTY()
+	int32 ItemIndex;
+
+	/// <summary>
+	/// Item this widget is based on
+	/// </summary>
+	UPROPERTY()
+	FItemDataTable Item;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* ItemButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ItemImage;
 
-public:
-
-	FORCEINLINE void SetItemImage(class UTexture2D* Image) { if (ItemImage) ItemImage->SetBrushFromTexture(Image); }
+	UFUNCTION()
+	void OnItemButtonClicked();
 };

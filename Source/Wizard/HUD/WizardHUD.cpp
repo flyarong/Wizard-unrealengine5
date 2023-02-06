@@ -89,7 +89,7 @@ void AWizardHUD::SetAgility(int32 NewAgility)
 #pragma endregion
 
 #pragma region Store/Catalog
-void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
+void AWizardHUD::SetStoreCatalog(AStore* Store)
 {
 	if (WizardOverlay) {
 		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
@@ -98,7 +98,7 @@ void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
 
 		UCatalogWidget* Catalog = CreateWidget<UCatalogWidget>(GetOwningPlayerController(), WizardOverlay->GetCatalogWidgetClass());
 		if (Catalog) {
-			bool bCatalogCreated = Catalog->CreateCatalog(Items);
+			bool bCatalogCreated = Catalog->CreateCatalog(Store);
 			if (bCatalogCreated && WizardOverlay->GetCenterBox()) {
 				WizardOverlay->GetCenterBox()->AddChild(Catalog);
 			}
@@ -106,10 +106,10 @@ void AWizardHUD::SetStoreCatalog(TArray<FItemDataTable> Items)
 	}
 }
 
-void AWizardHUD::AddCharacterItem(FItemDataTable Item)
+void AWizardHUD::AddCharacterItem(int32 ItemIndex)
 {
 	if (WizardOverlay && WizardOverlay->GetCharacterItemPanel()) {
-		WizardOverlay->GetCharacterItemPanel()->AddCharacterItem(Item);
+		WizardOverlay->GetCharacterItemPanel()->AddCharacterItem(ItemIndex);
 	}
 }
 #pragma endregion

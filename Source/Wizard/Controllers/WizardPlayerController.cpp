@@ -289,19 +289,19 @@ void AWizardPlayerController::SetHUDAgility(int32 NewAgility)
 #pragma endregion
 
 #pragma region HUD/Store/Catalog
-void AWizardPlayerController::SetHUDStoreCatalog(TArray<FItemDataTable> Items)
+void AWizardPlayerController::SetHUDStoreCatalog(AStore* Store)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->SetStoreCatalog(Items);
+		WizardHUD->SetStoreCatalog(Store);
 	}
 }
 
-void AWizardPlayerController::AddHUDCharacterItem(FItemDataTable Item)
+void AWizardPlayerController::AddHUDCharacterItem(int32 ItemIndex)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->AddCharacterItem(Item);
+		WizardHUD->AddCharacterItem(ItemIndex);
 	}
 }
 #pragma endregion

@@ -4,7 +4,6 @@
 #include "ActionComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Wizard/Stores/Store.h"
-#include "Wizard/Items/Item.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/Districts/District.h"
@@ -102,7 +101,7 @@ void UActionComponent::ShowStoreCatalog()
 	if (bCanBrowse) {
 		Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 		if (Controller && CurrentStore) {
-			Controller->SetHUDStoreCatalog(CurrentStore->GetStoreCatalog());
+			Controller->SetHUDStoreCatalog(CurrentStore);
 		}
 	}
 }
@@ -121,14 +120,13 @@ void UActionComponent::LeaveStore()
 	CurrentStore = nullptr;
 }
 
-void UActionComponent::BuyItem(FItemDataTable ItemRow)
+void UActionComponent::ServerBuyItem_Implementation(int32 ItemIndex, FItemDataTable ItemRow)
 {
 	if (Character && Character->GetAttribute()) {
 		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && CurrentStore) {
-			CurrentStore->RemoveItemFromCatalog(ItemRow);
+			CurrentStore->RemoveItemFromCatalog(ItemIndex);
 			CurrentStore->AddItemToCatalog();
-			Character->GetAttribute()->ServerSpendXP(ItemRow.Cost);
-			Character->AddNewItem(ItemRow);
+			Character->AddNewItem(ItemIndex, ItemRow);
 		}
 		else {
 			// TODO Client RPC to notify

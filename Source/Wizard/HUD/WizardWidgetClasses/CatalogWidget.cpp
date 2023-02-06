@@ -4,14 +4,14 @@
 #include "CatalogWidget.h"
 #include "CatalogItemWidget.h"
 #include "Components/UniformGridPanel.h"
+#include "Wizard/Items/Item.h"
+#include "Wizard/Stores/Store.h"
 #include "Components/Button.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 
-bool UCatalogWidget::CreateCatalog(TArray<FItemDataTable> Items)
+bool UCatalogWidget::CreateCatalog(AStore* Store)
 {
-	if (ItemPanel->HasAnyChildren()) ItemPanel->ClearChildren();
-
 	APlayerController* PlayerController = GetOwningPlayer();
 	if (PlayerController) {
 		AddToViewport();
@@ -20,14 +20,14 @@ bool UCatalogWidget::CreateCatalog(TArray<FItemDataTable> Items)
 		InputModeData.SetWidgetToFocus(TakeWidget());
 		PlayerController->SetInputMode(InputModeData);
 
-		if (Items.Num() > 0 && ItemPanel && ExitButton && CatalogItemWidgetClass) {
+		if (Store->GetStoreCatalog().Num() > 0 && ItemPanel && ExitButton && CatalogItemWidgetClass) {
 			ExitButton->OnClicked.AddDynamic(this, &UCatalogWidget::CloseCatalog);
 
 			int32 Column = 0;
-			for (auto& Item : Items) {
+			for (auto& Item : Store->GetStoreCatalog()) {
 				UCatalogItemWidget* CatalogItem = CreateWidget<UCatalogItemWidget>(PlayerController, CatalogItemWidgetClass);
 				if (CatalogItem) {
-					CatalogItem->CreateItem(Item);
+					CatalogItem->CreateItem(Item.Key, Item.Value);
 					ItemPanel->AddChildToUniformGrid(CatalogItem, 0, Column);
 					Column++;
 				}

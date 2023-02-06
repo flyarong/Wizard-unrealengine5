@@ -18,6 +18,7 @@
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/MiniMap/CharacterPOIComponent.h"
+#include "Wizard/WizardTypes/BoostTypes.h"
 
 AWizardCharacter::AWizardCharacter()
 {
@@ -77,7 +78,8 @@ void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AWizardCharacter, Items);
+	DOREPLIFETIME(AWizardCharacter, ItemIndexes);
+	DOREPLIFETIME(AWizardCharacter, LatestItem);
 }
 
 void AWizardCharacter::PostInitializeComponents()
@@ -140,24 +142,57 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	}
 }
 
-void AWizardCharacter::AddNewItem(FItemDataTable ItemRow)
+#pragma region Items
+void AWizardCharacter::AddNewItem(int32 ItemIndex, FItemDataTable ItemRow)
 {
-	Items.Add(ItemRow);
+	ItemIndexes.Add(ItemIndex);
+	LatestItem = ItemRow;
+	Items.Add(ItemIndexes.Last(), LatestItem);
 
-	AddHUDItem(ItemRow);
+	Attribute->SpendXP(LatestItem.Cost);
+	AddHUDItem(ItemIndexes.Last());
 	Action->ShowStoreCatalog();
 }
 
-void AWizardCharacter::OnRep_Items()
+void AWizardCharacter::OnRep_ItemIndexes()
 {
-	AddHUDItem(Items.Last());
+	AddHUDItem(ItemIndexes.Last());
 	Action->ShowStoreCatalog();
 }
 
-void AWizardCharacter::AddHUDItem(FItemDataTable Item)
+void AWizardCharacter::AddHUDItem(int32 ItemIndex)
 {
 	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
 	if (PlayerController) {
-		PlayerController->AddHUDCharacterItem(Item);
+		PlayerController->AddHUDCharacterItem(ItemIndex);
 	}
 }
+
+void AWizardCharacter::ServerUseItem_Implementation(int32 ItemIndex)
+{
+	if (!ItemIndexes.Contains(ItemIndex) || !Items.Contains(ItemIndex)) {
+		return;
+	}
+
+	switch (Items[ItemIndex].BoostType)
+	{
+	case EBoost::EB_Health:
+		break;
+	case EBoost::EB_Power:
+		break;
+	case EBoost::EB_Energy:
+		Attribute->AddEnergy(Items[ItemIndex].BoostAmount);
+		break;
+	case EBoost::EB_Wisdom:
+		break;
+	case EBoost::EB_Intelligence:
+		break;
+	case EBoost::EB_Combat:
+		break;
+	case EBoost::EB_Agility:
+		break;
+	default:
+		break;
+	}
+}
+#pragma endregion

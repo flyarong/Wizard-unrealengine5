@@ -22,7 +22,7 @@ public:
 	/// Function to add an Item to the
 	/// Character Panel
 	/// </summary>
-	void AddCharacterItem(FItemDataTable Item);
+	void AddCharacterItem(int32 ItemIndex);
 
 private:
 
