@@ -151,13 +151,11 @@ void AWizardCharacter::AddNewItem(int32 ItemIndex, FItemDataTable ItemRow)
 
 	Attribute->SpendXP(LatestItem.Cost);
 	AddHUDItem(ItemIndexes.Last());
-	Action->ShowStoreCatalog();
 }
 
 void AWizardCharacter::OnRep_ItemIndexes()
 {
 	AddHUDItem(ItemIndexes.Last());
-	Action->ShowStoreCatalog();
 }
 
 void AWizardCharacter::AddHUDItem(int32 ItemIndex)

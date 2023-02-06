@@ -124,8 +124,6 @@ void UActionComponent::ServerBuyItem_Implementation(int32 ItemIndex, FItemDataTa
 {
 	if (Character && Character->GetAttribute()) {
 		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && CurrentStore) {
-			CurrentStore->RemoveItemFromCatalog(ItemIndex);
-			CurrentStore->AddItemToCatalog();
 			Character->AddNewItem(ItemIndex, ItemRow);
 		}
 		else {

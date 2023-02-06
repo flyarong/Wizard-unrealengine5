@@ -118,17 +118,8 @@ void AStore::AddItemToCatalog()
 	while (CatalogIndexes.Contains(Index)) {
 		Index = FMath::RandRange(0, Products.Num() - 1);
 	}
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("%d"), Index));
-	}
-	CatalogIndexes.Add(Index);
-}
 
-void AStore::RemoveItemFromCatalog(int32 ItemIndex)
-{
-	if (CatalogIndexes.Contains(ItemIndex)) {
-		CatalogIndexes.Remove(ItemIndex);
-	}
+	CatalogIndexes.Add(Index);
 }
 
 TMap<int32, FItemDataTable> AStore::GetStoreCatalog()

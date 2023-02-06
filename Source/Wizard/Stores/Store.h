@@ -38,12 +38,6 @@ public:
 	/// </summary>
 	void AddItemToCatalog();
 
-	/// <summary>
-	/// Function to remove an Item from the catalog
-	/// </summary>
-	/// <param name="ItemIndex">Item Index to remove</param>
-	void RemoveItemFromCatalog(int32 ItemIndex);
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
