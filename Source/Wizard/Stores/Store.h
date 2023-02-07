@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Wizard/Actors/WizardActor.h"
 #include "Wizard/Items/Item.h"
 #include "Wizard/WizardTypes/StoreType.h"
 #include "Store.generated.h"
 
 UCLASS()
-class WIZARD_API AStore : public AActor
+class WIZARD_API AStore : public AWizardActor
 {
 	GENERATED_BODY()
 	
@@ -19,12 +19,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
-	/// <summary>
-	/// Function to show/hide the Interact Widget
-	/// </summary>
-	/// <param name="bShowInteractWidget">Whether to show or hide the widget</param>
-	void ShowInteractWidget(bool bShowInteractWidget);
 
 	/// <summary>
 	/// Function to get the store's catalog
@@ -98,23 +92,10 @@ private:
 
 #pragma region Components
 	/// <summary>
-	/// Store's Point of Interest component:
-	/// shows the location of the Store on the MiniMap
-	/// </summary>
-	UPROPERTY(VisibleAnywhere)
-	class UPointOfInterestComponent* POI;
-
-	/// <summary>
 	/// Mesh of the Store
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* StoreMesh;
-
-	/// <summary>
-	/// AreaSphere to interact with the Store
-	/// </summary>
-	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* AreaSphere;
 
 	/// <summary>
 	/// Overhead widget component
@@ -123,23 +104,10 @@ private:
 	class UWidgetComponent* OverheadComponent;
 
 	/// <summary>
-	/// Interact widget component
-	/// </summary>
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UWidgetComponent* InteractComponent;
-
-	/// <summary>
 	/// Overhead widget for showing the store's name
 	/// </summary>
 	UPROPERTY()
 	class UOverheadWidget* OverheadWidget;
-
-	/// <summary>
-	/// Interact widget for showing the instruction on how
-	/// to interact with the Store Catalog
-	/// </summary>
-	UPROPERTY()
-	class UOverheadWidget* InteractWidget;
 #pragma endregion
 
 #pragma region Callbacks

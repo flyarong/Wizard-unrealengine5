@@ -11,7 +11,6 @@
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
-#include "Wizard/Components/MiniMap/PointOfInterestComponent.h"
 
 // Sets default values
 AStore::AStore()
@@ -20,28 +19,14 @@ AStore::AStore()
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
 
-	// Creating the Point Of Interest Component
-	POI = CreateDefaultSubobject<UPointOfInterestComponent>(TEXT("PointOfInterest"));
-	POI->SetIsReplicated(true);
-
-	// Create Store Mesh
+	// Create Store Mesh and set it as Root
 	StoreMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StoreMesh"));
-	SetRootComponent(StoreMesh);
-
-	// Create AreaSphere
-	AreaSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AreaSphere"));
-	AreaSphere->SetupAttachment(RootComponent);
-	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	StoreMesh->SetupAttachment(RootComponent);
 
 	// Create Overhead widget
 	OverheadComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadComponent->SetupAttachment(RootComponent);
 	OverheadComponent->SetTwoSided(true);
-
-	// Create Interact widget
-	InteractComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractWidget"));
-	InteractComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -49,23 +34,13 @@ void AStore::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Setup Store
-	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	// Setup Events
 	if (HasAuthority()) {
+		CreateCatalog();
 		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AStore::OnStoreBeginOverlap);
 		AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AStore::OnStoreEndOverlap);
 	}
 	AreaSphere->OnClicked.AddDynamic(this, &AStore::OnStoreClicked);
-
-	if (InteractComponent) InteractComponent->SetVisibility(false);
-
-	POI->SetupPOI(this);
-
-	if (HasAuthority()) {
-		CreateCatalog();
-	}
 }
 
 // Called every frame
@@ -78,14 +53,6 @@ void AStore::Tick(float DeltaTime)
 		OverheadWidget = Cast<UOverheadWidget>(OverheadComponent->GetWidget());
 		if (OverheadWidget) {
 			OverheadWidget->SetDisplayText(StoreName);
-		}
-	}
-
-	// Init Interact widget
-	if (InteractWidget == nullptr && InteractComponent) {
-		InteractWidget = Cast<UOverheadWidget>(InteractComponent->GetWidget());
-		if (InteractWidget) {
-			InteractWidget->SetDisplayText(FString::Printf(TEXT("[Left Click] to Interact")));
 		}
 	}
 }
@@ -229,13 +196,6 @@ void AStore::OnStoreClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 			Character->GetAction()->GetCurrentStore() == this) {
 			Character->GetAction()->OpenCatalog();
 		}
-	}
-}
-
-void AStore::ShowInteractWidget(bool bShowInteractWidget)
-{
-	if (InteractComponent) {
-		InteractComponent->SetVisibility(bShowInteractWidget);
 	}
 }
 #pragma endregion
