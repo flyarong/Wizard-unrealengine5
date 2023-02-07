@@ -56,7 +56,7 @@ void UPointOfInterestWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 	}
 
 	// Delete if Owner is no longer valid
-	if (!Owner) {
+	if (Owner->IsActorBeingDestroyed()) {
 		RemoveFromParent();
 	}
 }
