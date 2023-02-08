@@ -127,11 +127,16 @@ void UActionComponent::ServerBuyItem_Implementation(int32 ItemIndex, FItemDataTa
 			Character->AddNewItem(ItemIndex, ItemRow);
 		}
 		else {
-			// TODO Client RPC to notify
-			if (GEngine) {
-				GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("you don't have enough xp")));
-			}
+			ClientAddLocalMessage(FString(TEXT("You don't have enough")), EAttribute::EA_XP);
 		}
+	}
+}
+
+void UActionComponent::ClientAddLocalMessage_Implementation(const FString& Message, EAttribute AttributeType)
+{
+	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->AddHUDLocalMessage(Message, AttributeType);
 	}
 }
 #pragma endregion

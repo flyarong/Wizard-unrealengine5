@@ -63,6 +63,9 @@ private:
 	class UScaleBox* CenterBox;
 
 	UPROPERTY(meta = (BindWidget))
+	class UVerticalBox* EventBox;
+
+	UPROPERTY(meta = (BindWidget))
 	class UCharacterItemPanelWidget* CharacterItemPanel;
 
 public:
@@ -88,5 +91,6 @@ public:
 	FORCEINLINE UTextBlock* GetAgilityText() const { return AgilityText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
+	FORCEINLINE UVerticalBox* GetEventBox() const { return EventBox; }
 	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
 };

@@ -20,7 +20,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "GameFramework/SpringArmComponent.h"
 
-
 AWizardPlayerController::AWizardPlayerController()
 {
 	bShowMouseCursor = false;
@@ -314,6 +313,16 @@ void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (POIOwner && WizardHUD) {
 		WizardHUD->SetPOIOnMiniMap(POIOwner);
+	}
+}
+#pragma endregion
+
+#pragma region HUD/Messages
+void AWizardPlayerController::AddHUDLocalMessage(const FString& Message, EAttribute AttributeType)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddLocalMessage(Message, AttributeType);
 	}
 }
 #pragma endregion

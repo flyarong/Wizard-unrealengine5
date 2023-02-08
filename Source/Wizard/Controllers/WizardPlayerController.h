@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "WizardPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -105,6 +106,17 @@ public:
 	/// </summary>
 	/// <param name="POIOwner">The owner of the Point Of Interest</param>
 	void SetHUDPOIOnMiniMap(class AActor* POIOwner);
+#pragma endregion
+
+#pragma region HUD/Messages
+
+	/// <summary>
+	/// Function to add a Local Message to the HUD
+	/// </summary>
+	/// <param name="Message">The Message</param>
+	/// <param name="AttributeType">The Attribute the message refers to</param>
+	void AddHUDLocalMessage(const FString& Message, EAttribute AttributeType);
+
 #pragma endregion
 
 #pragma region InputPointers

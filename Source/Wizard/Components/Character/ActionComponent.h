@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Wizard/Items/Item.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "ActionComponent.generated.h"
 
 
@@ -122,6 +123,16 @@ private:
 	/// browsed store's catalog
 	/// </summary>
 	void ShowStoreCatalog();
+#pragma endregion
+
+#pragma region Messaging
+	/// <summary>
+	/// Client RPC to add a Local Message to the HUD
+	/// </summary>
+	/// <param name="Message">The Message</param>
+	/// <param name="AttributeType">The Attribute the message refers to</param>
+	UFUNCTION(Client, UnReliable)
+	void ClientAddLocalMessage(const FString& Message, EAttribute AttributeType);
 #pragma endregion
 
 public:

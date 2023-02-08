@@ -6,11 +6,12 @@
 #include "Wizard/HUD/WizardWidgetClasses/Catalog/CatalogWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Items/CharacterItemPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
+#include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
 #include "Components/ScaleBox.h"
 
 bool AWizardHUD::CreateWizardOverlay()
 {
-	APlayerController* PlayerController = GetOwningPlayerController();
+	PlayerController = GetOwningPlayerController();
 	if (PlayerController && WizardOverlayClass)
 	{
 		WizardOverlay = CreateWidget<UWizardOverlay>(PlayerController, WizardOverlayClass);
@@ -119,6 +120,19 @@ void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)
 {
 	if (WizardOverlay && WizardOverlay->GetMiniMap()) {
 		WizardOverlay->GetMiniMap()->AddPOI(POIOwner);
+	}
+}
+#pragma endregion
+
+#pragma region Messages
+void AWizardHUD::AddLocalMessage(const FString& Message, EAttribute AttributeType)
+{
+	PlayerController = PlayerController == nullptr ? GetOwningPlayerController() : PlayerController;
+	if (PlayerController) {
+		ULocalMessageWidget* LocalMessageWidget = CreateWidget<ULocalMessageWidget>(PlayerController, LocalMessageWidgetClass);
+		if (LocalMessageWidget) {
+			LocalMessageWidget->AddLocalMessage(WizardOverlay, FText::FromString(Message), AttributeType);
+		}
 	}
 }
 #pragma endregion

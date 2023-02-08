@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "WizardHUD.generated.h"
 
 /**
@@ -104,13 +105,30 @@ public:
 	void SetPOIOnMiniMap(class AActor* POIOwner);
 #pragma endregion
 
+#pragma region Messages
+	/// <summary>
+	/// Function to add a Local Message to the screen
+	/// </summary>
+	/// <param name="Message">The Message</param>
+	/// <param name="AttributeType">The Attribute the message refers to</param>
+	void AddLocalMessage(const FString& Message, EAttribute AttributeType);
+#pragma endregion
+
 private:
 	
+	APlayerController* PlayerController;
+
 	/// <summary>
 	/// Widget Class of the gameplay overlay
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Wizard Overlay")
 	TSubclassOf<class UUserWidget> WizardOverlayClass;
+
+	/// <summary>
+	/// Widget class for the local Message
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Wizard Overlay")
+	TSubclassOf<class UUserWidget> LocalMessageWidgetClass;
 
 	/// <summary>
 	/// Pointer to the gameplay overlay
