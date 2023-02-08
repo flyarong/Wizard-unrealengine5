@@ -2,9 +2,9 @@
 
 
 #include "WizardHUD.h"
-#include "Wizard/HUD/WizardWidgetClasses/MiniMapWidget.h"
-#include "Wizard/HUD/WizardWidgetClasses/CatalogWidget.h"
-#include "Wizard/HUD/WizardWidgetClasses/CharacterItemPanelWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/MiniMap/MiniMapWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Catalog/CatalogWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Items/CharacterItemPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Components/ScaleBox.h"
 
