@@ -229,12 +229,20 @@ private:
 	UPROPERTY(Replicated)
 	FVector CachedDestination;
 
+	/// <summary>
+	/// Boolean for whether or not the Character
+	/// can move
+	/// </summary>
+	UPROPERTY(EditAnywhere)
+	bool bCanMove = true;
+
 	bool bIsTouch; // Is it a touch device
 #pragma endregion
 
 public:
 	void SetWizardCharacter(AWizardCharacter* WCharacter) { WizardCharacter = WCharacter; }
 	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
+	FORCEINLINE void ToggleMovement(bool bCanPawnMove) { bCanMove = bCanPawnMove; }
 };
 
 

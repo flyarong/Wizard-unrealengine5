@@ -146,23 +146,25 @@ void AWizardPlayerController::OnSetDestinationTriggered()
 
 void AWizardPlayerController::OnSetDestinationReleased()
 {
-	// We move there and spawn some particles
-	ServerMoveToLocation(this, CachedDestination);
-	if (!HasAuthority()) {
-		// Move to location locally on client
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+	if (bCanMove) {
+		// We move there and spawn some particles
+		ServerMoveToLocation(this, CachedDestination);
+		if (!HasAuthority()) {
+			// Move to location locally on client
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		}
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			FXCursor,
+			CachedDestination,
+			FRotator::ZeroRotator,
+			FVector(1.f, 1.f, 1.f),
+			true,
+			true,
+			ENCPoolMethod::None,
+			true
+		);
 	}
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		this, 
-		FXCursor, 
-		CachedDestination, 
-		FRotator::ZeroRotator, 
-		FVector(1.f, 1.f, 1.f), 
-		true, 
-		true, 
-		ENCPoolMethod::None, 
-		true
-	);
 }
 
 void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerController* Controller, FVector Dest) {
