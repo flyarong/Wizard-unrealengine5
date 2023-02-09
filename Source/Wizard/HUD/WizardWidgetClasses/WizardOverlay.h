@@ -33,16 +33,34 @@ private:
 	class UImage* ProfileImage;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* CombatText;
+	UTextBlock* OffenseText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* OffenseTextModifier;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DefenseText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DefenseTextModifier;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WisdomText;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WisdomTextModifier;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* IntelligenceText;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* IntelligenceTextModifier;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AgilityText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* AgilityTextModifier;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurrentDistrictText;
@@ -51,7 +69,10 @@ private:
 	class UWidgetAnimation* DistrictPanelFadeIn;
 
 	UPROPERTY(meta = (BindWidget))
-	class UWizardProgressBarWidget* EnergyBar;
+	class UWizardProgressBarWidget* HealthBar;
+
+	UPROPERTY(meta = (BindWidget))
+	class UWizardProgressBarWidget* PowerBar;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* XPText;
@@ -72,8 +93,10 @@ public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
-	FORCEINLINE void SetEnergyBarPercentage(float Energy, float MaxEnergy) { EnergyBar->SetWizardBarPercent(Energy, MaxEnergy); };
-	FORCEINLINE UWizardProgressBarWidget* GetEnergyBar() const { return EnergyBar; }
+	FORCEINLINE void SetHealthBarPercentage(float Health, float MaxHealth) { HealthBar->SetWizardBarPercent(Health, MaxHealth); };
+	FORCEINLINE UWizardProgressBarWidget* GetHealthBar() const { return HealthBar; }
+	FORCEINLINE void SetPowerBarPercentage(float Power, float MaxPower) { PowerBar->SetWizardBarPercent(Power, MaxPower); };
+	FORCEINLINE UWizardProgressBarWidget* GetPowerBar() const { return PowerBar; }
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
 	FORCEINLINE void PlayDistrictPanelFadeIn() { PlayAnimation(DistrictPanelFadeIn); }
@@ -81,14 +104,21 @@ public:
 	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
 	FORCEINLINE void SetCharacterNameText(FText Name) { CharacterNameText->SetText(Name); };
 	FORCEINLINE UTextBlock* GetCharacterNameText() const { return CharacterNameText; }
-	FORCEINLINE void SetCombatText(FText Combat) { CombatText->SetText(Combat); };
-	FORCEINLINE UTextBlock* GetCombatText() const { return CombatText; }
+	FORCEINLINE void SetOffenseText(FText Offense) { OffenseText->SetText(Offense); };
+	FORCEINLINE UTextBlock* GetOffenseText() const { return OffenseText; }
+	FORCEINLINE void SetOffenseTextModifier(FText Modifier) { OffenseTextModifier->SetText(Modifier); };
+	FORCEINLINE void SetDefenseText(FText Defense) { DefenseText->SetText(Defense); };
+	FORCEINLINE UTextBlock* GetDefenseText() const { return DefenseText; }
+	FORCEINLINE void SetDefenseTextModifier(FText Modifier) { DefenseTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetWisdomText(FText Wisdom) { WisdomText->SetText(Wisdom); };
 	FORCEINLINE UTextBlock* GetWisdomText() const { return WisdomText; }
+	FORCEINLINE void SetWisdomTextModifier(FText Modifier) { WisdomTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetIntelligenceText(FText Intelligence) { IntelligenceText->SetText(Intelligence); };
 	FORCEINLINE UTextBlock* GetIntelligenceText() const { return IntelligenceText; }
+	FORCEINLINE void SetIntelligenceTextModifier(FText Modifier) { IntelligenceTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetAgilityText(FText Agility) { AgilityText->SetText(Agility); };
 	FORCEINLINE UTextBlock* GetAgilityText() const { return AgilityText; }
+	FORCEINLINE void SetAgilityTextModifier(FText Modifier) { AgilityTextModifier->SetText(Modifier); };
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UVerticalBox* GetEventBox() const { return EventBox; }

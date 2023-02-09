@@ -53,10 +53,7 @@ public:
 	*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Health;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Power;
+	int32 Defense;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Wisdom;
@@ -65,7 +62,7 @@ public:
 	int32 Intelligence;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Combat;
+	int32 Offense;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 Agility;

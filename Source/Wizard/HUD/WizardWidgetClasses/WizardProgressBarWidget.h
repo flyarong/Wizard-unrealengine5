@@ -33,6 +33,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* ProgressBar;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
+	float GridSizeX = 280.f;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
+	float GridSizeY = 50.f;
 
 	/// <summary>
 	/// Icon next to the progress bar
@@ -41,16 +47,12 @@ public:
 	class UTexture2D* ProgressBarIcon;
 
 	/// <summary>
-	/// Background of the progress bar
-	/// </summary>
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
-	UTexture2D* ProgressBarBackground;
-
-	/// <summary>
 	/// Color of the progress bar
 	/// </summary>
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
 	UTexture2D* ProgressBarForeground;
+
+private:
 
 	/// <summary>
 	/// Function to animate the percentage

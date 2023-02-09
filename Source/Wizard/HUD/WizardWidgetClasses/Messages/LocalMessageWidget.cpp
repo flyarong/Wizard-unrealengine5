@@ -13,9 +13,9 @@ void ULocalMessageWidget::AddLocalMessage(UWizardOverlay* Overlay, FText Message
 		{
 		case EAttribute::EA_Health:
 			break;
-		case EAttribute::EA_Power:
+		case EAttribute::EA_Defense:
 			break;
-		case EAttribute::EA_Energy:
+		case EAttribute::EA_Power:
 			break;
 		case EAttribute::EA_XP:
 			MessageImage->SetBrushFromTexture(XPImage);
@@ -24,7 +24,7 @@ void ULocalMessageWidget::AddLocalMessage(UWizardOverlay* Overlay, FText Message
 			break;
 		case EAttribute::EA_Intelligence:
 			break;
-		case EAttribute::EA_Combat:
+		case EAttribute::EA_Offense:
 			break;
 		case EAttribute::EA_Agility:
 			break;
