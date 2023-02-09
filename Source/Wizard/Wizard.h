@@ -12,8 +12,8 @@ DECLARE_LOG_CATEGORY_EXTERN(LogWizard, Log, All);
 // DataTables
 #define CHARACTER_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Lobby/CharacterSelectorDataTable.CharacterSelectorDataTable'")
 #define AGILITY_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/AgilityItemDataTable.AgilityItemDataTable'")
-#define COMBAT_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/CombatItemDataTable.CombatItemDataTable'")
-#define ENERGY_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/EnergyItemDataTable.EnergyItemDataTable'")
+#define COMBAT_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/OffenseItemDataTable.OffenseItemDataTable'")
+#define ENERGY_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/DefenseItemDataTable.DefenseItemDataTable'")
 #define HEALTH_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/HealthItemDataTable.HealthItemDataTable'")
 #define INTELLIGENCE_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/IntelligenceItemDataTable.IntelligenceItemDataTable'")
 #define POWER_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/PowerItemDataTable.PowerItemDataTable'")

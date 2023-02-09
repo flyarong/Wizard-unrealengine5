@@ -107,11 +107,10 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 			MagicStaff->SetStaticMesh(SelectedCharacter->MagicStaff);
 			
 			Attribute->SetName(SelectedCharacter->CharacterName);
-			Attribute->SetHealth(SelectedCharacter->Health);
-			Attribute->SetPower(SelectedCharacter->Power);
+			Attribute->SetDefense(SelectedCharacter->Defense);
 			Attribute->SetWisdom(SelectedCharacter->Wisdom);
 			Attribute->SetIntelligence(SelectedCharacter->Intelligence);
-			Attribute->SetCombat(SelectedCharacter->Combat);
+			Attribute->SetOffense(SelectedCharacter->Offense);
 			Attribute->SetAgility(SelectedCharacter->Agility);
 
 			POI->bIsStatic = true;
@@ -176,16 +175,16 @@ void AWizardCharacter::ServerUseItem_Implementation(int32 ItemIndex)
 	{
 	case EBoost::EB_Health:
 		break;
-	case EBoost::EB_Power:
+	case EBoost::EB_Defense:
 		break;
-	case EBoost::EB_Energy:
-		Attribute->AddEnergy(Items[ItemIndex].BoostAmount);
+	case EBoost::EB_Power:
+		Attribute->AddPower(Items[ItemIndex].BoostAmount);
 		break;
 	case EBoost::EB_Wisdom:
 		break;
 	case EBoost::EB_Intelligence:
 		break;
-	case EBoost::EB_Combat:
+	case EBoost::EB_Offense:
 		break;
 	case EBoost::EB_Agility:
 		break;

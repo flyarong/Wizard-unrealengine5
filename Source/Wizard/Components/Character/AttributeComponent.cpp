@@ -12,7 +12,8 @@ UAttributeComponent::UAttributeComponent()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-	Energy = MaxEnergy;
+	Health = MaxHealth;
+	Power = MaxPower;
 	XP = 20;
 }
 
@@ -38,44 +39,50 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 	DOREPLIFETIME(UAttributeComponent, Name);
 	DOREPLIFETIME(UAttributeComponent, Health);
-	DOREPLIFETIME(UAttributeComponent, Power);
+	DOREPLIFETIME(UAttributeComponent, Defense);
 	DOREPLIFETIME(UAttributeComponent, XP);
-	DOREPLIFETIME(UAttributeComponent, Energy);
+	DOREPLIFETIME(UAttributeComponent, Power);
 	DOREPLIFETIME(UAttributeComponent, Wisdom);
 	DOREPLIFETIME(UAttributeComponent, Intelligence);
-	DOREPLIFETIME(UAttributeComponent, Combat);
+	DOREPLIFETIME(UAttributeComponent, Offense);
 	DOREPLIFETIME(UAttributeComponent, Agility);
 }
 
-#pragma region Energy
-void UAttributeComponent::SpendEnergy(float Cost)
+
+void UAttributeComponent::OnRep_Health()
+{
+
+}
+
+#pragma region Power
+void UAttributeComponent::SpendPower(float Cost)
 {
 	if (Character && Character->HasAuthority()) {
 		int32 Subtrahend = Agility == 0 ? Cost : Cost / Agility;
-		Energy = (FMath::Clamp(Energy - Subtrahend, 0.f, MaxEnergy));
-		UpdateHUDEnergy();
+		Power = (FMath::Clamp(Power - Subtrahend, 0.f, MaxPower));
+		UpdateHUDPower();
 	}
 }
 
-void UAttributeComponent::AddEnergy(int32 AmountToAdd)
+void UAttributeComponent::AddPower(int32 AmountToAdd)
 {
 	if (Character && Character->HasAuthority()) {
-		Energy = FMath::Clamp(Energy + AmountToAdd, 0.f, MaxEnergy);
-		UpdateHUDEnergy();
+		Power = FMath::Clamp(Power + AmountToAdd, 0.f, MaxPower);
+		UpdateHUDPower();
 	}
 }
 
-void UAttributeComponent::OnRep_Energy()
+void UAttributeComponent::OnRep_Power()
 {
-	UpdateHUDEnergy();
+	UpdateHUDPower();
 }
 
-void UAttributeComponent::UpdateHUDEnergy()
+void UAttributeComponent::UpdateHUDPower()
 {
 	Controller = (Controller == nullptr) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDEnergy(Energy, MaxEnergy);
+		Controller->SetHUDPower(Power, MaxPower);
 	}
 }
 #pragma endregion

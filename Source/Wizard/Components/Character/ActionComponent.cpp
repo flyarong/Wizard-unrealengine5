@@ -59,7 +59,7 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 {
 	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller && Character->GetAttribute() && CurrentDistrict) {
-		Character->GetAttribute()->SpendEnergy(CurrentDistrict->GetCost());
+		Character->GetAttribute()->SpendPower(CurrentDistrict->GetCost());
 		Controller->SetHUDCurrentDistrict(CurrentDistrict->GetDistrictName());
 	}
 }

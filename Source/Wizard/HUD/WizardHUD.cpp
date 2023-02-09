@@ -32,10 +32,17 @@ void AWizardHUD::SetCurrentDistrict(EDistrict District)
 	}
 }
 
-void AWizardHUD::SetEnergy(float Energy, float MaxEnergy)
+void AWizardHUD::SetHealth(float Health, float MaxHealth)
 {
-	if (WizardOverlay && WizardOverlay->GetEnergyBar()) {
-		WizardOverlay->SetEnergyBarPercentage(Energy, MaxEnergy);
+	if (WizardOverlay && WizardOverlay->GetHealthBar()) {
+		WizardOverlay->SetHealthBarPercentage(Health, MaxHealth);
+	}
+}
+
+void AWizardHUD::SetPower(float Power, float MaxPower)
+{
+	if (WizardOverlay && WizardOverlay->GetPowerBar()) {
+		WizardOverlay->SetPowerBarPercentage(Power, MaxPower);
 	}
 }
 
@@ -60,10 +67,17 @@ void AWizardHUD::SetXP(int32 NewXP)
 	}
 }
 
-void AWizardHUD::SetCombat(int32 NewCombat)
+void AWizardHUD::SetOffense(int32 NewOffense)
 {
-	if (WizardOverlay && WizardOverlay->GetCombatText()) {
-		WizardOverlay->SetCombatText(FText::AsNumber(NewCombat));
+	if (WizardOverlay && WizardOverlay->GetOffenseText()) {
+		WizardOverlay->SetOffenseText(FText::AsNumber(NewOffense));
+	}
+}
+
+void AWizardHUD::SetDefense(int32 NewDefense)
+{
+	if (WizardOverlay && WizardOverlay->GetDefenseText()) {
+		WizardOverlay->SetDefenseText(FText::AsNumber(NewDefense));
 	}
 }
 

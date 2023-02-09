@@ -68,11 +68,13 @@ void AWizardPlayerController::InitOverlay()
 		bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
 		if (bWizardOverlayInitialized && WizardCharacter && WizardCharacter->GetAttribute()) {
 			SetHUDCurrentDistrict(EDistrict::ED_None);
-			SetHUDEnergy(WizardCharacter->GetAttribute()->GetEnergy(), WizardCharacter->GetAttribute()->GetMaxEnergy());
+			SetHUDHealth(WizardCharacter->GetAttribute()->GetHealth(), WizardCharacter->GetAttribute()->GetMaxHealth());
+			SetHUDPower(WizardCharacter->GetAttribute()->GetPower(), WizardCharacter->GetAttribute()->GetMaxPower());
 			SetHUDXP(WizardCharacter->GetAttribute()->GetXP());
 			SetHUDCharacterImage(WizardCharacter->GetPOI()->GetIconImage());
 			SetHUDCharacterName(WizardCharacter->GetAttribute()->GetName());
-			SetHUDCombat(WizardCharacter->GetAttribute()->GetCombat());
+			SetHUDOffense(WizardCharacter->GetAttribute()->GetOffense());
+			SetHUDDefense(WizardCharacter->GetAttribute()->GetDefense());
 			SetHUDWisdom(WizardCharacter->GetAttribute()->GetWisdom());
 			SetHUDIntelligence(WizardCharacter->GetAttribute()->GetIntelligence());
 			SetHUDAgility(WizardCharacter->GetAttribute()->GetAgility());
@@ -239,11 +241,19 @@ void AWizardPlayerController::SetHUDCurrentDistrict(EDistrict District)
 	}
 }
 
-void AWizardPlayerController::SetHUDEnergy(float Energy, float MaxEnergy)
+void AWizardPlayerController::SetHUDHealth(float Health, float MaxHealth)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->SetEnergy(Energy, MaxEnergy);
+		WizardHUD->SetHealth(Health, MaxHealth);
+	}
+}
+
+void AWizardPlayerController::SetHUDPower(float Power, float MaxPower)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetPower(Power, MaxPower);
 	}
 }
 
@@ -255,11 +265,19 @@ void AWizardPlayerController::SetHUDXP(int32 NewXP)
 	}
 }
 
-void AWizardPlayerController::SetHUDCombat(int32 NewCombat)
+void AWizardPlayerController::SetHUDOffense(int32 NewOffense)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->SetCombat(NewCombat);
+		WizardHUD->SetOffense(NewOffense);
+	}
+}
+
+void AWizardPlayerController::SetHUDDefense(int32 NewDefense)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetDefense(NewDefense);
 	}
 }
 

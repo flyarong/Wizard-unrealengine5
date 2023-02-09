@@ -51,7 +51,7 @@ void ADistrict::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAttribute()) {
-		Character->GetAttribute()->SpendEnergy(EnergyCost / 2);
+		Character->GetAttribute()->SpendPower(PowerCost);
 	}
 }
 

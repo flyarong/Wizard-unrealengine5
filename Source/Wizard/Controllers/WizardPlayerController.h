@@ -36,10 +36,16 @@ public:
 	void SetHUDCurrentDistrict(EDistrict District);
 
 	/// <summary>
-	/// Function to set the Energy bar
+	/// Function to set the Health bar
 	/// on the HUD
 	/// </summary>
-	void SetHUDEnergy(float Energy, float MaxEnergy);
+	void SetHUDHealth(float Health, float MaxHealth);
+
+	/// <summary>
+	/// Function to set the Power bar
+	/// on the HUD
+	/// </summary>
+	void SetHUDPower(float Power, float MaxPower);
 
 	/// <summary>
 	/// Function to set the Character's image
@@ -60,10 +66,16 @@ public:
 	void SetHUDXP(int32 NewXP);
 
 	/// <summary>
-	/// Function to set the new Combat value
+	/// Function to set the new Offense value
 	/// on the HUD
 	/// </summary>
-	void SetHUDCombat(int32 NewCombat);
+	void SetHUDOffense(int32 NewOffense);
+
+	/// <summary>
+	/// Function to set the new Defense value
+	/// on the HUD
+	/// </summary>
+	void SetHUDDefense(int32 NewDefense);
 
 	/// <summary>
 	/// Function to set the new Wisdom value

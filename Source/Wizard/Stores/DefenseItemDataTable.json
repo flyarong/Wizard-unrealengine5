@@ -4,18 +4,18 @@
 		"ItemName": "Band of Spirit",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_11.Tex_recipes_11'",
 		"Cost": 25,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__40_.Tex_ic__40_'",
-		"BoostType": "EB_Energy",
-		"BoostAmount": 20
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1
 	},
 	{
 		"Name": "Povudamom",
 		"ItemName": "Povudamom",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_bone_08.Tex_bone_08'",
-		"Cost": 15,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__40_.Tex_ic__40_'",
-		"BoostType": "EB_Energy",
-		"BoostAmount": 15
+		"Cost": 20,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1
 	},
 	{
 		"Name": "WildBloom",
@@ -23,25 +23,25 @@
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_04.Tex_feather_04'",
 		"Cost": 25,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__40_.Tex_ic__40_'",
-		"BoostType": "EB_Energy",
-		"BoostAmount": 20
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1
 	},
 	{
 		"Name": "MudMustard",
 		"ItemName": "Mud Mustard",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_02.Tex_herbs_02'",
-		"Cost": 30,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__40_.Tex_ic__40_'",
-		"BoostType": "EB_Energy",
-		"BoostAmount": 30
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 2
 	},
 	{
 		"Name": "CavernHerb",
 		"ItemName": "Cavern Herb",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_03.Tex_herbs_03'",
-		"Cost": 5,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__40_.Tex_ic__40_'",
-		"BoostType": "EB_Energy",
-		"BoostAmount": 10
+		"Cost": 35,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1
 	}
 ]

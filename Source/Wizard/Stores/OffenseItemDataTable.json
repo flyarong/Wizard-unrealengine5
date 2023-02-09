@@ -1,0 +1,11 @@
+[
+	{
+		"Name": "BracersofWind",
+		"ItemName": "Bracers of Wind",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_06_b.Tex_spare_parts_06_b'",
+		"Cost": 50,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1
+	}
+]
