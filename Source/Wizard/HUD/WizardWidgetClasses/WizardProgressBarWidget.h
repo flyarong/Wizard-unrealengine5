@@ -29,14 +29,17 @@ public:
 	void SetWizardBarPercent(float Value, float MaxValue);
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UImage* ProgressBarImage;
-
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* ProgressBar;
 	
+	/// <summary>
+	/// Size X of the Progress Bar
+	/// </summary>
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
 	float GridSizeX = 280.f;
 
+	/// <summary>
+	/// Size Y of the Progress Bar
+	/// </summary>
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
 	float GridSizeY = 50.f;
 
@@ -45,6 +48,13 @@ public:
 	/// </summary>
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
 	class UTexture2D* ProgressBarIcon;
+
+	/// <summary>
+	/// Whether the ProgressBar Icon should be
+	/// rounded or not
+	/// </summary>
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "ProgressBar Settings")
+	bool bIconIsRounded = false;
 
 	/// <summary>
 	/// Color of the progress bar
