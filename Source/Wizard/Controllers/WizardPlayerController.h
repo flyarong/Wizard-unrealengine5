@@ -129,7 +129,6 @@ public:
 #pragma endregion
 
 #pragma region HUD/Messages
-
 	/// <summary>
 	/// Function to add a Local Message to the HUD
 	/// </summary>
@@ -137,6 +136,20 @@ public:
 	/// <param name="AttributeType">The Attribute the message refers to</param>
 	void AddHUDLocalMessage(const FString& Message, EAttribute AttributeType);
 
+	/// <summary>
+	/// Server RPC for sending Chat messages
+	/// </summary>
+	/// <param name="Sender">Name of the player who sends the message</param>
+	/// <param name="Message">Message to send</param>
+	UFUNCTION(Server, Reliable)
+	void ServerSendChatMessage(const FString& Sender, const FText& Message);
+
+	/// <summary>
+	/// Function to add a Chat Message to the HUD
+	/// </summary>
+	/// <param name="Message">The message written in chat</param>
+	UFUNCTION(Client, Reliable)
+	void ClientAddHUDChatMessage(const FText& Message);
 #pragma endregion
 
 #pragma region InputPointers

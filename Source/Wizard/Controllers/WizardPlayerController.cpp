@@ -351,4 +351,25 @@ void AWizardPlayerController::AddHUDLocalMessage(const FString& Message, EAttrib
 		WizardHUD->AddLocalMessage(Message, AttributeType);
 	}
 }
+
+void AWizardPlayerController::ServerSendChatMessage_Implementation(const FString& Sender, const FText& Message)
+{
+	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;
+	if (WizardGameMode) {
+		FString PlayerName = Sender;
+		WizardGameMode->BroadcastChatMessage(
+			FText::FromString(PlayerName
+				.Append(FString(TEXT(": ")))
+				.Append(Message.ToString()))
+		);
+	}
+}
+
+void AWizardPlayerController::ClientAddHUDChatMessage_Implementation(const FText& Message)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddChatMessage(Message);
+	}
+}
 #pragma endregion

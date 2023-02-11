@@ -124,6 +124,12 @@ public:
 	/// <param name="Message">The Message</param>
 	/// <param name="AttributeType">The Attribute the message refers to</param>
 	void AddLocalMessage(const FString& Message, EAttribute AttributeType);
+
+	/// <summary>
+	/// Function to add a Chat Message to the ChatBox
+	/// </summary>
+	/// <param name="Message">The message written in chat</param>
+	void AddChatMessage(const FText& Message);
 #pragma endregion
 
 private:

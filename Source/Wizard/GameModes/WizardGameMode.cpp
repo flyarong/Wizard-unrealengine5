@@ -78,3 +78,14 @@ void AWizardGameMode::RemoveMiniMapActor(AActor* MiniMapActor)
 		MiniMapActors.Remove(MiniMapActor);
 	}
 }
+
+void AWizardGameMode::BroadcastChatMessage(const FText& Message)
+{
+	for (auto& WizardPlayer : WizardPlayers)
+	{
+		if (WizardPlayer)
+		{
+			WizardPlayer->ClientAddHUDChatMessage(Message);
+		}
+	}
+}

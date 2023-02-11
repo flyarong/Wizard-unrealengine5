@@ -30,6 +30,13 @@ public:
 	/// <param name="MiniMapActor">Actor to remove</param>
 	void RemoveMiniMapActor(AActor* MiniMapActor);
 
+	/// <summary>
+	/// Function to Broadcast the Chat Message
+	/// to all machines
+	/// </summary>
+	/// <param name="Message">The message to broadcast</param>
+	void BroadcastChatMessage(const FText& Message);
+
 protected:
 	virtual void BeginPlay() override;
 

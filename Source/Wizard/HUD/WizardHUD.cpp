@@ -7,6 +7,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/Items/CharacterItemPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Messages/ChatBoxWidget.h"
 #include "Components/ScaleBox.h"
 
 bool AWizardHUD::CreateWizardOverlay()
@@ -144,9 +145,16 @@ void AWizardHUD::AddLocalMessage(const FString& Message, EAttribute AttributeTyp
 	PlayerController = PlayerController == nullptr ? GetOwningPlayerController() : PlayerController;
 	if (PlayerController) {
 		ULocalMessageWidget* LocalMessageWidget = CreateWidget<ULocalMessageWidget>(PlayerController, LocalMessageWidgetClass);
-		if (LocalMessageWidget) {
+		if (LocalMessageWidget && WizardOverlay) {
 			LocalMessageWidget->AddLocalMessage(WizardOverlay, FText::FromString(Message), AttributeType);
 		}
+	}
+}
+
+void AWizardHUD::AddChatMessage(const FText& Message)
+{
+	if (WizardOverlay && WizardOverlay->GetChatBox()) {
+		WizardOverlay->GetChatBox()->AddMessage(Message);
 	}
 }
 #pragma endregion
