@@ -118,6 +118,14 @@ public:
 	/// </summary>
 	/// <param name="POIOwner">The owner of the Point Of Interest</param>
 	void SetHUDPOIOnMiniMap(class AActor* POIOwner);
+
+	/// <summary>
+	/// Server RPC to destroy the POI from
+	/// GameMode
+	/// </summary>
+	/// <param name="POIOwner">The Actor to remove from the MiniMap</param>
+	UFUNCTION(Server, Reliable)
+	void ServerDestroyPOI(AActor* POIOwner);
 #pragma endregion
 
 #pragma region HUD/Messages

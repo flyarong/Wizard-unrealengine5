@@ -38,6 +38,7 @@ void AWizardGameMode::InitCharacter(APlayerController* Controller)
 	if (PlayerController && WizardPlayerState) {
 		FName PlayerCharacter = GetPlayerCharacter(WizardPlayerState->GetPlayerName());
 		if (PlayerCharacter.IsValid()) {
+			WizardPlayers.Add(PlayerController);
 
 			// Set timer to wait for client Pawn to be valid
 			FTimerHandle CharacterInitTimer;
@@ -69,4 +70,11 @@ FName AWizardGameMode::GetPlayerCharacter(FString PlayerName)
 void AWizardGameMode::AddMiniMapActor(AActor* MiniMapActor)
 {
 	if (MiniMapActor) MiniMapActors.AddUnique(MiniMapActor);
+}
+
+void AWizardGameMode::RemoveMiniMapActor(AActor* MiniMapActor)
+{
+	if (MiniMapActors.Contains(MiniMapActor)) {
+		MiniMapActors.Remove(MiniMapActor);
+	}
 }

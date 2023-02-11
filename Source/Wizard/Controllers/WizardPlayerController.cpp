@@ -333,6 +333,14 @@ void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 		WizardHUD->SetPOIOnMiniMap(POIOwner);
 	}
 }
+
+void AWizardPlayerController::ServerDestroyPOI_Implementation(AActor* POIOwner)
+{
+	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this)) : WizardGameMode;
+	if (WizardGameMode && POIOwner) {
+		WizardGameMode->RemoveMiniMapActor(POIOwner);
+	}
+}
 #pragma endregion
 
 #pragma region HUD/Messages

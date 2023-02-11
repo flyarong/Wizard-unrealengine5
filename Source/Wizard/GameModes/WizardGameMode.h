@@ -23,6 +23,13 @@ public:
 	/// <param name="MiniMapActor">New MiniMap Actor</param>
 	void AddMiniMapActor(class AActor* MiniMapActor);
 
+	/// <summary>
+	/// Function to remove an Actor from the
+	/// MiniMapActors array
+	/// </summary>
+	/// <param name="MiniMapActor">Actor to remove</param>
+	void RemoveMiniMapActor(AActor* MiniMapActor);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -32,6 +39,11 @@ private:
 	/// Game Instance pointer
 	/// </summary>
 	class UWizardGameInstance* WizardGameInstance;
+
+	/// <summary>
+	/// Array of Game specific Player Controllers
+	/// </summary>
+	TArray<class AWizardPlayerController*> WizardPlayers;
 
 	/// <summary>
 	/// Function to initialize the joining player's character
@@ -48,6 +60,10 @@ private:
 
 public:
 
+	/// <summary>
+	/// Get all the Actors present on the MiniMap
+	/// </summary>
+	/// <returns>Actors on MiniMap</returns>
 	TArray<AActor*> GetMiniMapActors() const { return MiniMapActors; }
 
 	/// <summary>

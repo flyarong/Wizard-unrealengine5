@@ -57,6 +57,10 @@ void UPointOfInterestWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 
 	// Delete if Owner is no longer valid
 	if (Owner->IsActorBeingDestroyed()) {
+		AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
+		if (PlayerController) {
+			PlayerController->ServerDestroyPOI(Owner);
+		}
 		RemoveFromParent();
 	}
 }
