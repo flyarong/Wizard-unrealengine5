@@ -29,6 +29,13 @@ public:
 	void InitOverlay();
 
 	/// <summary>
+	/// Function to set the focus of the Camera
+	/// to the Character
+	/// </summary>
+	UFUNCTION()
+	void SetCameraFocusOnWizard();
+
+	/// <summary>
 	/// Function to enable/disable Character&Camera movement
 	/// </summary>
 	/// <param name="bIsMovementEnabled">Whether movement should be enabled or not</param>
@@ -298,7 +305,7 @@ private:
 #pragma endregion
 
 public:
-	void SetWizardCharacter(AWizardCharacter* WCharacter) { WizardCharacter = WCharacter; }
+	void SetWizardCharacter(AWizardCharacter* WCharacter);
 	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
 };
 

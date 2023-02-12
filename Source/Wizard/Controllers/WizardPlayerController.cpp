@@ -61,6 +61,12 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 }
 
 #pragma region Init
+void AWizardPlayerController::SetWizardCharacter(AWizardCharacter* WCharacter)
+{
+	WizardCharacter = WCharacter;
+	SetCameraFocusOnWizard();
+}
+
 void AWizardPlayerController::InitOverlay()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
@@ -195,6 +201,14 @@ void AWizardPlayerController::OnTouchReleased()
 #pragma endregion
 
 #pragma region CameraMovement
+void AWizardPlayerController::SetCameraFocusOnWizard()
+{
+	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
+	if (GameplayCamera && IsLocalController()) {
+		GameplayCamera->SetActorLocation(WizardCharacter->GetActorLocation());
+	}
+}
+
 void AWizardPlayerController::OnMouseWheelAxis(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;

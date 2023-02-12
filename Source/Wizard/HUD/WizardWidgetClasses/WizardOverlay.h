@@ -33,6 +33,9 @@ private:
 	class UImage* ProfileImage;
 
 	UPROPERTY(meta = (BindWidget))
+	class UButton* ProfileButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* OffenseText;
 
 	UPROPERTY(meta = (BindWidget))
@@ -95,6 +98,7 @@ private:
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
+	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
 	FORCEINLINE void SetHealthBarPercentage(float Health, float MaxHealth) { HealthBar->SetWizardBarPercent(Health, MaxHealth); };
 	FORCEINLINE UWizardProgressBarWidget* GetHealthBar() const { return HealthBar; }

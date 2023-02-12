@@ -2,6 +2,7 @@
 
 
 #include "WizardHUD.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/HUD/WizardWidgetClasses/MiniMap/MiniMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Catalog/CatalogWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Items/CharacterItemPanelWidget.h"
@@ -9,6 +10,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/ChatBoxWidget.h"
 #include "Components/ScaleBox.h"
+#include "Components/Button.h"
 
 bool AWizardHUD::CreateWizardOverlay()
 {
@@ -49,8 +51,10 @@ void AWizardHUD::SetPower(float Power, float MaxPower)
 
 void AWizardHUD::SetCharacterImage(UTexture2D* CharacterImage)
 {
-	if (WizardOverlay && WizardOverlay->GetProfileImage()) {
+	AWizardPlayerController* WController = Cast<AWizardPlayerController>(GetOwningPlayerController());
+	if (WController && WizardOverlay && WizardOverlay->GetProfileImage() && WizardOverlay->GetProfileButton()) {
 		WizardOverlay->SetProfileImage(CharacterImage);
+		WizardOverlay->GetProfileButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::SetCameraFocusOnWizard);
 	}
 }
 
