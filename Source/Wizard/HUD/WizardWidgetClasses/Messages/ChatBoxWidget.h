@@ -39,7 +39,13 @@ private:
 	class UEditableTextBox* ChatTextBox;
 
 	UPROPERTY(meta = (BindWidget))
-	class UVerticalBox* MessageBox;
+	class UScrollBox* MessageBox;
+
+	/// <summary>
+	/// Number of messages to show in the messagebox
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Message")
+	int32 NumOfMessages = 5;
 
 	/// <summary>
 	/// Callback function to when the Player

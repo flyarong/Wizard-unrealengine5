@@ -4,7 +4,7 @@
 #include "ChatBoxWidget.h"
 #include "ChatMessageWidget.h"
 #include "Components/EditableTextBox.h"
-#include "Components/VerticalBox.h"
+#include "Components/ScrollBox.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 
@@ -23,7 +23,10 @@ void UChatBoxWidget::AddMessage(const FText& Message)
 		UChatMessageWidget* ChatMessage = CreateWidget<UChatMessageWidget>(OwnerController, ChatMessageWidgetClass);
 		if (ChatMessage) {
 			ChatMessage->ConstructMessage(Message);
-			MessageBox->AddChildToVerticalBox(ChatMessage);
+			if (MessageBox->GetAllChildren().Num() >= NumOfMessages) {
+				MessageBox->GetAllChildren()[0]->RemoveFromParent();
+			}
+			MessageBox->AddChild(ChatMessage);
 		}
 	}
 }

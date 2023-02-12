@@ -16,13 +16,26 @@ class WIZARD_API UBaseMessageWidget : public UUserWidget
 
 protected:
 
+	/// <summary>
+	/// Function to add a new message to the
+	/// overlay
+	/// </summary>
 	void AddMessageToOverlay(class UWizardOverlay* Overlay);
 
-	UPROPERTY(EditAnywhere)
+	/// <summary>
+	/// Number of messages to show in the messagebox
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Message")
 	int32 NumOfMessages = 5;
 
+	/// <summary>
+	/// Number of seconds to show the message
+	/// </summary>
 	UPROPERTY()
 	float MessageTime = 5.f;
 
+	/// <summary>
+	/// Callback function to the message's timer
+	/// </summary>
 	void MsgTimerFinished();
 };

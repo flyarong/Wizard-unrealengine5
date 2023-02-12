@@ -11,7 +11,7 @@ void UBaseMessageWidget::AddMessageToOverlay(UWizardOverlay* Overlay)
 		UVerticalBox* Box = Overlay->GetEventBox();
 
 		if (Box->GetAllChildren().Num() >= NumOfMessages) {
-			Box->GetAllChildren().RemoveAt(0); // Remove first one already if it hasn't timed out yet
+			Box->GetAllChildren()[0]->RemoveFromParent(); // Remove first one already if it hasn't timed out yet
 		}
 
 		Box->AddChildToVerticalBox(this);

@@ -27,6 +27,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UImage* MessageImage;
 
-	UPROPERTY(EditAnywhere, Category = "Attribute")
+	/// <summary>
+	/// XP image to show next to the message
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Message")
 	class UTexture2D* XPImage;
 };
