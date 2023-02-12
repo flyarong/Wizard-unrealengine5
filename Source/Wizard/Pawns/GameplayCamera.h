@@ -72,10 +72,10 @@ private:
 	/// Camera Position multiplier
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")
-	int32 CameraPosition = 0;
+	int32 CameraPosition = 2;
 
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")
-	int32 MaxCameraPosition = 8;
+	int32 MaxCameraPosition = 5;
 
 	/// <summary>
 	/// Variable holding the amount to zoom in/out
@@ -93,7 +93,7 @@ private:
 	/// Speed multiplier when Camera is moving
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")
-	float CameraMovementSpeed = 15.f;
+	float CameraMovementSpeed = 20.f;
 
 	/// <summary>
 	/// How fast the camera should rotate
