@@ -107,6 +107,13 @@ private:
 	/// </summary>
 	void CameraZoom(float DeltaTime);
 
+	/// <summary>
+	/// Camera Movement function for keys
+	/// </summary>
+	/// <param name="Value">Input value</param>
+	/// <param name="RotationY">Rotates the vector depending on movement direction</param>
+	void KeyMove(float Value, float RotationY);
+
 	/**
 	* Functions for moving the camera with the mouse
 	*/

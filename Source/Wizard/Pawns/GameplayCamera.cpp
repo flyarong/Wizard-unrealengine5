@@ -92,17 +92,18 @@ void AGameplayCamera::MouseRotate(float Value)
 
 void AGameplayCamera::KeyMoveForwardOrBackward(float Value)
 {
-	if (CameraBoom && Value != 0) {
-		FVector DeltaLocation = FRotator(0.f, -90.f + CameraBoom->GetComponentRotation().Yaw, 0.f)
-			.RotateVector(FVector(0.f, Value * CameraMovementSpeed, 0.f));
-		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
-	}
+	KeyMove(Value, -90.f + CameraBoom->GetComponentRotation().Yaw);
 }
 
 void AGameplayCamera::KeyMoveLeftOrRight(float Value)
 {
+	KeyMove(Value, CameraBoom->GetComponentRotation().Yaw);
+}
+
+void AGameplayCamera::KeyMove(float Value, float RotationY)
+{
 	if (CameraBoom && Value != 0) {
-		FVector DeltaLocation = FRotator(0.f, CameraBoom->GetComponentRotation().Yaw, 0.f)
+		FVector DeltaLocation = FRotator(0.f, RotationY, 0.f)
 			.RotateVector(FVector(0.f, Value * CameraMovementSpeed, 0.f));
 		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
 	}
