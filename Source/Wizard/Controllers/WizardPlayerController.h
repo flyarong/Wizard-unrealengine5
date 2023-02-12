@@ -28,6 +28,12 @@ public:
 	/// </summary>
 	void InitOverlay();
 
+	/// <summary>
+	/// Function to enable/disable Character&Camera movement
+	/// </summary>
+	/// <param name="bIsMovementEnabled">Whether movement should be enabled or not</param>
+	void SetWizardMovementIsEnabled(bool bIsMovementEnabled);
+
 #pragma region HUD/Player
 	/// <summary>
 	/// Function for setting the current district
@@ -191,12 +197,12 @@ protected:
 	/// Callback function to Mouse Wheel Axis for
 	/// Zooming in/out with the camera
 	/// </summary>
-	void MouseWheelAxis(float Value);
+	void OnMouseWheelAxis(float Value);
 
 	/// <summary>
 	/// Callback function to rotate Camera with Right Mouse Button
 	/// </summary>
-	void MouseRotateYaw(float Value);
+	void OnMouseRotateYaw(float Value);
 
 	/// <summary>
 	/// Callback function for moving the camera
@@ -279,7 +285,14 @@ private:
 	/// can move
 	/// </summary>
 	UPROPERTY(EditAnywhere)
-	bool bCanMove = true;
+	bool bCanCharacterMove = true;
+
+	/// <summary>
+	/// Boolean for whether or not the Camera
+	/// can move
+	/// </summary>
+	UPROPERTY()
+	bool bCanCameraMove = true;
 
 	bool bIsTouch; // Is it a touch device
 #pragma endregion
@@ -287,7 +300,6 @@ private:
 public:
 	void SetWizardCharacter(AWizardCharacter* WCharacter) { WizardCharacter = WCharacter; }
 	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
-	FORCEINLINE void ToggleMovement(bool bCanPawnMove) { bCanMove = bCanPawnMove; }
 };
 
 

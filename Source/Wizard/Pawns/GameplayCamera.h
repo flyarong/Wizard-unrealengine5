@@ -61,7 +61,7 @@ private:
 #pragma region CameraProperties
 	/// <summary>
 	/// Boolean for enabling/disabling camera
-	/// movement with mouse - mainly used for testing in PIE
+	/// movement with mouse
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera Movement") 
 	bool bEnableMouseMovement = true;
@@ -128,4 +128,7 @@ private:
 	/// at the border of the Navmesh bound
 	/// </summary>
 	bool CheckCameraMovementBounds(FVector DeltaLocation);
+
+public:
+	FORCEINLINE void SetEnableCameraMovementWithMouse(bool bIsMovementEnabled) { bEnableMouseMovement = bIsMovementEnabled; }
 };

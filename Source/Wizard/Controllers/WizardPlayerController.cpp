@@ -42,7 +42,7 @@ void AWizardPlayerController::BeginPlay()
 	// Init Gameplay Camera pointer
 	GameplayCamera = Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass()));
 
-	// Init HUD
+	// Init HUD & UI until Character becomes valid
 	WizardHUD = Cast<AWizardHUD>(GetHUD());
 	FInputModeUIOnly InputModeData;
 	SetInputMode(InputModeData);
@@ -105,10 +105,18 @@ void AWizardPlayerController::SetupInputComponent()
 	}
 
 	// Camera Axis Mappings
-	InputComponent->BindAxis(FName("MouseWheelAxis"), this, &AWizardPlayerController::MouseWheelAxis);
+	InputComponent->BindAxis(FName("MouseWheelAxis"), this, &AWizardPlayerController::OnMouseWheelAxis);
 	InputComponent->BindAxis(FName("MoveForward"), this, &AWizardPlayerController::OnKeyMoveForward);
 	InputComponent->BindAxis(FName("MoveRight"), this, &AWizardPlayerController::OnKeyMoveRight);
-	InputComponent->BindAxis(FName("LookYaw"), this, &AWizardPlayerController::MouseRotateYaw);
+	InputComponent->BindAxis(FName("LookYaw"), this, &AWizardPlayerController::OnMouseRotateYaw);
+}
+
+void AWizardPlayerController::SetWizardMovementIsEnabled(bool bIsMovementEnabled)
+{
+	bCanCharacterMove = bIsMovementEnabled;
+	bCanCameraMove = bIsMovementEnabled;
+	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
+	if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(bIsMovementEnabled);
 }
 
 #pragma region CharacterMovement
@@ -147,7 +155,7 @@ void AWizardPlayerController::OnSetDestinationTriggered()
 
 void AWizardPlayerController::OnSetDestinationReleased()
 {
-	if (bCanMove) {
+	if (bCanCharacterMove) {
 		// We move there and spawn some particles
 		ServerMoveToLocation(this, CachedDestination);
 		if (!HasAuthority()) {
@@ -187,18 +195,18 @@ void AWizardPlayerController::OnTouchReleased()
 #pragma endregion
 
 #pragma region CameraMovement
-void AWizardPlayerController::MouseWheelAxis(float Value)
+void AWizardPlayerController::OnMouseWheelAxis(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
-	if (GameplayCamera) {
+	if (GameplayCamera && bCanCameraMove) {
 		GameplayCamera->SetPositionWithMouseWheel(Value);
 	}
 }
 
-void AWizardPlayerController::MouseRotateYaw(float Value)
+void AWizardPlayerController::OnMouseRotateYaw(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
-	if (GameplayCamera && IsInputKeyDown(EKeys::RightMouseButton)) {
+	if (GameplayCamera && IsInputKeyDown(EKeys::RightMouseButton) && bCanCameraMove) {
 		GameplayCamera->MouseRotate(Value);
 	}
 }
@@ -206,13 +214,13 @@ void AWizardPlayerController::MouseRotateYaw(float Value)
 void AWizardPlayerController::OnKeyMoveForward(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
-	if (GameplayCamera) GameplayCamera->KeyMoveForwardOrBackward(Value);
+	if (GameplayCamera && bCanCameraMove) GameplayCamera->KeyMoveForwardOrBackward(Value);
 }
 
 void AWizardPlayerController::OnKeyMoveRight(float Value)
 {
 	GameplayCamera = GameplayCamera == nullptr ? Cast<AGameplayCamera>(UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())) : GameplayCamera;
-	if (GameplayCamera) GameplayCamera->KeyMoveLeftOrRight(Value);
+	if (GameplayCamera && bCanCameraMove) GameplayCamera->KeyMoveLeftOrRight(Value);
 }
 #pragma endregion
 
