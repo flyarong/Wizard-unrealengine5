@@ -32,7 +32,7 @@ void UWizardProgressBarWidget::UpdateWizardBarPercentage(float DeltaTime)
 		float DeltaValue = FMath::Clamp(ProgressBar->GetPercent() + ValueThisFrame, 0.f, MaxProgressValue);
 		ProgressBar->SetPercent(DeltaValue);
 
-		Amount -= FMath::Abs(Rate * DeltaTime);
+		Amount -= FMath::Abs(ValueThisFrame);
 		if (Amount <= 0.f) {
 			bIsChanging = false;
 			Amount = 0.f;

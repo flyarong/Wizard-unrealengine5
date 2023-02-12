@@ -102,7 +102,7 @@ private:
 	/// Amount to gain/loss per frame
 	/// </summary>
 	UPROPERTY()
-	float ValueThisFrame;
+	float ValueThisFrame = 0.f;
 
 	/// <summary>
 	/// Boolean for determining whether or not
