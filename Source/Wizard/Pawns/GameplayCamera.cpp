@@ -58,7 +58,7 @@ void AGameplayCamera::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CameraZoom(DeltaTime);
-	if (bEnableMouseMovement) { // TODO Mouse movement blocks character follow functionality
+	if (bEnableMouseMovement) {
 		MouseMoveLeft();
 		MouseMoveForward();
 		MouseMoveRight();
