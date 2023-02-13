@@ -130,11 +130,11 @@ void AGameplayCamera::MouseMoveLeft()
 	FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(this) * UWidgetLayoutLibrary::GetViewportScale(this);
 	FVector2D ViewPortSize = UWidgetLayoutLibrary::GetViewportSize(this);
 
-	if (CameraBoom) {
+	if (CameraBoom && MousePosition.X <= ViewPortSize.X * 0.03f) {
 		FVector DeltaLocation = FRotator(0.f, CameraBoom->GetComponentRotation().Yaw, 0.f)
 			.RotateVector(
 				FVector(0.f, -CameraMovementSpeed, 0.f) *
-				(1 - FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.X, 0.f, ViewPortSize.X * 0.05f), 0.f, 1.f))
+				(1 - FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.X, 0.f, ViewPortSize.X * 0.03f), 0.f, 1.f))
 			);
 		if (CheckCameraMovementBounds(DeltaLocation)) {
 			if (bFollowWizard) bFollowWizard = false;
@@ -148,11 +148,11 @@ void AGameplayCamera::MouseMoveRight()
 	FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(this) * UWidgetLayoutLibrary::GetViewportScale(this);
 	FVector2D ViewPortSize = UWidgetLayoutLibrary::GetViewportSize(this);
 
-	if (CameraBoom) {
+	if (CameraBoom && MousePosition.X >= ViewPortSize.X * 0.97f) {
 		FVector DeltaLocation = FRotator(0.f, CameraBoom->GetComponentRotation().Yaw, 0.f)
 			.RotateVector(
 				FVector(0.f, CameraMovementSpeed, 0.f) *
-				FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.X, ViewPortSize.X * 0.95f, ViewPortSize.X), 0.f, 1.f)
+				FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.X, ViewPortSize.X * 0.97f, ViewPortSize.X), 0.f, 1.f)
 			);
 		if (CheckCameraMovementBounds(DeltaLocation)) {
 			if (bFollowWizard) bFollowWizard = false;
@@ -166,11 +166,11 @@ void AGameplayCamera::MouseMoveForward()
 	FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(this) * UWidgetLayoutLibrary::GetViewportScale(this);
 	FVector2D ViewPortSize = UWidgetLayoutLibrary::GetViewportSize(this);
 
-	if (CameraBoom) {
+	if (CameraBoom && MousePosition.Y <= ViewPortSize.Y * 0.03f) {
 		FVector DeltaLocation = FRotator(0.f, 90.f + CameraBoom->GetComponentRotation().Yaw, 0.f)
 			.RotateVector(
 				FVector(0.f, -CameraMovementSpeed, 0.f) *
-				(1 - FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.Y, 0.f, ViewPortSize.Y * 0.05f), 0.f, 1.f))
+				(1 - FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.Y, 0.f, ViewPortSize.Y * 0.03f), 0.f, 1.f))
 			);
 		if (CheckCameraMovementBounds(DeltaLocation)) {
 			if (bFollowWizard) bFollowWizard = false;
@@ -184,11 +184,11 @@ void AGameplayCamera::MouseMoveBack()
 	FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(this) * UWidgetLayoutLibrary::GetViewportScale(this);
 	FVector2D ViewPortSize = UWidgetLayoutLibrary::GetViewportSize(this);
 
-	if (CameraBoom) {
+	if (CameraBoom && MousePosition.Y >= ViewPortSize.Y * 0.97f) {
 		FVector DeltaLocation = FRotator(0.f, 90.f + CameraBoom->GetComponentRotation().Yaw, 0.f)
 			.RotateVector(
 				FVector(0.f, CameraMovementSpeed, 0.f) *
-				FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.Y, ViewPortSize.Y * 0.95f, ViewPortSize.Y), 0.f, 1.f)
+				FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.Y, ViewPortSize.Y * 0.97f, ViewPortSize.Y), 0.f, 1.f)
 			);
 		if (CheckCameraMovementBounds(DeltaLocation)) {
 			if (bFollowWizard) bFollowWizard = false;
