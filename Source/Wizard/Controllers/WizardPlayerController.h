@@ -24,6 +24,12 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
+	/// Function to setup the Gameplay Camera at the
+	/// beginning of the Game
+	/// </summary>
+	void SetupCamera();
+
+	/// <summary>
 	/// Function to initialize the Gameplay Overlay
 	/// </summary>
 	void InitOverlay();
@@ -291,7 +297,7 @@ private:
 	/// Boolean for whether or not the Character
 	/// can move
 	/// </summary>
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	bool bCanCharacterMove = true;
 
 	/// <summary>

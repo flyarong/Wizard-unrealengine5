@@ -8,12 +8,14 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "NavMesh/NavMeshBoundsVolume.h"
+#include "Wizard/Characters/WizardCharacter.h"
 
 // Sets default values
 AGameplayCamera::AGameplayCamera()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bReplicates = false;
 	SetReplicateMovement(false);
 
 	// Create a camera boom...
@@ -22,14 +24,18 @@ AGameplayCamera::AGameplayCamera()
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
 	CameraBoom->TargetArmLength = DefaultSpringArmLength;
 	CameraBoom->SetRelativeLocation(FVector(-5.f, 35.f, 190.f));
-	CameraBoom->SetRelativeRotation(FRotator(-35.f, -60.f, 0.f));
+	CameraBoom->SetRelativeRotation(FRotator(-35.f, -120.f, 0.f));
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->bEnableCameraRotationLag = true;
+	CameraBoom->CameraLagSpeed = 5.f;
+	CameraBoom->CameraRotationLagSpeed = 5.f;
 
 	// Create a camera...
 	TopDownCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("TopDownCamera"));
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-	TopDownCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 180.f));
+	TopDownCameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	TopDownCameraComponent->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
 }
 
@@ -52,18 +58,27 @@ void AGameplayCamera::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	CameraZoom(DeltaTime);
-	if (bEnableMouseMovement) {
+	if (bEnableMouseMovement) { // TODO Mouse movement blocks character follow functionality
 		MouseMoveLeft();
 		MouseMoveForward();
 		MouseMoveRight();
 		MouseMoveBack();
 	}
+	FollowWizardWithCamera();
 }
 
 // Called to bind functionality to input
 void AGameplayCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AGameplayCamera::SetCameraFocusOnWizard()
+{
+	if (WCharacter) {
+		if (!bFollowWizard) bFollowWizard = true;
+		SetActorLocation(WCharacter->GetActorLocation());
+	}
 }
 
 void AGameplayCamera::SetPositionWithMouseWheel(float Value)
@@ -103,6 +118,7 @@ void AGameplayCamera::KeyMoveLeftOrRight(float Value)
 void AGameplayCamera::KeyMove(float Value, float RotationY)
 {
 	if (CameraBoom && Value != 0) {
+		if (bFollowWizard) bFollowWizard = false;
 		FVector DeltaLocation = FRotator(0.f, RotationY, 0.f)
 			.RotateVector(FVector(0.f, Value * CameraMovementSpeed, 0.f));
 		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
@@ -120,7 +136,10 @@ void AGameplayCamera::MouseMoveLeft()
 				FVector(0.f, -CameraMovementSpeed, 0.f) *
 				(1 - FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.X, 0.f, ViewPortSize.X * 0.05f), 0.f, 1.f))
 			);
-		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
+		if (CheckCameraMovementBounds(DeltaLocation)) {
+			if (bFollowWizard) bFollowWizard = false;
+			CameraBoom->AddRelativeLocation(DeltaLocation);
+		}
 	}
 }
 
@@ -135,7 +154,10 @@ void AGameplayCamera::MouseMoveRight()
 				FVector(0.f, CameraMovementSpeed, 0.f) *
 				FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.X, ViewPortSize.X * 0.95f, ViewPortSize.X), 0.f, 1.f)
 			);
-		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
+		if (CheckCameraMovementBounds(DeltaLocation)) {
+			if (bFollowWizard) bFollowWizard = false;
+			CameraBoom->AddRelativeLocation(DeltaLocation);
+		}
 	}
 }
 
@@ -150,7 +172,10 @@ void AGameplayCamera::MouseMoveForward()
 				FVector(0.f, -CameraMovementSpeed, 0.f) *
 				(1 - FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.Y, 0.f, ViewPortSize.Y * 0.05f), 0.f, 1.f))
 			);
-		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
+		if (CheckCameraMovementBounds(DeltaLocation)) {
+			if (bFollowWizard) bFollowWizard = false;
+			CameraBoom->AddRelativeLocation(DeltaLocation);
+		}
 	}
 }
 
@@ -165,7 +190,17 @@ void AGameplayCamera::MouseMoveBack()
 				FVector(0.f, CameraMovementSpeed, 0.f) *
 				FMath::Clamp(UKismetMathLibrary::NormalizeToRange(MousePosition.Y, ViewPortSize.Y * 0.95f, ViewPortSize.Y), 0.f, 1.f)
 			);
-		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
+		if (CheckCameraMovementBounds(DeltaLocation)) {
+			if (bFollowWizard) bFollowWizard = false;
+			CameraBoom->AddRelativeLocation(DeltaLocation);
+		}
+	}
+}
+
+void AGameplayCamera::FollowWizardWithCamera()
+{
+	if (bFollowWizard) {
+		SetCameraFocusOnWizard();
 	}
 }
 

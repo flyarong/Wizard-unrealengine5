@@ -129,6 +129,8 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController) {
 		PlayerController->SetWizardCharacter(this);
+		PlayerController->SetupCamera();
+
 		// Init WizardOverlay
 		PlayerController->InitOverlay();
 

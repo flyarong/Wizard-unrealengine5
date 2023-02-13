@@ -25,6 +25,13 @@ public:
 	virtual void BeginPlay() override;
 
 #pragma region CameraMovementFunctions
+	
+	/// <summary>
+	/// Function to set the focus of the Camera
+	/// to the Character
+	/// </summary>
+	void SetCameraFocusOnWizard();
+	
 	/// <summary>
 	/// Function for setting the Camera zoom position
 	/// with Mouse wheel
@@ -58,13 +65,19 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
+	/// <summary>
+	/// Character associated with the Camera
+	/// </summary>
+	UPROPERTY()
+	class AWizardCharacter* WCharacter;
+
 #pragma region CameraProperties
 	/// <summary>
 	/// Boolean for enabling/disabling camera
 	/// movement with mouse
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera Movement") 
-	bool bEnableMouseMovement = true;
+	bool bEnableMouseMovement = false;
 	
 	FVector Bound;
 
@@ -124,11 +137,25 @@ private:
 	void MouseMoveBack();
 
 	/// <summary>
+	/// Function to follow the Character with the Camera
+	/// Used in Tick
+	/// </summary>
+	void FollowWizardWithCamera();
+
+	/// <summary>
 	/// Function for checking whether or not we are
 	/// at the border of the Navmesh bound
 	/// </summary>
 	bool CheckCameraMovementBounds(FVector DeltaLocation);
 
+	/// <summary>
+	/// Boolean for whether or not the Character
+	/// should be followed with the Camera
+	/// </summary>
+	UPROPERTY()
+	bool bFollowWizard = true;
+
 public:
+	FORCEINLINE void SetWizard(AWizardCharacter* Wizard) { WCharacter = Wizard; }
 	FORCEINLINE void SetEnableCameraMovementWithMouse(bool bIsMovementEnabled) { bEnableMouseMovement = bIsMovementEnabled; }
 };
