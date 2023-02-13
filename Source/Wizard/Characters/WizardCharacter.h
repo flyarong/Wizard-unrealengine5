@@ -82,6 +82,31 @@ private:
 	class UActionComponent* Action;
 
 	/// <summary>
+	/// Character's Combat component: handling
+	/// all the combat-related functionality
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* Combat;
+
+	/// <summary>
+	/// Mesh for the Spell Bar
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* CombatMesh;
+
+	/// <summary>
+	/// Static mesh for the CombatMesh Component
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UStaticMesh* CombatSM;
+
+	/// <summary>
+	/// Material for the CombatMesh Component
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UMaterial* CombatMaterial;
+
+	/// <summary>
 	/// Character's Point of Interest component:
 	/// shows the location of the Character on the MiniMap
 	/// </summary>
