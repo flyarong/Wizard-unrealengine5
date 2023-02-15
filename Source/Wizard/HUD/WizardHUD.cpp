@@ -9,6 +9,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/ChatBoxWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Combat/SpellMapWidget.h"
 #include "Components/ScaleBox.h"
 #include "Components/Button.h"
 
@@ -111,7 +112,7 @@ void AWizardHUD::SetAgility(int32 NewAgility)
 #pragma region Store/Catalog
 void AWizardHUD::SetStoreCatalog(AStore* Store)
 {
-	if (WizardOverlay) {
+	if (WizardOverlay && WizardOverlay->GetCenterBox()) {
 		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
 			WizardOverlay->GetCenterBox()->ClearChildren();
 		}
@@ -162,3 +163,18 @@ void AWizardHUD::AddChatMessage(const FText& Message)
 	}
 }
 #pragma endregion
+
+void AWizardHUD::AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
+{
+	if (WizardOverlay && WizardOverlay->GetTopRightBox()) {
+		if (WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
+			WizardOverlay->GetTopRightBox()->ClearChildren();
+		}
+
+		USpellMapWidget* SpellMapWidget = CreateWidget<USpellMapWidget>(GetOwningPlayerController(), WizardOverlay->GetSpellMapWidgetClass());
+		if (SpellMapWidget) {
+			SpellMapWidget->ConstructSpellMap(SpellMap);
+			WizardOverlay->GetTopRightBox()->AddChild(SpellMapWidget);
+		}
+	}
+}

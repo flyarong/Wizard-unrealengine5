@@ -132,6 +132,8 @@ public:
 	void AddChatMessage(const FText& Message);
 #pragma endregion
 
+	void AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
+
 private:
 	
 	APlayerController* PlayerController;

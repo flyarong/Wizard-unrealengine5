@@ -54,9 +54,9 @@ AWizardCharacter::AWizardCharacter()
 	// Create Combat Mesh and set it as Root
 	CombatMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CombatMesh"));
 	CombatMesh->SetupAttachment(RootComponent);
-	CombatMesh->SetRelativeLocation(FVector(-30.f, 60.f, 0.f));
-	CombatMesh->SetRelativeRotation(FRotator(90.f, 0.f, 50.f));
-	CombatMesh->SetRelativeScale3D(FVector(0.03f, 1.f, 1.f));
+	CombatMesh->SetRelativeLocation(FVector(-30.f, 115.f, 0.f));
+	CombatMesh->SetRelativeRotation(FRotator(180.f, 40.f, 90.f));
+	CombatMesh->SetRelativeScale3D(FVector(0.03f, 1.5f, 1.f));
 
 	// Create Point of Interest Component
 	POI = CreateDefaultSubobject<UCharacterPOIComponent>(TEXT("PointOfInterest"));

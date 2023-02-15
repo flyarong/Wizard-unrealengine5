@@ -398,3 +398,11 @@ void AWizardPlayerController::ClientAddHUDChatMessage_Implementation(const FText
 	}
 }
 #pragma endregion
+
+void AWizardPlayerController::AddHUDSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddSpellMap(SpellMap);
+	}
+}

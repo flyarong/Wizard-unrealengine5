@@ -26,6 +26,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Catalog")
 	TSubclassOf<class UUserWidget> CatalogWidgetClass;
 
+	/// <summary>
+	/// Widget class for the SpellMap
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<class UUserWidget> SpellMapWidgetClass;
+
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CharacterNameText;
 
@@ -87,6 +93,9 @@ private:
 	class UScaleBox* CenterBox;
 
 	UPROPERTY(meta = (BindWidget))
+	UScaleBox* TopRightBox;
+
+	UPROPERTY(meta = (BindWidget))
 	class UVerticalBox* EventBox;
 
 	UPROPERTY(meta = (BindWidget))
@@ -97,6 +106,7 @@ private:
 
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
@@ -128,6 +138,7 @@ public:
 	FORCEINLINE void SetAgilityTextModifier(FText Modifier) { AgilityTextModifier->SetText(Modifier); };
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
+	FORCEINLINE UScaleBox* GetTopRightBox() const { return TopRightBox; }
 	FORCEINLINE UVerticalBox* GetEventBox() const { return EventBox; }
 	FORCEINLINE UChatBoxWidget* GetChatBox() const { return ChatBox; }
 	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }

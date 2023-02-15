@@ -97,13 +97,13 @@ private:
 	/// <summary>
 	/// Static mesh for the CombatMesh Component
 	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Spell Bar")
 	class UStaticMesh* CombatSM;
 
 	/// <summary>
 	/// Material for the CombatMesh Component
 	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, Category = "Spell Bar")
 	class UMaterial* CombatMaterial;
 
 	/// <summary>

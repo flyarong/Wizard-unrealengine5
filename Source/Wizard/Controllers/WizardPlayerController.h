@@ -171,6 +171,8 @@ public:
 	void ClientAddHUDChatMessage(const FText& Message);
 #pragma endregion
 
+	void AddHUDSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
+
 #pragma region InputPointers
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
