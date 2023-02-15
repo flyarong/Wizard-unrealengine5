@@ -10,6 +10,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/ChatBoxWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/SpellMapWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Combat/CombatMenuWidget.h"
 #include "Components/ScaleBox.h"
 #include "Components/Button.h"
 
@@ -175,6 +176,21 @@ void AWizardHUD::AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
 		if (SpellMapWidget) {
 			SpellMapWidget->ConstructSpellMap(SpellMap);
 			WizardOverlay->GetTopRightBox()->AddChild(SpellMapWidget);
+		}
+	}
+}
+
+void AWizardHUD::AddCombatMenu()
+{
+	if (WizardOverlay && WizardOverlay->GetCenterBox()) {
+		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetCenterBox()->ClearChildren();
+		}
+
+		UCombatMenuWidget* CombatMenuWidget = CreateWidget<UCombatMenuWidget>(GetOwningPlayerController(), WizardOverlay->GetCombatMenuWidgetClass());
+		if (CombatMenuWidget) {
+			CombatMenuWidget->BindEventsToButtons();
+			WizardOverlay->GetCenterBox()->AddChild(CombatMenuWidget);
 		}
 	}
 }

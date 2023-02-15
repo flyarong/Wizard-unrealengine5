@@ -14,7 +14,19 @@ class WIZARD_API UCombatMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+
+	void BindEventsToButtons();
+
 private:
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* StartButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* CancelButton;
+
+	void OnStartButtonClicked();
 
 	void OnCancelButtonClicked();
 

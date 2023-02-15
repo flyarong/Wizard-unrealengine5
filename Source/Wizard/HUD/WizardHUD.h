@@ -134,6 +134,8 @@ public:
 
 	void AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
 
+	void AddCombatMenu();
+
 private:
 	
 	APlayerController* PlayerController;

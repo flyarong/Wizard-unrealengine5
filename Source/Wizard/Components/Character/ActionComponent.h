@@ -54,6 +54,28 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerBuyItem(int32 ItemIndex, FItemDataTable ItemRow);
 
+	/// <summary>
+	/// Function to set the currently overlapped Spell
+	/// </summary>
+	/// <param name="Spell">Spell being overlapped</param>
+	void SetOverlappedSpell(class ASpell* Spell);
+
+	/// <summary>
+	/// Function to initiate Combat
+	/// </summary>
+	void StartCombat();
+
+	/// <summary>
+	/// Function to execute when overlapping with a Spell
+	/// ends
+	/// </summary>
+	void LeaveSpell();
+
+	/// <summary>
+	/// Function to cancel the Combat
+	/// </summary>
+	void CancelCombat();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -135,9 +157,35 @@ private:
 	void ClientAddLocalMessage(const FString& Message, EAttribute AttributeType);
 #pragma endregion
 
+#pragma region Spells
+	/// <summary>
+	/// Spell the Character is currently overlapping
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappedSpell)
+	class ASpell* OverlappedSpell;
+
+	UFUNCTION()
+	void OnRep_OverlappedSpell(ASpell* PreviousSpell);
+
+	/// <summary>
+	/// Boolean for whether or not the Combat should start
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_StartCombat)
+	bool bStartCombat = false;
+
+	UFUNCTION()
+	void OnRep_StartCombat();
+
+	/// <summary>
+	/// Function to set the viewport for Combat
+	/// </summary>
+	void SetCombatView();
+#pragma endregion
+
 public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
 	FORCEINLINE AStore* GetCurrentStore() const { return CurrentStore; }
+	FORCEINLINE ASpell* GetOverlappedSpell() const { return OverlappedSpell; }
 
 };

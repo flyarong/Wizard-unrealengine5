@@ -32,6 +32,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<class UUserWidget> SpellMapWidgetClass;
 
+	/// <summary>
+	/// Widget class for the Combat Menu
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<class UUserWidget> CombatMenuWidgetClass;
+
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CharacterNameText;
 
@@ -107,6 +113,7 @@ private:
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetCombatMenuWidgetClass() const { return CombatMenuWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }

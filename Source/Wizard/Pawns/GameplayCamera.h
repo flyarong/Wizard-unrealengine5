@@ -33,6 +33,17 @@ public:
 	void SetCameraFocusOnWizard();
 	
 	/// <summary>
+	/// Function to set the Camera's position
+	/// to Default
+	/// </summary>
+	void SetPositionToDefault();
+
+	/// <summary>
+	/// Function to set the Camera's position for Combat
+	/// </summary>
+	void SetPositionToCombat();
+
+	/// <summary>
 	/// Function for setting the Camera zoom position
 	/// with Mouse wheel
 	/// </summary>
@@ -79,7 +90,30 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Camera Movement") 
 	bool bEnableMouseMovement = false;
 	
+	/// <summary>
+	/// Length of the Map
+	/// </summary>
 	FVector Bound;
+
+	/// <summary>
+	/// Camera's default Relative Location
+	/// </summary>
+	FVector DefaultCameraLocation = FVector(-5.f, 35.f, 190.f);
+
+	/// <summary>
+	/// Camera's default Relative Rotation
+	/// </summary>
+	FRotator DefaultCameraRotation = FRotator(-35.f, -120.f, 0.f);
+
+	/// <summary>
+	/// Camera's Relative Location during Combat
+	/// </summary>
+	FVector CombatCameraLocation = FVector(0.f, 0.f, 0.f); // TODO modify to appropriate values
+
+	/// <summary>
+	/// Camera's Relative Rotation during Combat
+	/// </summary>
+	FRotator CombatCameraRotation = FRotator(-35.f, -120.f, 0.f); // TODO modify to appropriate values
 
 	/// <summary>
 	/// Camera Position multiplier

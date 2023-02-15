@@ -55,6 +55,7 @@ void ASpell::OnSpellBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
+		Character->GetAction()->SetOverlappedSpell(this);
 	}
 }
 
@@ -62,7 +63,7 @@ void ASpell::OnSpellEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
-		
+		Character->GetAction()->LeaveSpell();
 	}
 }
 
@@ -72,8 +73,9 @@ void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 	if (PlayerController) {
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
-		if (Character && Character->GetAction()) {
-			Destroy();
+		if (Character && Character->GetAction() &&
+			Character->GetAction()->GetOverlappedSpell() == this) {
+			Character->GetAction()->StartCombat();
 		}
 	}
 }

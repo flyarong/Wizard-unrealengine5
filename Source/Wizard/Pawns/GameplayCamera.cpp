@@ -23,8 +23,8 @@ AGameplayCamera::AGameplayCamera()
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
 	CameraBoom->TargetArmLength = DefaultSpringArmLength;
-	CameraBoom->SetRelativeLocation(FVector(-5.f, 35.f, 190.f));
-	CameraBoom->SetRelativeRotation(FRotator(-35.f, -120.f, 0.f));
+	CameraBoom->SetRelativeLocation(DefaultCameraLocation);
+	CameraBoom->SetRelativeRotation(DefaultCameraRotation);
 	CameraBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 	CameraBoom->bEnableCameraLag = true;
 	CameraBoom->bEnableCameraRotationLag = true;
@@ -79,6 +79,18 @@ void AGameplayCamera::SetCameraFocusOnWizard()
 		if (!bFollowWizard) bFollowWizard = true;
 		SetActorLocation(WCharacter->GetActorLocation());
 	}
+}
+
+void AGameplayCamera::SetPositionToDefault()
+{
+	SetActorRelativeLocation(DefaultCameraLocation);
+	SetActorRelativeRotation(DefaultCameraRotation);
+}
+
+void AGameplayCamera::SetPositionToCombat()
+{
+	SetActorRelativeLocation(CombatCameraLocation);
+	SetActorRelativeRotation(CombatCameraRotation);
 }
 
 void AGameplayCamera::SetPositionWithMouseWheel(float Value)

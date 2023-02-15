@@ -173,6 +173,12 @@ public:
 
 	void AddHUDSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
 
+	void AddHUDCombatMenu();
+
+	void SetCameraPositionToDefault();
+
+	void SetCameraPositionToCombat();
+
 #pragma region InputPointers
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)

@@ -44,6 +44,8 @@ void UCombatComponent::InitCombat()
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		SetSpellMap();
+		WController->SetCameraPositionToCombat();
+		WController->AddHUDCombatMenu();
 		WController->AddHUDSpellMap(SpellMap);
 	}
 }

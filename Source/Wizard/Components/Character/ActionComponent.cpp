@@ -8,6 +8,7 @@
 #include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/Districts/District.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
+#include "Wizard/Spells/Spell.h"
 
 // Sets default values for this component's properties
 UActionComponent::UActionComponent()
@@ -16,7 +17,6 @@ UActionComponent::UActionComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 }
-
 
 // Called when the game starts
 void UActionComponent::BeginPlay()
@@ -40,6 +40,8 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
 	DOREPLIFETIME(UActionComponent, bCanBrowse);
 	DOREPLIFETIME(UActionComponent, CurrentStore);
+	DOREPLIFETIME(UActionComponent, OverlappedSpell);
+	DOREPLIFETIME(UActionComponent, bStartCombat);
 }
 
 #pragma region Movement
@@ -116,6 +118,7 @@ void UActionComponent::LeaveStore()
 	if (Character && Character->IsLocallyControlled() && CurrentStore) {
 		CurrentStore->ShowInteractWidget(false);
 	}
+
 	bCanBrowse = false;
 	CurrentStore = nullptr;
 }
@@ -131,12 +134,67 @@ void UActionComponent::ServerBuyItem_Implementation(int32 ItemIndex, FItemDataTa
 		}
 	}
 }
+#pragma endregion
 
+#pragma region Messaging
 void UActionComponent::ClientAddLocalMessage_Implementation(const FString& Message, EAttribute AttributeType)
 {
 	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->AddHUDLocalMessage(Message, AttributeType);
 	}
+}
+#pragma endregion
+
+#pragma region Spells
+void UActionComponent::SetOverlappedSpell(ASpell* Spell)
+{
+	OverlappedSpell = Spell;
+	if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
+		OverlappedSpell->ShowInteractWidget(true);
+	}
+}
+
+void UActionComponent::OnRep_OverlappedSpell(ASpell* PreviousSpell)
+{
+	if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
+		OverlappedSpell->ShowInteractWidget(true);
+	}
+	else if (PreviousSpell) {
+		PreviousSpell->ShowInteractWidget(false);
+	}
+}
+
+void UActionComponent::LeaveSpell()
+{
+	if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
+		OverlappedSpell->ShowInteractWidget(false);
+	}
+	
+	bStartCombat = false;
+	OverlappedSpell = nullptr;
+}
+
+void UActionComponent::StartCombat()
+{
+	bStartCombat = true;
+
+	SetCombatView();
+}
+
+void UActionComponent::OnRep_StartCombat()
+{
+	SetCombatView();
+}
+void UActionComponent::SetCombatView()
+{
+	if (bStartCombat) {
+
+	}
+}
+
+void UActionComponent::CancelCombat()
+{
+	bStartCombat = false;
 }
 #pragma endregion

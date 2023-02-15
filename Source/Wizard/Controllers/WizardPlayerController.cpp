@@ -406,3 +406,25 @@ void AWizardPlayerController::AddHUDSpellMap(TMap<FKey, class UTexture2D*>& Spel
 		WizardHUD->AddSpellMap(SpellMap);
 	}
 }
+
+void AWizardPlayerController::AddHUDCombatMenu()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddCombatMenu();
+	}
+}
+
+void AWizardPlayerController::SetCameraPositionToDefault()
+{
+	if (GameplayCamera) {
+		GameplayCamera->SetPositionToDefault();
+	}
+}
+
+void AWizardPlayerController::SetCameraPositionToCombat()
+{
+	if (GameplayCamera) {
+		GameplayCamera->SetPositionToCombat();
+	}
+}
