@@ -5,7 +5,6 @@
 #include "Components/Button.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
-#include "Wizard/Controllers/WizardPlayerController.h"
 
 void UCombatMenuWidget::BindEventsToButtons()
 {
@@ -17,21 +16,16 @@ void UCombatMenuWidget::OnStartButtonClicked()
 {
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter && WCharacter->GetAction()) {
-
+		RemoveFromParent();
+		WCharacter->GetAction()->StartCombat();
 	}
 }
 
 void UCombatMenuWidget::OnCancelButtonClicked()
 {
-	AWizardPlayerController* WController = Cast<AWizardPlayerController>(GetOwningPlayer());
-	if (WController) {
+	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
+	if (WCharacter && WCharacter->GetAction()) {
 		RemoveFromParent();
-		if (StartButton->OnClicked.IsBound()) {
-			StartButton->OnClicked.RemoveDynamic(this, &UCombatMenuWidget::OnStartButtonClicked);
-		}
-		if (CancelButton->OnClicked.IsBound()) {
-			CancelButton->OnClicked.RemoveDynamic(this, &UCombatMenuWidget::OnCancelButtonClicked);
-		}
-		WController->SetCameraPositionToDefault();
+		WCharacter->GetAction()->CancelCombat();
 	}
 }

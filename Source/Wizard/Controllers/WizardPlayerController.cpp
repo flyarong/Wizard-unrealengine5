@@ -126,6 +126,7 @@ void AWizardPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(FName("LookYaw"), this, &AWizardPlayerController::OnMouseRotateYaw);
 }
 
+#pragma region CharacterMovement
 void AWizardPlayerController::SetWizardMovementIsEnabled(bool bIsMovementEnabled)
 {
 	bCanCharacterMove = bIsMovementEnabled;
@@ -133,7 +134,6 @@ void AWizardPlayerController::SetWizardMovementIsEnabled(bool bIsMovementEnabled
 	if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(bIsMovementEnabled);
 }
 
-#pragma region CharacterMovement
 void AWizardPlayerController::OnInputStarted()
 {
 	ServerStopMovement();
@@ -213,6 +213,20 @@ void AWizardPlayerController::SetCameraFocusOnWizard()
 {
 	if (GameplayCamera) {
 		GameplayCamera->SetCameraFocusOnWizard();
+	}
+}
+
+void AWizardPlayerController::SetCameraPositionToDefault()
+{
+	if (GameplayCamera) {
+		GameplayCamera->SetPositionToDefault();
+	}
+}
+
+void AWizardPlayerController::SetCameraPositionToCombat()
+{
+	if (GameplayCamera) {
+		GameplayCamera->SetPositionToCombat();
 	}
 }
 
@@ -399,11 +413,25 @@ void AWizardPlayerController::ClientAddHUDChatMessage_Implementation(const FText
 }
 #pragma endregion
 
-void AWizardPlayerController::AddHUDSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
+#pragma region HUD/Combat
+void AWizardPlayerController::AddHUDSpellMap(TArray<FKey>& SpellInputs, TArray<int32>& SpellIndexes)
 {
+	TMap<FKey, int32> SpellMap;
+	for (int32 i = 0; i < SpellInputs.Num(); i++) {
+		SpellMap.Add(SpellInputs[i], SpellIndexes[i]);
+	}
+
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		WizardHUD->AddSpellMap(SpellMap);
+	}
+}
+
+void AWizardPlayerController::RemoveSpellMapFromHUD()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->RemoveSpellMap();
 	}
 }
 
@@ -415,16 +443,11 @@ void AWizardPlayerController::AddHUDCombatMenu()
 	}
 }
 
-void AWizardPlayerController::SetCameraPositionToDefault()
+void AWizardPlayerController::AddHUDCurrentSpellStep(int32 CurrentStepIndex)
 {
-	if (GameplayCamera) {
-		GameplayCamera->SetPositionToDefault();
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddCurrentSpellStep(CurrentStepIndex);
 	}
 }
-
-void AWizardPlayerController::SetCameraPositionToCombat()
-{
-	if (GameplayCamera) {
-		GameplayCamera->SetPositionToCombat();
-	}
-}
+#pragma endregion

@@ -4,17 +4,17 @@
 #include "SpellMapWidget.h"
 #include "Components/Image.h"
 
-void USpellMapWidget::ConstructSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
+void USpellMapWidget::ConstructSpellMap(TMap<FKey, int32>& SpellMap)
 {
 	for (auto& Spell : SpellMap) {
 		if (Spell.Key == EKeys::Up) {
-			TopSymbol->SetBrushFromTexture(Spell.Value);
+			TopSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
 		} else if (Spell.Key == EKeys::Left) {
-			LeftSymbol->SetBrushFromTexture(Spell.Value);
+			LeftSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
 		} else if (Spell.Key == EKeys::Down) {
-			BottomSymbol->SetBrushFromTexture(Spell.Value);
+			BottomSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
 		} else if (Spell.Key == EKeys::Right) {
-			RightSymbol->SetBrushFromTexture(Spell.Value);
+			RightSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
 		}
 	}
 }

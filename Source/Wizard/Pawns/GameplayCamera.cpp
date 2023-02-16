@@ -83,14 +83,19 @@ void AGameplayCamera::SetCameraFocusOnWizard()
 
 void AGameplayCamera::SetPositionToDefault()
 {
-	SetActorRelativeLocation(DefaultCameraLocation);
-	SetActorRelativeRotation(DefaultCameraRotation);
+	CameraBoom->TargetArmLength = DefaultSpringArmLength;
+	if (WCharacter) {
+		CameraBoom->SetRelativeRotation(WCharacter->GetActorRotation() + DefaultCameraRotation);
+	}
 }
 
 void AGameplayCamera::SetPositionToCombat()
 {
-	SetActorRelativeLocation(CombatCameraLocation);
-	SetActorRelativeRotation(CombatCameraRotation);
+	if (WCharacter) {
+		CameraBoom->TargetArmLength = 250.f;
+		CameraBoom->SetRelativeLocation(WCharacter->GetActorLocation());
+		CameraBoom->SetRelativeRotation(WCharacter->GetActorRotation() + CombatCameraRotation);
+	}
 }
 
 void AGameplayCamera::SetPositionWithMouseWheel(float Value)

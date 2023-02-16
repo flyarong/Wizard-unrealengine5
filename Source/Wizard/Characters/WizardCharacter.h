@@ -149,6 +149,7 @@ private:
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
 	FORCEINLINE UAttributeComponent* GetAttribute() const { return Attribute; }
+	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
 	FORCEINLINE UCharacterPOIComponent* GetPOI() const { return POI; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
 	FORCEINLINE FItemDataTable GetLatestItem() const { return LatestItem; }

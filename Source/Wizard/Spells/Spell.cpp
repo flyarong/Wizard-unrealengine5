@@ -75,7 +75,7 @@ void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
 			Character->GetAction()->GetOverlappedSpell() == this) {
-			Character->GetAction()->StartCombat();
+			Character->GetAction()->InitWisdomCombat();
 		}
 	}
 }

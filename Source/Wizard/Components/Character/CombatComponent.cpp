@@ -2,6 +2,7 @@
 
 
 #include "CombatComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
@@ -14,14 +15,13 @@ UCombatComponent::UCombatComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 	
-	if (SpellInputs.Num() > 1) {
-		for (int32 i = 0; i < NumberOfSteps; i++) {
-			int32 Index = FMath::RandRange(0, SpellInputs.Num() - 1);
-			Steps.Add(SpellInputs[Index]);
-		}
-	}
+	SpellInputs = {
+		EKeys::Up,
+		EKeys::Left,
+		EKeys::Down,
+		EKeys::Right
+	};
 }
-
 
 // Called when the game starts
 void UCombatComponent::BeginPlay()
@@ -39,26 +39,116 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	UpdateSpellBar(DeltaTime);
 }
 
-void UCombatComponent::InitCombat()
+void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
-	if (WController) {
-		SetSpellMap();
-		WController->SetCameraPositionToCombat();
-		WController->AddHUDCombatMenu();
-		WController->AddHUDSpellMap(SpellMap);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCombatComponent, SpellInputs);
+	DOREPLIFETIME(UCombatComponent, SpellIndexes);
+	DOREPLIFETIME(UCombatComponent, CombatAttribute);
+	DOREPLIFETIME(UCombatComponent, Steps);
+	DOREPLIFETIME(UCombatComponent, StepIndex);
+}
+
+void UCombatComponent::ServerInitCombat_Implementation(int32 AttributeForCombat)
+{
+	SetSpellSteps();
+	SetSpellIndexes();
+	CombatAttribute = AttributeForCombat;
+	SetupCombatHUD();
+}
+
+void UCombatComponent::OnRep_CombatAttribute()
+{
+	if (CombatAttribute > 0) {
+		SetupCombatHUD();
+	}
+	else {
+		ResetHUD();
 	}
 }
 
-void UCombatComponent::SetSpellMap()
+void UCombatComponent::SetupCombatHUD()
 {
-	if (SpellInputs.Num() > 1 && Symbols.Num() > 1 && SpellInputs.Num() == Symbols.Num()) {
-		if (SpellMap.Num() > 0) SpellMap = TMap<FKey, UTexture2D*>();
-		TArray<UTexture2D*> CachedSymbols = Symbols;
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (WController) {
+		WController->SetWizardMovementIsEnabled(false);
+		WController->SetCameraPositionToCombat();
+		WController->AddHUDSpellMap(SpellInputs, SpellIndexes);
+		WController->AddHUDCombatMenu();
+	}
+}
+
+void UCombatComponent::ServerStopCombat_Implementation()
+{
+	if (Steps.Num() > 0) Steps = TArray<FKey>();
+	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
+	CombatAttribute = 0;
+
+	ResetHUD();
+}
+
+void UCombatComponent::ResetHUD()
+{
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (WController) {
+		WController->RemoveSpellMapFromHUD();
+		WController->SetCameraPositionToDefault();
+		WController->SetWizardMovementIsEnabled(true);
+	}
+}
+
+void UCombatComponent::ServerStartCombat_Implementation()
+{
+	FTimerHandle StartCombatTimer;
+	GetWorld()->GetTimerManager().SetTimer(
+		StartCombatTimer,
+		this,
+		&UCombatComponent::OnCombatStarted,
+		1.5f
+	);
+}
+
+void UCombatComponent::OnCombatStarted()
+{
+	StepIndex++;
+	AddCurrentStep();
+}
+
+void UCombatComponent::OnRep_StepIndex()
+{
+	if (StepIndex > -1)	AddCurrentStep();
+}
+
+void UCombatComponent::AddCurrentStep()
+{
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (WController) {
+		WController->AddHUDCurrentSpellStep(StepIndex);
+		// put symbol on screen & set boolean for key should be pressed
+		// start timer
+		// set boolean in controller for key already pressed so it won't get spammed
+	}
+}
+
+void UCombatComponent::SetSpellSteps()
+{
+	if (SpellInputs.Num() > 1) {
+		for (int32 i = 0; i < NumberOfSteps; i++) {
+			int32 Index = FMath::RandRange(0, SpellInputs.Num() - 1);
+			Steps.Add(SpellInputs[Index]);
+		}
+	}
+}
+
+void UCombatComponent::SetSpellIndexes()
+{
+	if (SpellInputs.Num() == 4) {
+		TArray<int32> CachedIndexes = { 0, 1, 2, 3 };
 		for (int32 i = 0; i < SpellInputs.Num(); i++) {
-			int32 Index = FMath::RandRange(0, CachedSymbols.Num() - 1);
-			SpellMap.Add(SpellInputs[i], CachedSymbols[Index]);
-			CachedSymbols.RemoveAt(Index);
+			int32 Index = FMath::RandRange(0, CachedIndexes.Num() - 1);
+			SpellIndexes.Add(CachedIndexes[Index]);
+			CachedIndexes.RemoveAt(Index);
 		}
 	}
 }

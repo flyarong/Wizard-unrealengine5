@@ -132,9 +132,30 @@ public:
 	void AddChatMessage(const FText& Message);
 #pragma endregion
 
-	void AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
+#pragma region Combat
+	/// <summary>
+	/// Function to add the SpellMap to the Overlay
+	/// </summary>
+	/// <param name="SpellMap">The SpellMap</param>
+	void AddSpellMap(TMap<FKey, int32>& SpellMap);
 
+	/// <summary>
+	/// Function to remove the SpellMap from the Overlay
+	/// </summary>
+	void RemoveSpellMap();
+
+	/// <summary>
+	/// Function to add the Combat Menu to the Overlay
+	/// </summary>
 	void AddCombatMenu();
+
+	/// <summary>
+	/// Function to add the current Spell Step
+	/// to the Overlay
+	/// </summary>
+	/// <param name="CurrentSpellStep">Index of the current Spell Step</param>
+	void AddCurrentSpellStep(int32 CurrentSpellStep);
+#pragma endregion
 
 private:
 	

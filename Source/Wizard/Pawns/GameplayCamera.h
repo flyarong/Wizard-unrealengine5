@@ -106,14 +106,9 @@ private:
 	FRotator DefaultCameraRotation = FRotator(-35.f, -120.f, 0.f);
 
 	/// <summary>
-	/// Camera's Relative Location during Combat
-	/// </summary>
-	FVector CombatCameraLocation = FVector(0.f, 0.f, 0.f); // TODO modify to appropriate values
-
-	/// <summary>
 	/// Camera's Relative Rotation during Combat
 	/// </summary>
-	FRotator CombatCameraRotation = FRotator(-35.f, -120.f, 0.f); // TODO modify to appropriate values
+	FRotator CombatCameraRotation = FRotator(-15.f, -20.f, 0.f);
 
 	/// <summary>
 	/// Camera Position multiplier

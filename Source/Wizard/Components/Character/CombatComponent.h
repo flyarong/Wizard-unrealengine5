@@ -18,8 +18,26 @@ public:
 	UCombatComponent();
 	friend class AWizardCharacter;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	void InitCombat();
+	/// <summary>
+	/// Server RPC to initialize Combat
+	/// </summary>
+	/// <param name="AttributeForCombat">Attribute Value to use during Combat</param>
+	UFUNCTION(Server, Reliable)
+	void ServerInitCombat(int32 AttributeForCombat);
+
+	/// <summary>
+	/// Server RPC to Stop the Combat
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerStopCombat();
+
+	/// <summary>
+	/// Server RPC to start the Combat
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerStartCombat();
 
 protected:
 	// Called when the game starts
@@ -40,6 +58,27 @@ private:
 	class AWizardPlayerController* WController;
 
 	/// <summary>
+	/// The value of the Attribute used
+	/// during Combat
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_CombatAttribute)
+	int32 CombatAttribute = 0;
+
+	UFUNCTION()
+	void OnRep_CombatAttribute();
+
+	/// <summary>
+	/// Function to setup Combat on the screen
+	/// </summary>
+	void SetupCombatHUD();
+
+	/// <summary>
+	/// Function to reset the screen from Combat 
+	/// to Default
+	/// </summary>
+	void ResetHUD();
+
+	/// <summary>
 	/// Material Instance for the Spell Bar
 	/// </summary>
 	UPROPERTY()
@@ -52,7 +91,21 @@ private:
 	UPROPERTY()
 	FName SpellBarParameterValue = FName("Fullness");
 
-	void SetSpellMap();
+	/// <summary>
+	/// Function to trigger when the Combat starts
+	/// </summary>
+	UFUNCTION()
+	void OnCombatStarted();
+
+	/// <summary>
+	/// Function to setup the Steps for the Spell
+	/// </summary>
+	void SetSpellSteps();
+
+	/// <summary>
+	/// Function to create the SpellIndexes
+	/// </summary>
+	void SetSpellIndexes();
 
 	/// <summary>
 	/// Function to update the SpellBar
@@ -71,15 +124,15 @@ private:
 	/// Array containing the key inputs used
 	/// in the Spell cast
 	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Spells")
+	UPROPERTY(Replicated, EditAnywhere, Category = "Spells")
 	TArray<FKey> SpellInputs;
 
 	/// <summary>
-	/// Array containing the symbols presenting
-	/// each spell step
+	/// Array containing the key input indexes needed to be
+	/// pressed for the step symbol presented on the HUD
 	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Spells")
-	TArray<class UTexture2D*> Symbols;
+	UPROPERTY(Replicated)
+	TArray<int32> SpellIndexes;
 
 	/// <summary>
 	/// Variable to determine how fast
@@ -124,19 +177,21 @@ private:
 	/// Array containing the key inputs
 	/// required for each step
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<FKey> Steps;
-
-	/// <summary>
-	/// Map containing the key inputs needed to be
-	/// pressed for the step symbol presented on the HUD
-	/// </summary>
-	UPROPERTY()
-	TMap<FKey, UTexture2D*> SpellMap;
 
 	/// <summary>
 	/// Index of the current Step
 	/// </summary>
-	UPROPERTY()
-	int32 StepIndex = 0;
+	UPROPERTY(ReplicatedUsing = OnRep_StepIndex)
+	int32 StepIndex = -1;
+
+	UFUNCTION()
+	void OnRep_StepIndex();
+
+	/// <summary>
+	/// Function to add the Current step
+	/// to the screen
+	/// </summary>
+	void AddCurrentStep();
 };

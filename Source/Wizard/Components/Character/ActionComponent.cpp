@@ -6,6 +6,7 @@
 #include "Wizard/Stores/Store.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
+#include "Wizard/Components/Character/CombatComponent.h"
 #include "Wizard/Components/Districts/District.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Spells/Spell.h"
@@ -41,7 +42,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UActionComponent, bCanBrowse);
 	DOREPLIFETIME(UActionComponent, CurrentStore);
 	DOREPLIFETIME(UActionComponent, OverlappedSpell);
-	DOREPLIFETIME(UActionComponent, bStartCombat);
+	DOREPLIFETIME(UActionComponent, bCanInitCombat);
 }
 
 #pragma region Movement
@@ -171,30 +172,48 @@ void UActionComponent::LeaveSpell()
 		OverlappedSpell->ShowInteractWidget(false);
 	}
 	
-	bStartCombat = false;
 	OverlappedSpell = nullptr;
 }
 
-void UActionComponent::StartCombat()
+void UActionComponent::InitWisdomCombat()
 {
-	bStartCombat = true;
+	if (Character && Character->GetCombat() && Character->GetAttribute()) {
+		InitCombat();
+	}
+}
+
+void UActionComponent::InitCombat()
+{
+	bCanInitCombat = true;
 
 	SetCombatView();
 }
 
-void UActionComponent::OnRep_StartCombat()
+void UActionComponent::OnRep_CanInitCombat()
 {
 	SetCombatView();
 }
 void UActionComponent::SetCombatView()
 {
-	if (bStartCombat) {
-
+	if (bCanInitCombat) {
+		Character->GetCombat()->ServerInitCombat(Character->GetAttribute()->GetWisdom());
+	}
+	else {
+		Character->GetCombat()->ServerStopCombat();
 	}
 }
 
 void UActionComponent::CancelCombat()
 {
-	bStartCombat = false;
+	bCanInitCombat = false;
+
+	SetCombatView();
+}
+
+void UActionComponent::StartCombat()
+{
+	if (Character && Character->GetCombat()) {
+		Character->GetCombat()->ServerStartCombat();
+	}
 }
 #pragma endregion

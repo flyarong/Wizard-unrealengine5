@@ -61,9 +61,9 @@ public:
 	void SetOverlappedSpell(class ASpell* Spell);
 
 	/// <summary>
-	/// Function to initiate Combat
+	/// Function to initiate a Wisdom Combat
 	/// </summary>
-	void StartCombat();
+	void InitWisdomCombat();
 
 	/// <summary>
 	/// Function to execute when overlapping with a Spell
@@ -75,6 +75,11 @@ public:
 	/// Function to cancel the Combat
 	/// </summary>
 	void CancelCombat();
+
+	/// <summary>
+	/// Function to start the Combat
+	/// </summary>
+	void StartCombat();
 
 protected:
 	// Called when the game starts
@@ -168,13 +173,18 @@ private:
 	void OnRep_OverlappedSpell(ASpell* PreviousSpell);
 
 	/// <summary>
+	/// Function to initiate Combat
+	/// </summary>
+	void InitCombat();
+
+	/// <summary>
 	/// Boolean for whether or not the Combat should start
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_StartCombat)
-	bool bStartCombat = false;
+	UPROPERTY(ReplicatedUsing = OnRep_CanInitCombat)
+	bool bCanInitCombat = false;
 
 	UFUNCTION()
-	void OnRep_StartCombat();
+	void OnRep_CanInitCombat();
 
 	/// <summary>
 	/// Function to set the viewport for Combat

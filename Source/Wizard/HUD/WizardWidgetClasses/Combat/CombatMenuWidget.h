@@ -26,8 +26,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton* CancelButton;
 
+	UFUNCTION()
 	void OnStartButtonClicked();
 
+	UFUNCTION()
 	void OnCancelButtonClicked();
 
 };

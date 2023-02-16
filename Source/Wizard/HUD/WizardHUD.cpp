@@ -11,6 +11,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/Messages/ChatBoxWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/SpellMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatMenuWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Combat/CurrentStepWidget.h"
 #include "Components/ScaleBox.h"
 #include "Components/Button.h"
 
@@ -165,7 +166,8 @@ void AWizardHUD::AddChatMessage(const FText& Message)
 }
 #pragma endregion
 
-void AWizardHUD::AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
+#pragma region Combat
+void AWizardHUD::AddSpellMap(TMap<FKey, int32>& SpellMap)
 {
 	if (WizardOverlay && WizardOverlay->GetTopRightBox()) {
 		if (WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
@@ -177,6 +179,13 @@ void AWizardHUD::AddSpellMap(TMap<FKey, class UTexture2D*>& SpellMap)
 			SpellMapWidget->ConstructSpellMap(SpellMap);
 			WizardOverlay->GetTopRightBox()->AddChild(SpellMapWidget);
 		}
+	}
+}
+
+void AWizardHUD::RemoveSpellMap()
+{
+	if (WizardOverlay && WizardOverlay->GetTopRightBox() && WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
+		WizardOverlay->GetTopRightBox()->ClearChildren();
 	}
 }
 
@@ -194,3 +203,19 @@ void AWizardHUD::AddCombatMenu()
 		}
 	}
 }
+
+void AWizardHUD::AddCurrentSpellStep(int32 CurrentSpellStep)
+{
+	if (WizardOverlay && WizardOverlay->GetCenterBox()) {
+		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetCenterBox()->ClearChildren();
+		}
+
+		UCurrentStepWidget* CurrentStepWidget = CreateWidget<UCurrentStepWidget>(GetOwningPlayerController(), WizardOverlay->GetCurrentStepWidgetClass());
+		if (CurrentStepWidget) {
+			CurrentStepWidget->ConstructSpellStep(CurrentSpellStep);
+			WizardOverlay->GetCenterBox()->AddChild(CurrentStepWidget);
+		}
+	}
+}
+#pragma endregion

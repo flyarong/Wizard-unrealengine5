@@ -20,7 +20,7 @@ public:
 	/// Function to create the SpellMap widget
 	/// </summary>
 	/// <param name="SpellMap">Spell TMap to create the widget from</param>
-	void ConstructSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
+	void ConstructSpellMap(TMap<FKey, int32>& SpellMap);
 
 private:
 	
@@ -35,4 +35,11 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* RightSymbol;
+
+	/// <summary>
+	/// Array containing the symbols presenting
+	/// each Spell Step
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Spells")
+	TArray<class UTexture2D*> Symbols;
 };

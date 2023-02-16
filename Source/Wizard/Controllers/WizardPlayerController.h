@@ -42,6 +42,18 @@ public:
 	void SetCameraFocusOnWizard();
 
 	/// <summary>
+	/// Function to set the Camera's position
+	/// to the Default
+	/// </summary>
+	void SetCameraPositionToDefault();
+
+	/// <summary>
+	/// Function to set the Camera's position
+	/// for Combat
+	/// </summary>
+	void SetCameraPositionToCombat();
+
+	/// <summary>
 	/// Function to enable/disable Character&Camera movement
 	/// </summary>
 	/// <param name="bIsMovementEnabled">Whether movement should be enabled or not</param>
@@ -171,13 +183,33 @@ public:
 	void ClientAddHUDChatMessage(const FText& Message);
 #pragma endregion
 
-	void AddHUDSpellMap(TMap<FKey, class UTexture2D*>& SpellMap);
+#pragma region HUD/Combat
+	/// <summary>
+	/// Function to add the SpellMap
+	/// to the HUD
+	/// </summary>
+	/// <param name="SpellInputs">The array of inputs</param>
+	/// <param name="SpellIndexes">The array of texture indexes</param>
+	void AddHUDSpellMap(TArray<FKey>& SpellInputs, TArray<int32>& SpellIndexes);
 
+	/// <summary>
+	/// Function to remove the SpellMap from the HUD
+	/// </summary>
+	void RemoveSpellMapFromHUD();
+
+	/// <summary>
+	/// Function to add the Combat Menu
+	/// to the HUD
+	/// </summary>
 	void AddHUDCombatMenu();
 
-	void SetCameraPositionToDefault();
-
-	void SetCameraPositionToCombat();
+	/// <summary>
+	/// Function to add the symbol of the current
+	/// Spell Step to the HUD
+	/// </summary>
+	/// <param name="CurrentStepIndex">The current Step's index</param>
+	void AddHUDCurrentSpellStep(int32 CurrentStepIndex);
+#pragma endregion
 
 #pragma region InputPointers
 	/** FX Class that we will spawn when clicking */
