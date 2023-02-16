@@ -50,7 +50,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, StepIndex);
 }
 
-void UCombatComponent::ServerInitCombat_Implementation(int32 AttributeForCombat)
+void UCombatComponent::InitCombat(int32 AttributeForCombat)
 {
 	SetSpellSteps();
 	SetSpellIndexes();
@@ -79,7 +79,7 @@ void UCombatComponent::SetupCombatHUD()
 	}
 }
 
-void UCombatComponent::ServerStopCombat_Implementation()
+void UCombatComponent::StopCombat()
 {
 	if (Steps.Num() > 0) Steps = TArray<FKey>();
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
@@ -98,7 +98,7 @@ void UCombatComponent::ResetHUD()
 	}
 }
 
-void UCombatComponent::ServerStartCombat_Implementation()
+void UCombatComponent::StartCombat()
 {
 	FTimerHandle StartCombatTimer;
 	GetWorld()->GetTimerManager().SetTimer(

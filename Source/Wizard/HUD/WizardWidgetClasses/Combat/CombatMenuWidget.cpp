@@ -17,7 +17,7 @@ void UCombatMenuWidget::OnStartButtonClicked()
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter && WCharacter->GetAction()) {
 		RemoveFromParent();
-		WCharacter->GetAction()->StartCombat();
+		WCharacter->GetAction()->ServerStartCombat();
 	}
 }
 
@@ -26,6 +26,6 @@ void UCombatMenuWidget::OnCancelButtonClicked()
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter && WCharacter->GetAction()) {
 		RemoveFromParent();
-		WCharacter->GetAction()->CancelCombat();
+		WCharacter->GetAction()->ServerCancelCombat();
 	}
 }

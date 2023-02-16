@@ -42,7 +42,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UActionComponent, bCanBrowse);
 	DOREPLIFETIME(UActionComponent, CurrentStore);
 	DOREPLIFETIME(UActionComponent, OverlappedSpell);
-	DOREPLIFETIME(UActionComponent, bCanInitCombat);
+	DOREPLIFETIME(UActionComponent, CombatAttribute);
 }
 
 #pragma region Movement
@@ -71,9 +71,11 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 #pragma region Buying
 void UActionComponent::SetCurrentStore(AStore* Store)
 {
-	CurrentStore = Store;
-	if (Character && Character->IsLocallyControlled() && CurrentStore) {
-		CurrentStore->ShowInteractWidget(true);
+	if (CurrentStore == nullptr) { // can only overlap one Store at a time
+		CurrentStore = Store;
+		if (Character && Character->IsLocallyControlled() && CurrentStore) {
+			CurrentStore->ShowInteractWidget(true);
+		}
 	}
 }
 
@@ -150,9 +152,12 @@ void UActionComponent::ClientAddLocalMessage_Implementation(const FString& Messa
 #pragma region Spells
 void UActionComponent::SetOverlappedSpell(ASpell* Spell)
 {
-	OverlappedSpell = Spell;
-	if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
-		OverlappedSpell->ShowInteractWidget(true);
+	if (OverlappedSpell == nullptr) { // can only overlap one Spell at a time
+		OverlappedSpell = Spell;
+		if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
+			// CombatCost = OverlappedSpell->GetCost(); // don't need this; just use GetCost() when it is needed
+			OverlappedSpell->ShowInteractWidget(true);
+		}
 	}
 }
 
@@ -174,46 +179,25 @@ void UActionComponent::LeaveSpell()
 	
 	OverlappedSpell = nullptr;
 }
+#pragma endregion
 
-void UActionComponent::InitWisdomCombat()
+#pragma region Combat
+void UActionComponent::ServerInitWisdomCombat_Implementation()
 {
 	if (Character && Character->GetCombat() && Character->GetAttribute()) {
-		InitCombat();
+		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom());
 	}
 }
 
-void UActionComponent::InitCombat()
+void UActionComponent::ServerCancelCombat_Implementation()
 {
-	bCanInitCombat = true;
-
-	SetCombatView();
+	Character->GetCombat()->StopCombat();
 }
 
-void UActionComponent::OnRep_CanInitCombat()
-{
-	SetCombatView();
-}
-void UActionComponent::SetCombatView()
-{
-	if (bCanInitCombat) {
-		Character->GetCombat()->ServerInitCombat(Character->GetAttribute()->GetWisdom());
-	}
-	else {
-		Character->GetCombat()->ServerStopCombat();
-	}
-}
-
-void UActionComponent::CancelCombat()
-{
-	bCanInitCombat = false;
-
-	SetCombatView();
-}
-
-void UActionComponent::StartCombat()
+void UActionComponent::ServerStartCombat_Implementation()
 {
 	if (Character && Character->GetCombat()) {
-		Character->GetCombat()->ServerStartCombat();
+		Character->GetCombat()->StartCombat();
 	}
 }
 #pragma endregion

@@ -61,20 +61,28 @@ public:
 	void SetOverlappedSpell(class ASpell* Spell);
 
 	/// <summary>
-	/// Function to initiate a Wisdom Combat
-	/// </summary>
-	void InitWisdomCombat();
-
-	/// <summary>
 	/// Function to execute when overlapping with a Spell
 	/// ends
 	/// </summary>
 	void LeaveSpell();
+	
+	/// <summary>
+	/// Server RPC to initiate a Wisdom Combat
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerInitWisdomCombat();
 
 	/// <summary>
-	/// Function to cancel the Combat
+	/// Server RPC to cancel the Combat
 	/// </summary>
-	void CancelCombat();
+	UFUNCTION(Server, Reliable)
+	void ServerCancelCombat();
+
+	/// <summary>
+	/// Server RPC to start the Combat
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerStartCombat();
 
 	/// <summary>
 	/// Function to start the Combat
@@ -171,25 +179,14 @@ private:
 
 	UFUNCTION()
 	void OnRep_OverlappedSpell(ASpell* PreviousSpell);
+#pragma endregion
 
+#pragma region Combat
 	/// <summary>
-	/// Function to initiate Combat
+	/// Attribute to use during Combat
 	/// </summary>
-	void InitCombat();
-
-	/// <summary>
-	/// Boolean for whether or not the Combat should start
-	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_CanInitCombat)
-	bool bCanInitCombat = false;
-
-	UFUNCTION()
-	void OnRep_CanInitCombat();
-
-	/// <summary>
-	/// Function to set the viewport for Combat
-	/// </summary>
-	void SetCombatView();
+	UPROPERTY(Replicated)
+	int32 CombatAttribute = 0;
 #pragma endregion
 
 public:

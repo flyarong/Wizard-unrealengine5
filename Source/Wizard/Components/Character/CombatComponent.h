@@ -21,23 +21,20 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
-	/// Server RPC to initialize Combat
+	/// Function to initialize Combat
 	/// </summary>
 	/// <param name="AttributeForCombat">Attribute Value to use during Combat</param>
-	UFUNCTION(Server, Reliable)
-	void ServerInitCombat(int32 AttributeForCombat);
+	void InitCombat(int32 AttributeForCombat);
 
 	/// <summary>
-	/// Server RPC to Stop the Combat
+	/// Function to Stop the Combat
 	/// </summary>
-	UFUNCTION(Server, Reliable)
-	void ServerStopCombat();
+	void StopCombat();
 
 	/// <summary>
-	/// Server RPC to start the Combat
+	/// Function to start the Combat
 	/// </summary>
-	UFUNCTION(Server, Reliable)
-	void ServerStartCombat();
+	void StartCombat();
 
 protected:
 	// Called when the game starts
