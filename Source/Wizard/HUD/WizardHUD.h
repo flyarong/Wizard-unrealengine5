@@ -134,10 +134,16 @@ public:
 
 #pragma region Combat
 	/// <summary>
-	/// Function to add the SpellMap to the Overlay
+	/// Function to create the SpellMap
+	/// Widget
 	/// </summary>
 	/// <param name="SpellMap">The SpellMap</param>
-	void AddSpellMap(TMap<FKey, int32>& SpellMap);
+	void CreateSpellMap(TMap<FKey, int32>& SpellMap);
+	
+	/// <summary>
+	/// Function to add the SpellMap to the Overlay
+	/// </summary>
+	void AddSpellMap();
 
 	/// <summary>
 	/// Function to remove the SpellMap from the Overlay

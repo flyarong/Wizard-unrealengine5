@@ -184,13 +184,20 @@ public:
 #pragma endregion
 
 #pragma region HUD/Combat
+	
+	/// <summary>
+	/// Function to create the SpellMap
+	/// in the HUD
+	/// </summary>
+	/// <param name="SpellInputs">The array of inputs</param>
+	/// <param name="SpellIndexes">The array of texture indexes</param>
+	void CreateHUDSpellMap(TArray<FKey>& SpellInputs, TArray<int32>& SpellIndexes);
+
 	/// <summary>
 	/// Function to add the SpellMap
 	/// to the HUD
 	/// </summary>
-	/// <param name="SpellInputs">The array of inputs</param>
-	/// <param name="SpellIndexes">The array of texture indexes</param>
-	void AddHUDSpellMap(TArray<FKey>& SpellInputs, TArray<int32>& SpellIndexes);
+	void AddHUDSpellMap();
 
 	/// <summary>
 	/// Function to remove the SpellMap from the HUD

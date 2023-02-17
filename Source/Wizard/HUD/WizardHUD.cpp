@@ -167,25 +167,33 @@ void AWizardHUD::AddChatMessage(const FText& Message)
 #pragma endregion
 
 #pragma region Combat
-void AWizardHUD::AddSpellMap(TMap<FKey, int32>& SpellMap)
+void AWizardHUD::CreateSpellMap(TMap<FKey, int32>& SpellMap)
+{
+	USpellMapWidget* SpellMapWidget = CreateWidget<USpellMapWidget>(GetOwningPlayerController(), WizardOverlay->GetSpellMapWidgetClass());
+	if (SpellMapWidget) {
+		SpellMapWidget->ConstructSpellMap(SpellMap);
+		WizardOverlay->SetSpellMapWidget(SpellMapWidget);
+	}
+}
+
+void AWizardHUD::AddSpellMap()
 {
 	if (WizardOverlay && WizardOverlay->GetTopRightBox()) {
 		if (WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
 			WizardOverlay->GetTopRightBox()->ClearChildren();
 		}
 
-		USpellMapWidget* SpellMapWidget = CreateWidget<USpellMapWidget>(GetOwningPlayerController(), WizardOverlay->GetSpellMapWidgetClass());
-		if (SpellMapWidget) {
-			SpellMapWidget->ConstructSpellMap(SpellMap);
-			WizardOverlay->GetTopRightBox()->AddChild(SpellMapWidget);
-		}
+		WizardOverlay->GetTopRightBox()->AddChild(WizardOverlay->GetSpellMapWidget());
 	}
 }
 
 void AWizardHUD::RemoveSpellMap()
 {
-	if (WizardOverlay && WizardOverlay->GetTopRightBox() && WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
-		WizardOverlay->GetTopRightBox()->ClearChildren();
+	if (WizardOverlay) {
+		if (WizardOverlay->GetTopRightBox() && WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
+			WizardOverlay->GetTopRightBox()->ClearChildren();
+		}
+		WizardOverlay->SetSpellMapWidget(nullptr);
 	}
 }
 
@@ -199,6 +207,10 @@ void AWizardHUD::AddCombatMenu()
 		UCombatMenuWidget* CombatMenuWidget = CreateWidget<UCombatMenuWidget>(GetOwningPlayerController(), WizardOverlay->GetCombatMenuWidgetClass());
 		if (CombatMenuWidget) {
 			CombatMenuWidget->BindEventsToButtons();
+			if (CombatMenuWidget->GetSpellMapBox() && WizardOverlay->GetSpellMapWidget()) {
+				CombatMenuWidget->GetSpellMapBox()->ClearChildren();
+				CombatMenuWidget->GetSpellMapBox()->AddChild(WizardOverlay->GetSpellMapWidget());
+			}
 			WizardOverlay->GetCenterBox()->AddChild(CombatMenuWidget);
 		}
 	}

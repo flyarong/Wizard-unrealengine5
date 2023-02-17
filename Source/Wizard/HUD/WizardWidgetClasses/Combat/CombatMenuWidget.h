@@ -21,6 +21,9 @@ public:
 private:
 
 	UPROPERTY(meta = (BindWidget))
+	class UScaleBox* SpellMapBox;
+
+	UPROPERTY(meta = (BindWidget))
 	class UButton* StartButton;
 
 	UPROPERTY(meta = (BindWidget))
@@ -32,4 +35,6 @@ private:
 	UFUNCTION()
 	void OnCancelButtonClicked();
 
+public:
+	FORCEINLINE UScaleBox* GetSpellMapBox() const { return SpellMapBox; }
 };

@@ -33,6 +33,12 @@ private:
 	TSubclassOf<class UUserWidget> SpellMapWidgetClass;
 
 	/// <summary>
+	/// Widget used on the Overlay to store the SpellMap
+	/// </summary>
+	UPROPERTY()
+	class USpellMapWidget* SpellMapWidget;
+
+	/// <summary>
 	/// Widget class for the Combat Menu
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -119,6 +125,8 @@ private:
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
+	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }
+	FORCEINLINE void SetSpellMapWidget(USpellMapWidget* Map) { SpellMapWidget = Map; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatMenuWidgetClass() const { return CombatMenuWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepWidgetClass() const { return CurrentStepWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }

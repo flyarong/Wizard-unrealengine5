@@ -414,7 +414,7 @@ void AWizardPlayerController::ClientAddHUDChatMessage_Implementation(const FText
 #pragma endregion
 
 #pragma region HUD/Combat
-void AWizardPlayerController::AddHUDSpellMap(TArray<FKey>& SpellInputs, TArray<int32>& SpellIndexes)
+void AWizardPlayerController::CreateHUDSpellMap(TArray<FKey>& SpellInputs, TArray<int32>& SpellIndexes)
 {
 	TMap<FKey, int32> SpellMap;
 	for (int32 i = 0; i < SpellInputs.Num(); i++) {
@@ -423,7 +423,15 @@ void AWizardPlayerController::AddHUDSpellMap(TArray<FKey>& SpellInputs, TArray<i
 
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->AddSpellMap(SpellMap);
+		WizardHUD->CreateSpellMap(SpellMap);
+	}
+}
+
+void AWizardPlayerController::AddHUDSpellMap()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddSpellMap();
 	}
 }
 

@@ -74,7 +74,7 @@ void UCombatComponent::SetupCombatHUD()
 	if (WController) {
 		WController->SetWizardMovementIsEnabled(false);
 		WController->SetCameraPositionToCombat();
-		WController->AddHUDSpellMap(SpellInputs, SpellIndexes);
+		WController->CreateHUDSpellMap(SpellInputs, SpellIndexes);
 		WController->AddHUDCombatMenu();
 	}
 }
@@ -124,6 +124,7 @@ void UCombatComponent::AddCurrentStep()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
+		WController->AddHUDSpellMap();
 		WController->AddHUDCurrentSpellStep(StepIndex);
 		// put symbol on screen & set boolean for key should be pressed
 		// start timer
