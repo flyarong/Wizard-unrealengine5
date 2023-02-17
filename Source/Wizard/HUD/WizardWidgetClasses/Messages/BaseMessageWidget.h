@@ -26,7 +26,7 @@ protected:
 	/// Number of messages to show in the messagebox
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Message")
-	int32 NumOfMessages = 5;
+	int32 NumOfMessages = 4;
 
 	/// <summary>
 	/// Number of seconds to show the message
