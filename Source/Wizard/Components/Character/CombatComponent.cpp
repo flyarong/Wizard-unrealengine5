@@ -73,6 +73,8 @@ void UCombatComponent::SetupCombatHUD()
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		WController->SetWizardMovementIsEnabled(false);
+		FInputModeUIOnly InputModeData;
+		WController->SetInputMode(InputModeData);
 		WController->SetCameraPositionToCombat();
 		WController->CreateHUDSpellMap(SpellInputs, SpellIndexes);
 		WController->AddHUDCombatMenu();
@@ -94,6 +96,8 @@ void UCombatComponent::ResetHUD()
 	if (WController) {
 		WController->RemoveSpellMapFromHUD();
 		WController->SetCameraPositionToDefault();
+		FInputModeGameAndUI InputModeData;
+		WController->SetInputMode(InputModeData);
 		WController->SetWizardMovementIsEnabled(true);
 	}
 }
@@ -164,7 +168,7 @@ void UCombatComponent::UpdateSpellBar(float DeltaTime)
 		Amount -= ValueThisFrame;
 		if (Amount <= 0.f) {
 			bSpellBarShouldUpdate = false;
-			Amount = 1.f / (NumberOfSteps + 1);
+			Amount = 1.f / NumberOfSteps;
 		}
 	}
 }

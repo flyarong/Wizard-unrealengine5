@@ -114,7 +114,7 @@ private:
 	/// Camera Position multiplier
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")
-	int32 CameraPosition = 1;
+	int32 CameraPosition = 0;
 
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")
 	int32 MaxCameraPosition = 5;

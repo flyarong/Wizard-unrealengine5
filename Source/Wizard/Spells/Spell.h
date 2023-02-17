@@ -49,9 +49,6 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Spell Effects")
 	class UNiagaraSystem* SpellEffect;
-
-	UPROPERTY(EditAnywhere, Category = "Spell Cost")
-	float Cost = 20.f;
 #pragma endregion
 
 #pragma region Callbacks
@@ -78,8 +75,5 @@ private:
 		UPrimitiveComponent* TouchedComp,
 		FKey ButtonPressed
 	);
-#pragma endregion	
-
-public:
-	FORCEINLINE float GetCost() const { return Cost; }
+#pragma endregion
 };

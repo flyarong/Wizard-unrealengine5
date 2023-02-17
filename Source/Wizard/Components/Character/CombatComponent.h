@@ -156,7 +156,7 @@ private:
 	/// amount is to be filled in the SpellBar
 	/// </summary>
 	UPROPERTY()
-	float Amount = 1.f / (NumberOfSteps + 1);
+	float Amount = 1.f / NumberOfSteps;
 
 	/// <summary>
 	/// The rate of fill

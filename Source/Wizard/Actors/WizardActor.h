@@ -63,4 +63,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Interaction")
 	FString InteractText;
 
+	/// <summary>
+	/// Cost of the Actor interaction
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Cost")
+	float Cost = 0.f;
+
+public:
+	FORCEINLINE float GetCost() const { return Cost; }
 };
