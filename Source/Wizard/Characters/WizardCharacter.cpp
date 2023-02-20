@@ -145,21 +145,18 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		}
 	}
 
-	// Setup overlay on HUD and enable gameplay input mode
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController) {
+		// Setup Controller&Gameplay Camera
 		PlayerController->SetWizardCharacter(this);
 		PlayerController->SetupCamera();
 
 		// Init WizardOverlay
 		PlayerController->InitOverlay();
+		PlayerController->SetShowMouseCursor(true);
 
 		// Setup Point of Interest on Minimap
 		POI->SetupPOI(this);
-
-		FInputModeGameAndUI InputModeData;
-		PlayerController->SetInputMode(InputModeData);
-		PlayerController->SetShowMouseCursor(true);
 	}
 }
 
