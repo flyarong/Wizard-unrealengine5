@@ -24,6 +24,56 @@ public:
 	/// <returns>Whether the creation was successful or not</returns>
 	bool CreateWizardOverlay();
 
+#pragma region General
+	/// <summary>
+	/// Function to clear the Top Right Box
+	/// in the Overlay
+	/// </summary>
+	void ClearTopRightBox();
+
+	/// <summary>
+	/// Function to clear the Top Right Box
+	/// in the Overlay
+	/// </summary>
+	void ClearCenterBox();
+
+	/// <summary>
+	/// Function to show the Current District
+	/// Panel on the Overlay
+	/// </summary>
+	void ShowCurrentDistrict();
+
+	/// <summary>
+	/// Function to hide the Current District
+	/// Panel from the Overlay
+	/// </summary>
+	void HideCurrentDistrict();
+
+	/// <summary>
+	/// Function to show the Left Side Panel
+	/// on the Overlay
+	/// </summary>
+	void ShowLeftPanel();
+
+	/// <summary>
+	/// Function to hide the Left Side Panel
+	/// from the Overlay
+	/// </summary>
+	void HideLeftPanel();
+
+	/// <summary>
+	/// Function to show the Character's Item Panel
+	/// on the Overlay
+	/// </summary>
+	void ShowItemPanel();
+
+	/// <summary>
+	/// Function to hide the Character's Item Panel
+	/// from the Overlay
+	/// </summary>
+	void HideItemPanel();
+#pragma endregion
+
 #pragma region Player
 	/// <summary>
 	/// Function for printing the current district's name

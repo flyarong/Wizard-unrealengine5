@@ -195,8 +195,11 @@ void UActionComponent::ServerInitWisdomCombat_Implementation()
 
 void UActionComponent::ServerCancelCombat_Implementation()
 {
-	Character->GetCombat()->StopCombat();
-	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true); // TODO do this in end combat later
+	if (Character && Character->GetCombat()) {
+		Character->GetCombat()->StopCombat();
+	}
+
+	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true);
 }
 
 void UActionComponent::ServerStartCombat_Implementation()
@@ -204,5 +207,14 @@ void UActionComponent::ServerStartCombat_Implementation()
 	if (Character && Character->GetCombat()) {
 		Character->GetCombat()->StartCombat();
 	}
+}
+
+void UActionComponent::EndCombat()
+{
+	if (Character && Character->GetCombat()) {
+		Character->GetCombat()->StopCombat();
+	}
+
+	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true);
 }
 #pragma endregion

@@ -13,7 +13,11 @@
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatMenuWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CurrentStepWidget.h"
 #include "Components/ScaleBox.h"
+#include "Components/VerticalBox.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Components/Button.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+
 
 bool AWizardHUD::CreateWizardOverlay()
 {
@@ -28,6 +32,68 @@ bool AWizardHUD::CreateWizardOverlay()
 
 	return false;
 }
+
+#pragma region General
+void AWizardHUD::ClearTopRightBox()
+{
+	if (WizardOverlay && WizardOverlay->GetTopRightBox()) {
+		if (WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
+			WizardOverlay->GetTopRightBox()->ClearChildren();
+		}
+	}
+}
+
+void AWizardHUD::ClearCenterBox()
+{
+	if (WizardOverlay && WizardOverlay->GetCenterBox()) {
+		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetCenterBox()->ClearChildren();
+		}
+	}
+}
+
+void AWizardHUD::ShowCurrentDistrict()
+{
+	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeIn();
+}
+
+void AWizardHUD::HideCurrentDistrict()
+{
+	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeOut();
+}
+
+void AWizardHUD::ShowLeftPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
+		if (Slot) Slot->SetAlignment(FVector2D(0, 0));
+	}
+}
+
+void AWizardHUD::HideLeftPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
+		if (Slot) Slot->SetAlignment(FVector2D(1, 0));
+	}
+}
+
+void AWizardHUD::ShowItemPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetItemPanelBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetItemPanelBox());
+		if (Slot) Slot->SetAlignment(FVector2D(.5f, 1.f));
+	}
+}
+
+void AWizardHUD::HideItemPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetItemPanelBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetItemPanelBox());
+		if (Slot) Slot->SetAlignment(FVector2D(.5f, 0.f));
+	}
+}
+#pragma endregion
 
 #pragma region Player
 void AWizardHUD::SetCurrentDistrict(EDistrict District)
@@ -190,9 +256,7 @@ void AWizardHUD::AddSpellMap()
 void AWizardHUD::RemoveSpellMap()
 {
 	if (WizardOverlay) {
-		if (WizardOverlay->GetTopRightBox() && WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
-			WizardOverlay->GetTopRightBox()->ClearChildren();
-		}
+		ClearTopRightBox();
 		WizardOverlay->SetSpellMapWidget(nullptr);
 	}
 }

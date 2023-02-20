@@ -213,11 +213,22 @@ public:
 	void AddHUDCombatMenu();
 
 	/// <summary>
+	/// Function to reset the HUD to default
+	/// coming out from Combat
+	/// </summary>
+	void ResetHUD();
+
+	/// <summary>
 	/// Function to add the symbol of the current
 	/// Spell Step to the HUD
 	/// </summary>
 	/// <param name="CurrentStepIndex">The current Step's index</param>
 	void AddHUDCurrentSpellStep(int32 CurrentStepIndex);
+
+	/// <summary>
+	/// Function to remove the previous Spell Step from the HUD
+	/// </summary>
+	void RemoveHUDPreviouseSpellStep();
 #pragma endregion
 
 #pragma region InputPointers
@@ -290,6 +301,11 @@ protected:
 	/// with keys
 	/// </summary>
 	void OnKeyMove(const FInputActionValue& ActionValue);
+
+	/// <summary>
+	/// Callback function for Combat triggered input event
+	/// </summary>
+	void OnCombatKeyTriggered(const FInputActionValue& ActionValue);
 #pragma endregion
 
 private:
@@ -333,6 +349,13 @@ private:
 	UPROPERTY()
 	bool bWizardOverlayInitialized = false;
 
+	/// <summary>
+	/// Boolean for whether or not the Player
+	/// is in Combat
+	/// </summary>
+	UPROPERTY()
+	bool bCanCastSpell = false;
+
 #pragma region Movement
 	/// <summary>
 	/// Server RPC to replicate Character movement
@@ -360,6 +383,8 @@ public:
 	void SetWizardCharacter(AWizardCharacter* WCharacter);
 	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
 	FORCEINLINE AGameplayCamera* GetGameplayCamera() const { return GameplayCamera; }
+	FORCEINLINE bool GetCanCastSpell() const { return bCanCastSpell; }
+	FORCEINLINE void SetCanCastSpell(bool bIsInCombat) { bCanCastSpell = bIsInCombat; }
 };
 
 

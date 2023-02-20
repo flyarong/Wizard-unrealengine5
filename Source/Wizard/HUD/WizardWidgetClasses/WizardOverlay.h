@@ -95,11 +95,14 @@ private:
 	UPROPERTY(meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* DistrictPanelFadeIn;
 
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* DistrictPanelFadeOut;
+
 	UPROPERTY(meta = (BindWidget))
 	class UWizardProgressBarWidget* HealthBar;
 
 	UPROPERTY(meta = (BindWidget))
-	class UWizardProgressBarWidget* PowerBar;
+	UWizardProgressBarWidget* PowerBar;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* XPText;
@@ -114,7 +117,13 @@ private:
 	UScaleBox* TopRightBox;
 
 	UPROPERTY(meta = (BindWidget))
+	UScaleBox* ItemPanelBox;
+
+	UPROPERTY(meta = (BindWidget))
 	class UVerticalBox* EventBox;
+	
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* LeftSideBox;
 
 	UPROPERTY(meta = (BindWidget))
 	class UChatBoxWidget* ChatBox;
@@ -139,6 +148,7 @@ public:
 	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
 	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
 	FORCEINLINE void PlayDistrictPanelFadeIn() { PlayAnimation(DistrictPanelFadeIn); }
+	FORCEINLINE void PlayDistrictPanelFadeOut() { PlayAnimation(DistrictPanelFadeOut); }
 	FORCEINLINE void SetXPText(FText XP) { XPText->SetText(XP); };
 	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
 	FORCEINLINE void SetCharacterNameText(FText Name) { CharacterNameText->SetText(Name); };
@@ -161,7 +171,9 @@ public:
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UScaleBox* GetTopRightBox() const { return TopRightBox; }
+	FORCEINLINE UScaleBox* GetItemPanelBox() const { return ItemPanelBox; }
 	FORCEINLINE UVerticalBox* GetEventBox() const { return EventBox; }
+	FORCEINLINE UVerticalBox* GetLeftSideBox() const { return LeftSideBox; }
 	FORCEINLINE UChatBoxWidget* GetChatBox() const { return ChatBox; }
 	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
 };

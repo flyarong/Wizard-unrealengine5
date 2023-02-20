@@ -36,6 +36,17 @@ public:
 	/// </summary>
 	void StartCombat();
 
+	/// <summary>
+	/// Function to start the Next Spell Step
+	/// </summary>
+	void StartNextStep();
+
+	/// <summary>
+	/// Function to stop the timer of
+	/// the current Spell Step
+	/// </summary>
+	void StopCurrentTimer();
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -53,11 +64,6 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AWizardPlayerController* WController;
-
-	/// <summary>
-	/// Timer handle to wait for the next Spell step
-	/// </summary>
-	FTimerHandle NextStepTimer;
 
 	/// <summary>
 	/// Timer handle to wait for input during the
@@ -100,10 +106,12 @@ private:
 	FName SpellBarParameterValue = FName("Fullness");
 
 	/// <summary>
-	/// Function to trigger when the Combat starts
+	/// Function to trigger when the timer
+	/// between Spell Steps finished
+	/// Sets the current Spell Step
 	/// </summary>
 	UFUNCTION()
-	void OnCombatStarted();
+	void SetCurrentSpellStep();
 
 	/// <summary>
 	/// Function to setup the Steps for the Spell
@@ -125,7 +133,7 @@ private:
 	/// Boolean for determining whether or not
 	/// the combat has started
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool bSpellBarShouldUpdate = false;
 
 	/// <summary>
@@ -202,4 +210,20 @@ private:
 	/// to the screen
 	/// </summary>
 	void AddCurrentStep();
+
+	/// <summary>
+	/// Boolean for whether or not to
+	/// do the preparations for the next Spell Step
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_InitNextStep)
+	bool bInitNextStep = false;
+
+	UFUNCTION()
+	void OnRep_InitNextStep();
+
+	/// <summary>
+	/// Function to remove the previous
+	/// Spell step from the screen
+	/// </summary>
+	void RemovePreviousStep();
 };

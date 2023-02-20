@@ -85,9 +85,9 @@ public:
 	void ServerStartCombat();
 
 	/// <summary>
-	/// Function to start the Combat
+	/// Function to end the Combat
 	/// </summary>
-	void StartCombat();
+	void EndCombat();
 
 protected:
 	// Called when the game starts

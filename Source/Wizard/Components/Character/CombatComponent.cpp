@@ -7,6 +7,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -48,6 +49,8 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, CombatAttribute);
 	DOREPLIFETIME(UCombatComponent, Steps);
 	DOREPLIFETIME(UCombatComponent, StepIndex);
+	DOREPLIFETIME(UCombatComponent, bSpellBarShouldUpdate);
+	DOREPLIFETIME(UCombatComponent, bInitNextStep);
 }
 
 void UCombatComponent::InitCombat(int32 AttributeForCombat)
@@ -94,7 +97,7 @@ void UCombatComponent::ResetHUD()
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		WController->SetInputContext(EInputContext::EIC_Default);
-		WController->RemoveSpellMapFromHUD();
+		WController->ResetHUD();
 	}
 }
 
@@ -104,24 +107,9 @@ void UCombatComponent::StartCombat()
 	GetWorld()->GetTimerManager().SetTimer(
 		StartCombatTimer,
 		this,
-		&UCombatComponent::OnCombatStarted,
+		&UCombatComponent::SetCurrentSpellStep,
 		1.5f
 	);
-}
-
-void UCombatComponent::OnCombatStarted()
-{
-	if (StepIndex >= 0) {
-		// call next step timer here
-	}
-	else {
-		// this will be handled in its own function
-		// we'll call current step timer in that function
-		StepIndex++;
-		AddCurrentStep();
-		// when current step timer ends/cleared, call next step timer
-		// if stepindex < steps.num
-	}
 }
 
 void UCombatComponent::OnRep_StepIndex()
@@ -134,9 +122,31 @@ void UCombatComponent::AddCurrentStep()
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		if (StepIndex == 0) WController->AddHUDSpellMap();
-		WController->AddHUDCurrentSpellStep(StepIndex);
-		// put symbol on screen & set boolean for key should be pressed
-		// set boolean in controller for key already pressed so it won't get spammed
+		int32 SpellIndex = -1;
+		for (int32 i = 0; i < SpellInputs.Num(); i++) {
+			if (Steps[StepIndex] == SpellInputs[i]) {
+				SpellIndex = i;
+				break;
+			}
+		}
+		WController->AddHUDCurrentSpellStep(SpellIndex);
+		WController->SetCanCastSpell(true);
+	}
+}
+
+void UCombatComponent::OnRep_InitNextStep()
+{
+	RemovePreviousStep();
+}
+
+void UCombatComponent::RemovePreviousStep()
+{
+	if (bInitNextStep) {
+		WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+		if (WController) {
+			WController->SetCanCastSpell(false);
+			WController->RemoveHUDPreviouseSpellStep();
+		}
 	}
 }
 
@@ -175,4 +185,47 @@ void UCombatComponent::UpdateSpellBar(float DeltaTime)
 			Amount = 1.f / NumberOfSteps;
 		}
 	}
+}
+
+void UCombatComponent::StartNextStep()
+{
+	if (StepIndex >= 0) {
+		bInitNextStep = true;
+		RemovePreviousStep();
+	}
+
+	FTimerHandle NextStepTimer;
+	GetWorld()->GetTimerManager().SetTimer(
+		NextStepTimer,
+		this,
+		&UCombatComponent::SetCurrentSpellStep,
+		1.f
+	);
+}
+
+void UCombatComponent::SetCurrentSpellStep()
+{
+	if (StepIndex < Steps.Num() - 1) {
+		StepIndex++;
+		AddCurrentStep();
+		bInitNextStep = false;
+		GetWorld()->GetTimerManager().SetTimer(
+			CurrentStepTimer,
+			this,
+			&UCombatComponent::StartNextStep,
+			1.5f
+		);
+	}
+	else {
+		// TODO pass result to playerstate
+		if (Character && Character->GetAction()) {
+			Character->GetAction()->EndCombat();
+		}
+	}
+}
+
+void UCombatComponent::StopCurrentTimer()
+{
+	GetWorld()->GetTimerManager().ClearTimer(CurrentStepTimer);
+	// TODO check key input and start next step timer
 }

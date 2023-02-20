@@ -115,6 +115,9 @@ void AWizardPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnKeyMove);
 		EnhancedInputComponent->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnMouseWheelAxis);
 		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnMouseRotateYaw);
+
+		// Setup Combat input events
+		EnhancedInputComponent->BindAction(CombatAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnCombatKeyTriggered);
 	}
 }
 
@@ -235,6 +238,13 @@ void AWizardPlayerController::OnKeyMove(const FInputActionValue& ActionValue)
 {
 	if (GameplayCamera) {
 		GameplayCamera->KeyMove(ActionValue.Get<FVector>());
+	}
+}
+
+void AWizardPlayerController::OnCombatKeyTriggered(const FInputActionValue& ActionValue)
+{
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("combat triggered")));
 	}
 }
 #pragma endregion
@@ -431,7 +441,21 @@ void AWizardPlayerController::AddHUDCombatMenu()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
+		WizardHUD->HideCurrentDistrict();
+		WizardHUD->HideLeftPanel();
+		WizardHUD->HideItemPanel();
 		WizardHUD->AddCombatMenu();
+	}
+}
+
+void AWizardPlayerController::ResetHUD()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->RemoveSpellMap();
+		WizardHUD->ShowCurrentDistrict();
+		WizardHUD->ShowLeftPanel();
+		WizardHUD->ShowItemPanel();
 	}
 }
 
@@ -440,6 +464,14 @@ void AWizardPlayerController::AddHUDCurrentSpellStep(int32 CurrentStepIndex)
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		WizardHUD->AddCurrentSpellStep(CurrentStepIndex);
+	}
+}
+
+void AWizardPlayerController::RemoveHUDPreviouseSpellStep()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->ClearCenterBox();
 	}
 }
 #pragma endregion
