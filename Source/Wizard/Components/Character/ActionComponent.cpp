@@ -154,7 +154,8 @@ void UActionComponent::SetOverlappedSpell(ASpell* Spell)
 {
 	if (OverlappedSpell == nullptr) { // can only overlap one Spell at a time
 		OverlappedSpell = Spell;
-		if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
+		if (Character && Character->IsLocallyControlled() && 
+			OverlappedSpell && OverlappedSpell->GetCanInteract()) {
 			// CombatCost = OverlappedSpell->GetCost(); // don't need this; just use GetCost() when it is needed
 			OverlappedSpell->ShowInteractWidget(true);
 		}
@@ -163,10 +164,11 @@ void UActionComponent::SetOverlappedSpell(ASpell* Spell)
 
 void UActionComponent::OnRep_OverlappedSpell(ASpell* PreviousSpell)
 {
-	if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
+	if (Character && Character->IsLocallyControlled() &&
+		OverlappedSpell && OverlappedSpell->GetCanInteract()) {
 		OverlappedSpell->ShowInteractWidget(true);
 	}
-	else if (PreviousSpell) {
+	else if (Character && Character->IsLocallyControlled() && PreviousSpell) {
 		PreviousSpell->ShowInteractWidget(false);
 	}
 }
@@ -184,6 +186,8 @@ void UActionComponent::LeaveSpell()
 #pragma region Combat
 void UActionComponent::ServerInitWisdomCombat_Implementation()
 {
+	if (OverlappedSpell) OverlappedSpell->SetCanInteract(false);
+
 	if (Character && Character->GetCombat() && Character->GetAttribute()) {
 		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom());
 	}
@@ -192,6 +196,7 @@ void UActionComponent::ServerInitWisdomCombat_Implementation()
 void UActionComponent::ServerCancelCombat_Implementation()
 {
 	Character->GetCombat()->StopCombat();
+	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true); // TODO do this in end combat later
 }
 
 void UActionComponent::ServerStartCombat_Implementation()

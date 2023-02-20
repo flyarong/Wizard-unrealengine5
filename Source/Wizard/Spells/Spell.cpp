@@ -4,7 +4,6 @@
 #include "Spell.h"
 #include "Sound/SoundCue.h"
 #include "NiagaraComponent.h"
-#include "Net/UnrealNetwork.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/WidgetComponent.h"
@@ -75,7 +74,8 @@ void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
-			Character->GetAction()->GetOverlappedSpell() == this) {
+			Character->GetAction()->GetOverlappedSpell() == this && bCanInteract) {
+			// rotate character to face actor - maybe should create a function for it in action component/character for reuse
 			Character->GetAction()->ServerInitWisdomCombat();
 		}
 	}

@@ -2,6 +2,7 @@
 
 
 #include "WizardActor.h"
+#include "Net/UnrealNetwork.h"
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
@@ -57,6 +58,19 @@ void AWizardActor::Tick(float DeltaTime)
 			InteractWidget->SetDisplayText(InteractText);
 		}
 	}
+}
+
+void AWizardActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWizardActor, bCanInteract);
+}
+
+void AWizardActor::SetCanInteract(bool bIsInteractable)
+{
+	bCanInteract = bIsInteractable;
+	ShowInteractWidget(bIsInteractable);
 }
 
 void AWizardActor::ShowInteractWidget(bool bShowInteractWidget)
