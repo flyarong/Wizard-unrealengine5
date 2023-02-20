@@ -34,15 +34,14 @@ void AWizardPlayerController::BeginPlay()
 	Super::BeginPlay();
 	
 	//Add Input Mapping Context
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	EnhancedInputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if (EnhancedInputSubsystem)
 	{
-		Subsystem->AddMappingContext(DefaultMappingContext, 0);
+		EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 
-	// Init HUD & UI until Character becomes valid
+	// Init HUD
 	WizardHUD = Cast<AWizardHUD>(GetHUD());
-	FInputModeUIOnly InputModeData;
-	SetInputMode(InputModeData);
 }
 
 void AWizardPlayerController::Tick(float DeltaSeconds)
@@ -112,28 +111,38 @@ void AWizardPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AWizardPlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AWizardPlayerController::OnSetDestinationReleased);
 
-		// Setup touch input events
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Started, this, &AWizardPlayerController::OnInputStarted);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnTouchTriggered);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Completed, this, &AWizardPlayerController::OnTouchReleased);
-		EnhancedInputComponent->BindAction(SetDestinationTouchAction, ETriggerEvent::Canceled, this, &AWizardPlayerController::OnTouchReleased);
+		// Setup Camera input events
+		EnhancedInputComponent->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnKeyMove);
+		EnhancedInputComponent->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnMouseWheelAxis);
+		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnMouseRotateYaw);
 	}
+}
 
-	// Camera Axis Mappings
-	InputComponent->BindAxis(FName("MouseWheelAxis"), this, &AWizardPlayerController::OnMouseWheelAxis);
-	InputComponent->BindAxis(FName("MoveForward"), this, &AWizardPlayerController::OnKeyMoveForward);
-	InputComponent->BindAxis(FName("MoveRight"), this, &AWizardPlayerController::OnKeyMoveRight);
-	InputComponent->BindAxis(FName("LookYaw"), this, &AWizardPlayerController::OnMouseRotateYaw);
+void AWizardPlayerController::SetInputContext(EInputContext ContextType)
+{
+	switch (ContextType)
+	{
+	case EInputContext::EIC_Default:
+		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(true);
+		EnhancedInputSubsystem->ClearAllMappings();
+		EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+		SetCameraPositionToDefault();
+		break;
+	case EInputContext::EIC_Combat:
+		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(false);
+		EnhancedInputSubsystem->ClearAllMappings();
+		EnhancedInputSubsystem->AddMappingContext(CombatMappingContext, 0);
+		SetCameraPositionToCombat();
+		break;
+	case EInputContext::EIC_None:
+		EnhancedInputSubsystem->ClearAllMappings();
+		break;
+	default:
+		break;
+	}
 }
 
 #pragma region CharacterMovement
-void AWizardPlayerController::SetWizardMovementIsEnabled(bool bIsMovementEnabled)
-{
-	bCanCharacterMove = bIsMovementEnabled;
-	bCanCameraMove = bIsMovementEnabled;
-	if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(bIsMovementEnabled);
-}
-
 void AWizardPlayerController::OnInputStarted()
 {
 	ServerStopMovement();
@@ -151,14 +160,7 @@ void AWizardPlayerController::OnSetDestinationTriggered()
 	// We look for the location in the world where the player has pressed the input
 	FHitResult Hit;
 	bool bHitSuccessful = false;
-	if (bIsTouch)
-	{
-		bHitSuccessful = GetHitResultUnderFinger(ETouchIndex::Touch1, ECollisionChannel::ECC_Visibility, true, Hit);
-	}
-	else
-	{
-		bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
-	}
+	bHitSuccessful = GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, Hit);
 
 	// If we hit a surface, cache the location
 	if (bHitSuccessful)
@@ -169,42 +171,27 @@ void AWizardPlayerController::OnSetDestinationTriggered()
 
 void AWizardPlayerController::OnSetDestinationReleased()
 {
-	if (bCanCharacterMove) {
-		// We move there and spawn some particles
-		ServerMoveToLocation(this, CachedDestination);
-		if (!HasAuthority()) {
-			// Move to location locally on client
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
-		}
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			this,
-			FXCursor,
-			CachedDestination,
-			FRotator::ZeroRotator,
-			FVector(1.f, 1.f, 1.f),
-			true,
-			true,
-			ENCPoolMethod::None,
-			true
-		);
+	// We move there and spawn some particles
+	ServerMoveToLocation(this, CachedDestination);
+	if (!HasAuthority()) {
+		// Move to location locally on client
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
 	}
+	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		this,
+		FXCursor,
+		CachedDestination,
+		FRotator::ZeroRotator,
+		FVector(1.f, 1.f, 1.f),
+		true,
+		true,
+		ENCPoolMethod::None,
+		true
+	);
 }
 
 void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerController* Controller, FVector Dest) {
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
-}
-
-// Triggered every frame when the input is held down
-void AWizardPlayerController::OnTouchTriggered()
-{
-	bIsTouch = true;
-	OnSetDestinationTriggered();
-}
-
-void AWizardPlayerController::OnTouchReleased()
-{
-	bIsTouch = false;
-	OnSetDestinationReleased();
 }
 #pragma endregion
 
@@ -230,28 +217,25 @@ void AWizardPlayerController::SetCameraPositionToCombat()
 	}
 }
 
-void AWizardPlayerController::OnMouseWheelAxis(float Value)
+void AWizardPlayerController::OnMouseWheelAxis(const FInputActionValue& ActionValue)
 {
-	if (GameplayCamera && bCanCameraMove) {
-		GameplayCamera->SetPositionWithMouseWheel(Value);
+	if (GameplayCamera) {
+		GameplayCamera->SetPositionWithMouseWheel(ActionValue.Get<float>());
 	}
 }
 
-void AWizardPlayerController::OnMouseRotateYaw(float Value)
+void AWizardPlayerController::OnMouseRotateYaw(const FInputActionValue& ActionValue)
 {
-	if (GameplayCamera && IsInputKeyDown(EKeys::RightMouseButton) && bCanCameraMove) {
-		GameplayCamera->MouseRotate(Value);
+	if (GameplayCamera) {
+		GameplayCamera->MouseRotate(ActionValue.Get<float>());
 	}
 }
 
-void AWizardPlayerController::OnKeyMoveForward(float Value)
+void AWizardPlayerController::OnKeyMove(const FInputActionValue& ActionValue)
 {
-	if (GameplayCamera && bCanCameraMove) GameplayCamera->KeyMoveForwardOrBackward(Value);
-}
-
-void AWizardPlayerController::OnKeyMoveRight(float Value)
-{
-	if (GameplayCamera && bCanCameraMove) GameplayCamera->KeyMoveLeftOrRight(Value);
+	if (GameplayCamera) {
+		GameplayCamera->KeyMove(ActionValue.Get<FVector>());
+	}
 }
 #pragma endregion
 

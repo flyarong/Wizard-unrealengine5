@@ -77,7 +77,7 @@ void AGameplayCamera::SetCameraFocusOnWizard()
 {
 	if (WCharacter) {
 		if (!bFollowWizard) bFollowWizard = true;
-		SetActorLocation(WCharacter->GetActorLocation());
+		CameraBoom->SetRelativeLocation(WCharacter->GetActorLocation());
 	}
 }
 
@@ -92,10 +92,12 @@ void AGameplayCamera::SetPositionToDefault()
 void AGameplayCamera::SetPositionToCombat()
 {
 	if (WCharacter) {
-		SetActorLocation(WCharacter->GetActorLocation());
-		SetActorRotation(WCharacter->GetActorRotation());
-		KeyMoveLeftOrRight(10.f);
-		CameraBoom->AddRelativeRotation(CombatCameraRotation);
+		CameraBoom->SetRelativeLocation(WCharacter->GetActorLocation());
+		CameraBoom->SetRelativeRotation(WCharacter->GetActorRotation());
+		if (bFollowWizard) bFollowWizard = false;
+		FVector CameraLocation = FRotator(0.f, WCharacter->GetActorRotation().Yaw, 0.f)
+			.RotateVector(FVector(0.f, 10.f * CameraMovementSpeed, 0.f));
+		CameraBoom->AddRelativeLocation(CameraLocation);
 		CameraPosition = 4;
 	}
 }
@@ -124,22 +126,10 @@ void AGameplayCamera::MouseRotate(float Value)
 	}
 }
 
-void AGameplayCamera::KeyMoveForwardOrBackward(float Value)
+void AGameplayCamera::KeyMove(FVector DeltaLocation)
 {
-	KeyMove(Value, -90.f + CameraBoom->GetComponentRotation().Yaw);
-}
-
-void AGameplayCamera::KeyMoveLeftOrRight(float Value)
-{
-	KeyMove(Value, CameraBoom->GetComponentRotation().Yaw);
-}
-
-void AGameplayCamera::KeyMove(float Value, float RotationY)
-{
-	if (CameraBoom && Value != 0) {
+	if (CameraBoom) {
 		if (bFollowWizard) bFollowWizard = false;
-		FVector DeltaLocation = FRotator(0.f, RotationY, 0.f)
-			.RotateVector(FVector(0.f, Value * CameraMovementSpeed, 0.f));
 		if (CheckCameraMovementBounds(DeltaLocation)) CameraBoom->AddRelativeLocation(DeltaLocation);
 	}
 }

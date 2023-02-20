@@ -57,14 +57,11 @@ public:
 	void MouseRotate(float Value);
 
 	/// <summary>
-	/// Function for moving the camera forward/backward with keys
+	/// Camera Movement function with keys
 	/// </summary>
-	void KeyMoveForwardOrBackward(float Value);
+	/// <param name="DeltaLocation">Location to move to</param>
+	void KeyMove(FVector DeltaLocation);
 
-	/// <summary>
-	/// Function for moving the camera left/right with keys
-	/// </summary>
-	void KeyMoveLeftOrRight(float Value);
 #pragma endregion
 
 private:
@@ -106,11 +103,6 @@ private:
 	FRotator DefaultCameraRotation = FRotator(-35.f, -120.f, 0.f);
 
 	/// <summary>
-	/// Camera's Relative Rotation during Combat
-	/// </summary>
-	FRotator CombatCameraRotation = FRotator(-15.f, -20.f, 0.f);
-
-	/// <summary>
 	/// Camera Position multiplier
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Camera Movement")
@@ -149,13 +141,6 @@ private:
 	/// </summary>
 	void CameraZoom(float DeltaTime);
 
-	/// <summary>
-	/// Camera Movement function for keys
-	/// </summary>
-	/// <param name="Value">Input value</param>
-	/// <param name="RotationY">Rotates the vector depending on movement direction</param>
-	void KeyMove(float Value, float RotationY);
-
 	/**
 	* Functions for moving the camera with the mouse
 	*/
@@ -187,4 +172,5 @@ private:
 public:
 	FORCEINLINE void SetWizard(AWizardCharacter* Wizard) { WCharacter = Wizard; }
 	FORCEINLINE void SetEnableCameraMovementWithMouse(bool bIsMovementEnabled) { bEnableMouseMovement = bIsMovementEnabled; }
+	FORCEINLINE float GetCameraMovementSpeed() const { return CameraMovementSpeed; }
 };

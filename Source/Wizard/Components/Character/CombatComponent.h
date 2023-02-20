@@ -55,6 +55,17 @@ private:
 	class AWizardPlayerController* WController;
 
 	/// <summary>
+	/// Timer handle to wait for the next Spell step
+	/// </summary>
+	FTimerHandle NextStepTimer;
+
+	/// <summary>
+	/// Timer handle to wait for input during the
+	/// current Spell step
+	/// </summary>
+	FTimerHandle CurrentStepTimer;
+
+	/// <summary>
 	/// The value of the Attribute used
 	/// during Combat
 	/// </summary>

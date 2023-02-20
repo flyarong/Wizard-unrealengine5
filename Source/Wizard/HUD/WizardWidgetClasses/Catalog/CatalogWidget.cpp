@@ -15,7 +15,7 @@ bool UCatalogWidget::CreateCatalog(AStore* Store)
 {
 	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetOwningPlayer());
 	if (PlayerController) {
-		PlayerController->SetWizardMovementIsEnabled(false);
+		PlayerController->SetInputContext(EInputContext::EIC_None);
 		AddToViewport();
 		bIsFocusable = true;
 
@@ -47,7 +47,7 @@ void UCatalogWidget::CloseCatalog()
 		if (WCharacter && WCharacter->GetAction()) {
 			RemoveFromParent();
 			WCharacter->GetAction()->CloseCatalog();
-			PlayerController->SetWizardMovementIsEnabled(true);
+			PlayerController->SetInputContext(EInputContext::EIC_Default);
 		}
 	}
 }

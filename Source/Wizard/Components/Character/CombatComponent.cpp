@@ -16,10 +16,10 @@ UCombatComponent::UCombatComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	SpellInputs = {
-		EKeys::Up,
-		EKeys::Left,
-		EKeys::Down,
-		EKeys::Right
+		EKeys::W,
+		EKeys::A,
+		EKeys::S,
+		EKeys::D
 	};
 }
 
@@ -55,16 +55,18 @@ void UCombatComponent::InitCombat(int32 AttributeForCombat)
 	SetSpellSteps();
 	SetSpellIndexes();
 	CombatAttribute = AttributeForCombat;
-	SetupCombatHUD();
+	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombatHUD();
 }
 
 void UCombatComponent::OnRep_CombatAttribute()
 {
-	if (CombatAttribute > 0) {
-		SetupCombatHUD();
-	}
-	else {
-		ResetHUD();
+	if (Character && Character->IsLocallyControlled()) {
+		if (CombatAttribute > 0) {
+			SetupCombatHUD();
+		}
+		else {
+			ResetHUD();
+		}
 	}
 }
 
@@ -72,10 +74,7 @@ void UCombatComponent::SetupCombatHUD()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
-		WController->SetWizardMovementIsEnabled(false);
-		FInputModeUIOnly InputModeData;
-		WController->SetInputMode(InputModeData);
-		WController->SetCameraPositionToCombat();
+		WController->SetInputContext(EInputContext::EIC_Combat);
 		WController->CreateHUDSpellMap(SpellInputs, SpellIndexes);
 		WController->AddHUDCombatMenu();
 	}
@@ -87,18 +86,15 @@ void UCombatComponent::StopCombat()
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
 	CombatAttribute = 0;
 
-	ResetHUD();
+	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) ResetHUD();
 }
 
 void UCombatComponent::ResetHUD()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
+		WController->SetInputContext(EInputContext::EIC_Default);
 		WController->RemoveSpellMapFromHUD();
-		WController->SetCameraPositionToDefault();
-		FInputModeGameAndUI InputModeData;
-		WController->SetInputMode(InputModeData);
-		WController->SetWizardMovementIsEnabled(true);
 	}
 }
 
@@ -115,8 +111,17 @@ void UCombatComponent::StartCombat()
 
 void UCombatComponent::OnCombatStarted()
 {
-	StepIndex++;
-	AddCurrentStep();
+	if (StepIndex >= 0) {
+		// call next step timer here
+	}
+	else {
+		// this will be handled in its own function
+		// we'll call current step timer in that function
+		StepIndex++;
+		AddCurrentStep();
+		// when current step timer ends/cleared, call next step timer
+		// if stepindex < steps.num
+	}
 }
 
 void UCombatComponent::OnRep_StepIndex()
@@ -128,10 +133,9 @@ void UCombatComponent::AddCurrentStep()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
-		WController->AddHUDSpellMap();
+		if (StepIndex == 0) WController->AddHUDSpellMap();
 		WController->AddHUDCurrentSpellStep(StepIndex);
 		// put symbol on screen & set boolean for key should be pressed
-		// start timer
 		// set boolean in controller for key already pressed so it won't get spammed
 	}
 }

@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "Wizard/WizardTypes/AttributeTypes.h"
+#include "Wizard/WizardTypes/InputContextTypes.h"
 #include "WizardPlayerController.generated.h"
 
 /** Forward declaration to improve compiling times */
@@ -54,10 +55,11 @@ public:
 	void SetCameraPositionToCombat();
 
 	/// <summary>
-	/// Function to enable/disable Character&Camera movement
+	/// Function to set the current Input Mappings
+	/// based on the type required by Gameplay situation
 	/// </summary>
-	/// <param name="bIsMovementEnabled">Whether movement should be enabled or not</param>
-	void SetWizardMovementIsEnabled(bool bIsMovementEnabled);
+	/// <param name="ContextType">Type of the Input Context</param>
+	void SetInputContext(EInputContext ContextType);
 
 #pragma region HUD/Player
 	/// <summary>
@@ -223,17 +225,37 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UNiagaraSystem* FXCursor;
 
-	/** MappingContext */
+	/** Enhanced Input Subsystem */
+	UPROPERTY()
+	class UEnhancedInputLocalPlayerSubsystem* EnhancedInputSubsystem;
+
+	/** Default MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 	
-	/** Jump Input Action */
+	/** Click Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
 	class UInputAction* SetDestinationClickAction;
 
-	/** Jump Input Action */
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Input, meta=(AllowPrivateAccess = "true"))
-	class UInputAction* SetDestinationTouchAction;
+	/** Camera Movement Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* CameraMoveAction;
+
+	/** Camera Zoom Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* CameraZoomAction;
+
+	/** Camera Rotation Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* CameraRotateAction;
+
+	/** Combat MappingContext */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputMappingContext* CombatMappingContext;
+
+	/** Combat Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* CombatAction;
 #pragma endregion
 
 protected:
@@ -250,31 +272,24 @@ protected:
 	void OnInputStarted();
 	void OnSetDestinationTriggered();
 	void OnSetDestinationReleased();
-	void OnTouchTriggered();
-	void OnTouchReleased();
 
 	/// <summary>
 	/// Callback function to Mouse Wheel Axis for
 	/// Zooming in/out with the camera
 	/// </summary>
-	void OnMouseWheelAxis(float Value);
+	void OnMouseWheelAxis(const FInputActionValue& ActionValue);
 
 	/// <summary>
-	/// Callback function to rotate Camera with Right Mouse Button
+	/// Callback function to rotate Camera when Right Mouse Button
+	/// is held down
 	/// </summary>
-	void OnMouseRotateYaw(float Value);
+	void OnMouseRotateYaw(const FInputActionValue& ActionValue);
 
 	/// <summary>
-	/// Callback function for moving the camera
-	/// forward/backward with keys
+	/// Callback function for moving the Camera
+	/// with keys
 	/// </summary>
-	void OnKeyMoveForward(float Value);
-
-	/// <summary>
-	/// Callback function for moving the camera
-	/// left/right with keys
-	/// </summary>
-	void OnKeyMoveRight(float Value);
+	void OnKeyMove(const FInputActionValue& ActionValue);
 #pragma endregion
 
 private:
@@ -339,27 +354,12 @@ private:
 	/// </summary>
 	UPROPERTY(Replicated)
 	FVector CachedDestination;
-
-	/// <summary>
-	/// Boolean for whether or not the Character
-	/// can move
-	/// </summary>
-	UPROPERTY()
-	bool bCanCharacterMove = true;
-
-	/// <summary>
-	/// Boolean for whether or not the Camera
-	/// can move
-	/// </summary>
-	UPROPERTY()
-	bool bCanCameraMove = true;
-
-	bool bIsTouch; // Is it a touch device
 #pragma endregion
 
 public:
 	void SetWizardCharacter(AWizardCharacter* WCharacter);
 	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
+	FORCEINLINE AGameplayCamera* GetGameplayCamera() const { return GameplayCamera; }
 };
 
 
