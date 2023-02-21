@@ -17,10 +17,10 @@ UCombatComponent::UCombatComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 	
 	SpellInputs = {
-		EKeys::W,
-		EKeys::A,
-		EKeys::S,
-		EKeys::D
+		EKeys::Up,
+		EKeys::Left,
+		EKeys::Down,
+		EKeys::Right
 	};
 }
 
@@ -55,10 +55,32 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 void UCombatComponent::InitCombat(int32 AttributeForCombat)
 {
-	SetSpellSteps();
 	SetSpellIndexes();
+	SetSpellSteps();
 	CombatAttribute = AttributeForCombat;
 	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombatHUD();
+}
+
+void UCombatComponent::SetSpellIndexes()
+{
+	if (SpellInputs.Num() == 4) {
+		TArray<int32> CachedIndexes = { 0, 1, 2, 3 };
+		for (int32 i = 0; i < SpellInputs.Num(); i++) {
+			int32 Index = FMath::RandRange(0, CachedIndexes.Num() - 1);
+			SpellIndexes.Add(CachedIndexes[Index]);
+			CachedIndexes.RemoveAt(Index);
+		}
+	}
+}
+
+void UCombatComponent::SetSpellSteps()
+{
+	if (SpellIndexes.Num() > 1) {
+		for (int32 i = 0; i < NumberOfSteps; i++) {
+			int32 Index = FMath::RandRange(0, SpellIndexes.Num() - 1);
+			Steps.Add(SpellIndexes[Index]);
+		}
+	}
 }
 
 void UCombatComponent::OnRep_CombatAttribute()
@@ -85,7 +107,7 @@ void UCombatComponent::SetupCombatHUD()
 
 void UCombatComponent::StopCombat()
 {
-	if (Steps.Num() > 0) Steps = TArray<FKey>();
+	if (Steps.Num() > 0) Steps = TArray<int32>();
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
 	CombatAttribute = 0;
 
@@ -112,6 +134,28 @@ void UCombatComponent::StartCombat()
 	);
 }
 
+void UCombatComponent::SetCurrentSpellStep()
+{
+	if (StepIndex < Steps.Num() - 1) {
+		StepIndex++;
+		AddCurrentStep();
+		bInitNextStep = false;
+		GetWorld()->GetTimerManager().SetTimer(
+			CurrentStepTimer,
+			this,
+			&UCombatComponent::StartNextStep,
+			StepTime
+		);
+	}
+	else {
+		// TODO pass result to playerstate
+		StepIndex = -1;
+		if (Character && Character->GetAction()) {
+			Character->GetAction()->EndCombat();
+		}
+	}
+}
+
 void UCombatComponent::OnRep_StepIndex()
 {
 	if (StepIndex > -1)	AddCurrentStep();
@@ -122,16 +166,25 @@ void UCombatComponent::AddCurrentStep()
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		if (StepIndex == 0) WController->AddHUDSpellMap();
-		int32 SpellIndex = -1;
-		for (int32 i = 0; i < SpellInputs.Num(); i++) {
-			if (Steps[StepIndex] == SpellInputs[i]) {
-				SpellIndex = i;
-				break;
-			}
-		}
-		WController->AddHUDCurrentSpellStep(SpellIndex);
+		WController->AddHUDCurrentSpellStep(Steps[StepIndex]);
 		WController->SetCanCastSpell(true);
 	}
+}
+
+void UCombatComponent::StartNextStep()
+{
+	if (StepIndex >= 0) {
+		bInitNextStep = true;
+		RemovePreviousStep();
+	}
+
+	FTimerHandle NextStepTimer;
+	GetWorld()->GetTimerManager().SetTimer(
+		NextStepTimer,
+		this,
+		&UCombatComponent::SetCurrentSpellStep,
+		1.5f
+	);
 }
 
 void UCombatComponent::OnRep_InitNextStep()
@@ -150,29 +203,30 @@ void UCombatComponent::RemovePreviousStep()
 	}
 }
 
-void UCombatComponent::SetSpellSteps()
+void UCombatComponent::StopCurrentTimer()
 {
-	if (SpellInputs.Num() > 1) {
-		for (int32 i = 0; i < NumberOfSteps; i++) {
-			int32 Index = FMath::RandRange(0, SpellInputs.Num() - 1);
-			Steps.Add(SpellInputs[Index]);
-		}
-	}
+	GetWorld()->GetTimerManager().ClearTimer(CurrentStepTimer);
 }
 
-void UCombatComponent::SetSpellIndexes()
+void UCombatComponent::ValidateInput(int32 Input)
 {
-	if (SpellInputs.Num() == 4) {
-		TArray<int32> CachedIndexes = { 0, 1, 2, 3 };
-		for (int32 i = 0; i < SpellInputs.Num(); i++) {
-			int32 Index = FMath::RandRange(0, CachedIndexes.Num() - 1);
-			SpellIndexes.Add(CachedIndexes[Index]);
-			CachedIndexes.RemoveAt(Index);
-		}
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (WController) {
+		WController->SetCanCastSpell(false);
 	}
+
+	// Check if user input Symbol Index equals to current Step Symbol Index
+	if (SpellIndexes[Input] == Steps[StepIndex]) {
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Blue, FString::Printf(TEXT("match")));
+		}
+		bSpellBarShouldUpdate = true;
+	}
+
+	StartNextStep();
 }
 
-void UCombatComponent::UpdateSpellBar(float DeltaTime)
+void UCombatComponent::UpdateSpellBar(float DeltaTime) // TODO need to replicate
 {
 	if (bSpellBarShouldUpdate) {
 		ValueThisFrame = Rate * DeltaTime;
@@ -185,47 +239,4 @@ void UCombatComponent::UpdateSpellBar(float DeltaTime)
 			Amount = 1.f / NumberOfSteps;
 		}
 	}
-}
-
-void UCombatComponent::StartNextStep()
-{
-	if (StepIndex >= 0) {
-		bInitNextStep = true;
-		RemovePreviousStep();
-	}
-
-	FTimerHandle NextStepTimer;
-	GetWorld()->GetTimerManager().SetTimer(
-		NextStepTimer,
-		this,
-		&UCombatComponent::SetCurrentSpellStep,
-		1.f
-	);
-}
-
-void UCombatComponent::SetCurrentSpellStep()
-{
-	if (StepIndex < Steps.Num() - 1) {
-		StepIndex++;
-		AddCurrentStep();
-		bInitNextStep = false;
-		GetWorld()->GetTimerManager().SetTimer(
-			CurrentStepTimer,
-			this,
-			&UCombatComponent::StartNextStep,
-			1.5f
-		);
-	}
-	else {
-		// TODO pass result to playerstate
-		if (Character && Character->GetAction()) {
-			Character->GetAction()->EndCombat();
-		}
-	}
-}
-
-void UCombatComponent::StopCurrentTimer()
-{
-	GetWorld()->GetTimerManager().ClearTimer(CurrentStepTimer);
-	// TODO check key input and start next step timer
 }

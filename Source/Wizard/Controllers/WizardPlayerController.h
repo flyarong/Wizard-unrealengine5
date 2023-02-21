@@ -303,9 +303,9 @@ protected:
 	void OnKeyMove(const FInputActionValue& ActionValue);
 
 	/// <summary>
-	/// Callback function for Combat triggered input event
+	/// Callback function for Combat started input event
 	/// </summary>
-	void OnCombatKeyTriggered(const FInputActionValue& ActionValue);
+	void OnCombatKeyStarted(const FInputActionValue& ActionValue);
 #pragma endregion
 
 private:
@@ -353,7 +353,7 @@ private:
 	/// Boolean for whether or not the Player
 	/// is in Combat
 	/// </summary>
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool bCanCastSpell = false;
 
 #pragma region Movement

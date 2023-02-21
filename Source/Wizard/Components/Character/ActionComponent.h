@@ -85,6 +85,13 @@ public:
 	void ServerStartCombat();
 
 	/// <summary>
+	/// Server RPC to validate the Combat Input
+	/// </summary>
+	/// <param name="Input">Input value from Controller</param>
+	UFUNCTION(Server, Reliable)
+	void ServerValidateCombatInput(int32 Input);
+
+	/// <summary>
 	/// Function to end the Combat
 	/// </summary>
 	void EndCombat();

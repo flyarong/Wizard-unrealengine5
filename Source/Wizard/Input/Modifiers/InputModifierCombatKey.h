@@ -8,6 +8,7 @@
 
 /**
  * Input modifier for the Left Arrow Combat Key
+ * Converts key to Combat SpellInput index
  */
 UCLASS(meta = (DisplayName = "Left Combat Key Modifier"))
 class WIZARD_API UInputModifierLeftArrowKey : public UInputModifier
@@ -20,6 +21,7 @@ protected:
 
 /**
  * Input modifier for the Right Arrow Combat Key
+ * Converts key to Combat SpellInput index
  */
 UCLASS(meta = (DisplayName = "Right Combat Key Modifier"))
 class WIZARD_API UInputModifierRightArrowKey : public UInputModifier
@@ -32,6 +34,7 @@ protected:
 
 /**
  * Input modifier for the Up Arrow Combat Key
+ * Converts key to Combat SpellInput index
  */
 UCLASS(meta = (DisplayName = "Up Combat Key Modifier"))
 class WIZARD_API UInputModifierUpArrowKey : public UInputModifier
@@ -44,6 +47,7 @@ protected:
 
 /**
  * Input modifier for the Down Arrow Combat Key
+ * Converts key to Combat SpellInput index
  */
 UCLASS(meta = (DisplayName = "Down Combat Key Modifier"))
 class WIZARD_API UInputModifierDownArrowKey : public UInputModifier

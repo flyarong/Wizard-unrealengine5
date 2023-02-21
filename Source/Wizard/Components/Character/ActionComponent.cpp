@@ -212,6 +212,14 @@ void UActionComponent::ServerStartCombat_Implementation()
 	}
 }
 
+void UActionComponent::ServerValidateCombatInput_Implementation(int32 Input)
+{
+	if (Character && Character->GetCombat()) {
+		Character->GetCombat()->StopCurrentTimer();
+		Character->GetCombat()->ValidateInput(Input);
+	}
+}
+
 void UActionComponent::EndCombat()
 {
 	if (Character && Character->GetCombat()) {

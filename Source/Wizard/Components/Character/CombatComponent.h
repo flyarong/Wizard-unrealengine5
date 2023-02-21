@@ -47,6 +47,12 @@ public:
 	/// </summary>
 	void StopCurrentTimer();
 
+	/// <summary>
+	/// Function to validate the Combat Input
+	/// </summary>
+	/// <param name="Input">Input coming from Controller which contains the SpellInput Index</param>
+	void ValidateInput(int32 Input);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -144,8 +150,7 @@ private:
 	TArray<FKey> SpellInputs;
 
 	/// <summary>
-	/// Array containing the key input indexes needed to be
-	/// pressed for the step symbol presented on the HUD
+	/// Array containing indexes of Step Symbols
 	/// </summary>
 	UPROPERTY(Replicated)
 	TArray<int32> SpellIndexes;
@@ -155,7 +160,7 @@ private:
 	/// the SpellBar fill
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Spells")
-	float ProgressTime = 3.f;
+	float ProgressTime = 1.f;
 
 	/// <summary>
 	/// Number of Steps required to cast
@@ -168,7 +173,7 @@ private:
 	/// Number of time allowed for a Spell cast (in seconds)
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Spells")
-	float StepTime = 4.f;
+	float StepTime = 1.5f;
 
 	/// <summary>
 	/// Variable to determine how much
@@ -190,11 +195,11 @@ private:
 	float ValueThisFrame = 0.f;
 
 	/// <summary>
-	/// Array containing the key inputs
-	/// required for each step
+	/// Array containing the Spell Index corresponding
+	/// to the key inputs required for each step
 	/// </summary>
 	UPROPERTY(Replicated)
-	TArray<FKey> Steps;
+	TArray<int32> Steps;
 
 	/// <summary>
 	/// Index of the current Step

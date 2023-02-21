@@ -4,6 +4,7 @@
 #include "GameFramework/Pawn.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
@@ -54,6 +55,7 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWizardPlayerController, CachedDestination);
+	DOREPLIFETIME(AWizardPlayerController, bCanCastSpell);
 }
 
 #pragma region Init
@@ -117,28 +119,41 @@ void AWizardPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(CameraRotateAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnMouseRotateYaw);
 
 		// Setup Combat input events
-		EnhancedInputComponent->BindAction(CombatAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnCombatKeyTriggered);
+		EnhancedInputComponent->BindAction(CombatAction, ETriggerEvent::Started, this, &AWizardPlayerController::OnCombatKeyStarted);
 	}
 }
 
 void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 {
+	FModifyContextOptions Options;
+	Options.bForceImmediately = false;
+	Options.bIgnoreAllPressedKeysUntilRelease = true;
+
 	switch (ContextType)
 	{
 	case EInputContext::EIC_Default:
-		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(true);
-		EnhancedInputSubsystem->ClearAllMappings();
-		EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0);
+		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(false);
+		if (EnhancedInputSubsystem->HasMappingContext(CombatMappingContext)) {
+			EnhancedInputSubsystem->RemoveMappingContext(CombatMappingContext, Options);
+		}
+		EnhancedInputSubsystem->AddMappingContext(DefaultMappingContext, 0, Options);
 		SetCameraPositionToDefault();
 		break;
 	case EInputContext::EIC_Combat:
 		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(false);
-		EnhancedInputSubsystem->ClearAllMappings();
-		EnhancedInputSubsystem->AddMappingContext(CombatMappingContext, 0);
+		if (EnhancedInputSubsystem->HasMappingContext(DefaultMappingContext)) {
+			EnhancedInputSubsystem->RemoveMappingContext(DefaultMappingContext, Options);
+		}
+		EnhancedInputSubsystem->AddMappingContext(CombatMappingContext, 0, Options);
 		SetCameraPositionToCombat();
 		break;
 	case EInputContext::EIC_None:
-		EnhancedInputSubsystem->ClearAllMappings();
+		if (EnhancedInputSubsystem->HasMappingContext(DefaultMappingContext)) {
+			EnhancedInputSubsystem->RemoveMappingContext(DefaultMappingContext, Options);
+		}
+		if (EnhancedInputSubsystem->HasMappingContext(CombatMappingContext)) {
+			EnhancedInputSubsystem->RemoveMappingContext(CombatMappingContext, Options);
+		}
 		break;
 	default:
 		break;
@@ -240,11 +255,14 @@ void AWizardPlayerController::OnKeyMove(const FInputActionValue& ActionValue)
 		GameplayCamera->KeyMove(ActionValue.Get<FVector>());
 	}
 }
+#pragma endregion
 
-void AWizardPlayerController::OnCombatKeyTriggered(const FInputActionValue& ActionValue)
+#pragma region Combat
+void AWizardPlayerController::OnCombatKeyStarted(const FInputActionValue& ActionValue)
 {
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("combat triggered")));
+	if (IsLocalController() && WizardCharacter && WizardCharacter->GetAction()) {
+		int32 KeyIndex = UKismetMathLibrary::Round(ActionValue.Get<float>());
+		WizardCharacter->GetAction()->ServerValidateCombatInput(KeyIndex);
 	}
 }
 #pragma endregion
@@ -452,6 +470,8 @@ void AWizardPlayerController::ResetHUD()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
+		SetShowMouseCursor(true);
+		WizardHUD->ClearCenterBox();
 		WizardHUD->RemoveSpellMap();
 		WizardHUD->ShowCurrentDistrict();
 		WizardHUD->ShowLeftPanel();
