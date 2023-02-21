@@ -182,6 +182,15 @@ private:
 #pragma endregion
 
 #pragma region Combat
+	
+	/// <summary>
+	/// Multicast RPC to make the Character
+	/// face the Target Combat Actor
+	/// </summary>
+	/// <param name="Target">Actor the Character is in Combat with</param>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastAimCharacterToTarget(class AWizardActor* Target);
+
 	/// <summary>
 	/// Attribute to use during Combat
 	/// </summary>

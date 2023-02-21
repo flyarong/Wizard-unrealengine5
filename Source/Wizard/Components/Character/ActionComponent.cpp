@@ -3,6 +3,7 @@
 
 #include "ActionComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Wizard/Stores/Store.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -10,6 +11,7 @@
 #include "Wizard/Components/Districts/District.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Spells/Spell.h"
+#include "Wizard/Actors/WizardActor.h"
 
 // Sets default values for this component's properties
 UActionComponent::UActionComponent()
@@ -189,6 +191,7 @@ void UActionComponent::ServerInitWisdomCombat_Implementation()
 	if (OverlappedSpell) OverlappedSpell->SetCanInteract(false);
 
 	if (Character && Character->GetCombat() && Character->GetAttribute()) {
+		MulticastAimCharacterToTarget(OverlappedSpell);
 		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom());
 	}
 }
@@ -216,5 +219,11 @@ void UActionComponent::EndCombat()
 	}
 
 	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true);
+}
+
+void UActionComponent::MulticastAimCharacterToTarget_Implementation(AWizardActor* Target)
+{
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation());
+	Character->K2_SetActorRotation(LookAtRotation, false);
 }
 #pragma endregion

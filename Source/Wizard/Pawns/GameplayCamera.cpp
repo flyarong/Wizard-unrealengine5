@@ -93,10 +93,10 @@ void AGameplayCamera::SetPositionToCombat()
 {
 	if (WCharacter) {
 		CameraBoom->SetRelativeLocation(WCharacter->GetActorLocation());
-		CameraBoom->SetRelativeRotation(WCharacter->GetActorRotation());
+		CameraBoom->SetRelativeRotation(WCharacter->GetActorRotation() - FRotator(0.f, 50.f, 0.f));
 		if (bFollowWizard) bFollowWizard = false;
 		FVector CameraLocation = FRotator(0.f, WCharacter->GetActorRotation().Yaw, 0.f)
-			.RotateVector(FVector(0.f, 10.f * CameraMovementSpeed, 0.f));
+			.RotateVector(FVector(100.f, 10.f * CameraMovementSpeed, 0.f));
 		CameraBoom->AddRelativeLocation(CameraLocation);
 		CameraPosition = 4;
 	}

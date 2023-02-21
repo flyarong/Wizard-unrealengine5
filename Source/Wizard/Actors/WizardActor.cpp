@@ -70,7 +70,6 @@ void AWizardActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 void AWizardActor::SetCanInteract(bool bIsInteractable)
 {
 	bCanInteract = bIsInteractable;
-	ShowInteractWidget(bIsInteractable);
 }
 
 void AWizardActor::ShowInteractWidget(bool bShowInteractWidget)
