@@ -7,13 +7,13 @@
 void USpellMapWidget::ConstructSpellMap(TMap<FKey, int32>& SpellMap)
 {
 	for (auto& Spell : SpellMap) {
-		if (Spell.Key == EKeys::W) {
+		if (Spell.Key == EKeys::Up) {
 			TopSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
-		} else if (Spell.Key == EKeys::A) {
+		} else if (Spell.Key == EKeys::Left) {
 			LeftSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
-		} else if (Spell.Key == EKeys::S) {
+		} else if (Spell.Key == EKeys::Down) {
 			BottomSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
-		} else if (Spell.Key == EKeys::D) {
+		} else if (Spell.Key == EKeys::Right) {
 			RightSymbol->SetBrushFromTexture(Symbols[Spell.Value]);
 		}
 	}
