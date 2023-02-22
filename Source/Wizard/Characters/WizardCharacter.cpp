@@ -59,6 +59,7 @@ AWizardCharacter::AWizardCharacter()
 	CombatMesh->SetRelativeLocation(FVector(-30.f, 115.f, 0.f));
 	CombatMesh->SetRelativeRotation(FRotator(180.f, 40.f, 90.f));
 	CombatMesh->SetRelativeScale3D(FVector(0.03f, 1.5f, 1.f));
+	Combat->SetIsReplicated(true);
 
 	// Create Point of Interest Component
 	POI = CreateDefaultSubobject<UCharacterPOIComponent>(TEXT("PointOfInterest"));
@@ -197,7 +198,7 @@ void AWizardCharacter::ServerUseItem_Implementation(int32 ItemIndex)
 	case EBoost::EB_Defense:
 		break;
 	case EBoost::EB_Power:
-		Attribute->AddPower(Items[ItemIndex].BoostAmount);
+		Attribute->AddPower(Items[ItemIndex].BoostAmount); // TODO remove item from Items and ItemIndexes
 		break;
 	case EBoost::EB_Wisdom:
 		break;

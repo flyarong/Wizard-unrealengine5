@@ -82,10 +82,26 @@ private:
 	/// during Combat
 	/// </summary>
 	UPROPERTY(ReplicatedUsing = OnRep_CombatAttribute)
-	int32 CombatAttribute = 0;
+	float CombatAttribute = 0.f;
 
 	UFUNCTION()
 	void OnRep_CombatAttribute();
+
+	/// <summary>
+	/// Rate of success for the Character in Combat
+	/// </summary>
+	UPROPERTY(Replicated)
+	float SuccessRate = 0.f;
+
+	/// <summary>
+	/// Number of successes achieved by the Character
+	/// during Combat
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_Successes)
+	float Successes = 0.f;
+
+	UFUNCTION()
+	void OnRep_Successes();
 
 	/// <summary>
 	/// Function to setup Combat on the screen
@@ -139,7 +155,7 @@ private:
 	/// Boolean for determining whether or not
 	/// the combat has started
 	/// </summary>
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	bool bSpellBarShouldUpdate = false;
 
 	/// <summary>
@@ -160,7 +176,7 @@ private:
 	/// the SpellBar fill
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Spells")
-	float ProgressTime = 1.f;
+	float ProgressTime = .75f;
 
 	/// <summary>
 	/// Number of Steps required to cast

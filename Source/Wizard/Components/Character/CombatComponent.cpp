@@ -47,9 +47,10 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, SpellInputs);
 	DOREPLIFETIME(UCombatComponent, SpellIndexes);
 	DOREPLIFETIME(UCombatComponent, CombatAttribute);
+	DOREPLIFETIME(UCombatComponent, SuccessRate);
+	DOREPLIFETIME(UCombatComponent, Successes);
 	DOREPLIFETIME(UCombatComponent, Steps);
 	DOREPLIFETIME(UCombatComponent, StepIndex);
-	DOREPLIFETIME(UCombatComponent, bSpellBarShouldUpdate);
 	DOREPLIFETIME(UCombatComponent, bInitNextStep);
 }
 
@@ -58,6 +59,7 @@ void UCombatComponent::InitCombat(int32 AttributeForCombat)
 	SetSpellIndexes();
 	SetSpellSteps();
 	CombatAttribute = AttributeForCombat;
+	SuccessRate = CombatAttribute / NumberOfSteps;
 	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombatHUD();
 }
 
@@ -109,7 +111,8 @@ void UCombatComponent::StopCombat()
 {
 	if (Steps.Num() > 0) Steps = TArray<int32>();
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
-	CombatAttribute = 0;
+	CombatAttribute = 0.f;
+	SuccessRate = 0.f;
 
 	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) ResetHUD();
 }
@@ -217,16 +220,19 @@ void UCombatComponent::ValidateInput(int32 Input)
 
 	// Check if user input Symbol Index equals to current Step Symbol Index
 	if (SpellIndexes[Input] == Steps[StepIndex]) {
-		if (GEngine) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Blue, FString::Printf(TEXT("match")));
-		}
+		Successes += SuccessRate;
 		bSpellBarShouldUpdate = true;
 	}
 
 	StartNextStep();
 }
 
-void UCombatComponent::UpdateSpellBar(float DeltaTime) // TODO need to replicate
+void UCombatComponent::OnRep_Successes()
+{
+	bSpellBarShouldUpdate = true;
+}
+
+void UCombatComponent::UpdateSpellBar(float DeltaTime)
 {
 	if (bSpellBarShouldUpdate) {
 		ValueThisFrame = Rate * DeltaTime;
