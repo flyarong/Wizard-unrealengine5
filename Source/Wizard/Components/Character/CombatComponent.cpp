@@ -167,8 +167,14 @@ void UCombatComponent::SetCurrentSpellStep()
 		);
 	}
 	else {
-		// TODO pass result to playerstate
 		StepIndex = -1;
+
+		// If Combat succeeds, destroy Target
+		int32 Result = FMath::FloorToInt32<float>(Successes);
+		if (CombatTarget && Result >= CombatTarget->GetHealth()) {
+			CombatTarget->Destroy();
+		}
+
 		if (Character && Character->GetAction()) {
 			Character->GetAction()->EndCombat();
 		}
