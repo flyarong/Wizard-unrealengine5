@@ -6,8 +6,10 @@
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Actors/WizardActor.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
 
 // Sets default values for this component's properties
 UCombatComponent::UCombatComponent()
@@ -47,6 +49,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, SpellInputs);
 	DOREPLIFETIME(UCombatComponent, SpellIndexes);
 	DOREPLIFETIME(UCombatComponent, CombatAttribute);
+	DOREPLIFETIME(UCombatComponent, CombatTarget);
 	DOREPLIFETIME(UCombatComponent, SuccessRate);
 	DOREPLIFETIME(UCombatComponent, Successes);
 	DOREPLIFETIME(UCombatComponent, Steps);
@@ -54,13 +57,22 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, bInitNextStep);
 }
 
-void UCombatComponent::InitCombat(int32 AttributeForCombat)
+void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardActor* Target)
 {
-	SetSpellIndexes();
-	SetSpellSteps();
-	CombatAttribute = AttributeForCombat;
-	SuccessRate = CombatAttribute / NumberOfSteps;
-	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombatHUD();
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (Character && Character->GetAttribute() && WController && Target) {
+		if (Character->GetAttribute()->GetPower() < Target->GetCost()) {
+			// TODO print local message of not enough power
+			return;
+		}
+
+		SetSpellIndexes();
+		SetSpellSteps();
+		CombatAttribute = AttributeForCombat;
+		CombatTarget = Target;
+		SuccessRate = CombatAttribute / NumberOfSteps;
+		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombatHUD();
+	}
 }
 
 void UCombatComponent::SetSpellIndexes()
@@ -112,6 +124,7 @@ void UCombatComponent::StopCombat()
 	if (Steps.Num() > 0) Steps = TArray<int32>();
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
 	CombatAttribute = 0.f;
+	CombatTarget = nullptr;
 	SuccessRate = 0.f;
 
 	if (Character && Character->HasAuthority() && Character->IsLocallyControlled()) ResetHUD();
@@ -128,13 +141,16 @@ void UCombatComponent::ResetHUD()
 
 void UCombatComponent::StartCombat()
 {
-	FTimerHandle StartCombatTimer;
-	GetWorld()->GetTimerManager().SetTimer(
-		StartCombatTimer,
-		this,
-		&UCombatComponent::SetCurrentSpellStep,
-		1.5f
-	);
+	if (Character && Character->GetAttribute() && CombatTarget) {
+		Character->GetAttribute()->SpendPower(CombatTarget->GetCost());
+		FTimerHandle StartCombatTimer;
+		GetWorld()->GetTimerManager().SetTimer(
+			StartCombatTimer,
+			this,
+			&UCombatComponent::SetCurrentSpellStep,
+			1.5f
+		);
+	}
 }
 
 void UCombatComponent::SetCurrentSpellStep()

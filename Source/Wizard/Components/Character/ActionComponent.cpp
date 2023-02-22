@@ -186,13 +186,13 @@ void UActionComponent::LeaveSpell()
 #pragma endregion
 
 #pragma region Combat
-void UActionComponent::ServerInitWisdomCombat_Implementation()
+void UActionComponent::ServerInitSpellCombat_Implementation()
 {
 	if (OverlappedSpell) OverlappedSpell->SetCanInteract(false);
 
 	if (Character && Character->GetCombat() && Character->GetAttribute()) {
 		MulticastAimCharacterToTarget(OverlappedSpell);
-		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom());
+		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom(), OverlappedSpell);
 	}
 }
 

@@ -24,7 +24,8 @@ public:
 	/// Function to initialize Combat
 	/// </summary>
 	/// <param name="AttributeForCombat">Attribute Value to use during Combat</param>
-	void InitCombat(int32 AttributeForCombat);
+	/// <param name="Target">Actor who is the target of the Combat</param>
+	void InitCombat(int32 AttributeForCombat, class AWizardActor* Target);
 
 	/// <summary>
 	/// Function to Stop the Combat
@@ -70,6 +71,12 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AWizardPlayerController* WController;
+
+	/// <summary>
+	/// Target Actor of the Combat
+	/// </summary>
+	UPROPERTY(Replicated)
+	AWizardActor* CombatTarget;
 
 	/// <summary>
 	/// Timer handle to wait for input during the

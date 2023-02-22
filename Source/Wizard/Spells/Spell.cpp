@@ -75,8 +75,7 @@ void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
 			Character->GetAction()->GetOverlappedSpell() == this && bCanInteract) {
-			// rotate character to face actor - maybe should create a function for it in action component/character for reuse
-			Character->GetAction()->ServerInitWisdomCombat();
+			Character->GetAction()->ServerInitSpellCombat();
 		}
 	}
 }

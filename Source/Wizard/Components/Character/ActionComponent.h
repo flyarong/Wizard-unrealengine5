@@ -67,10 +67,11 @@ public:
 	void LeaveSpell();
 	
 	/// <summary>
-	/// Server RPC to initiate a Wisdom Combat
+	/// Server RPC to initiate Combat against
+	/// a Spell
 	/// </summary>
 	UFUNCTION(Server, Reliable)
-	void ServerInitWisdomCombat();
+	void ServerInitSpellCombat();
 
 	/// <summary>
 	/// Server RPC to cancel the Combat
