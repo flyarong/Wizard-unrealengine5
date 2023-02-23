@@ -231,7 +231,7 @@ void UActionComponent::EndCombat()
 
 void UActionComponent::MulticastAimCharacterToTarget_Implementation(AWizardActor* Target)
 {
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation());
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation() + FVector(0.f, 0.f, 100.f));
 	Character->K2_SetActorRotation(LookAtRotation, false);
 }
 #pragma endregion
