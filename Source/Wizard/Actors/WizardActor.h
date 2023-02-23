@@ -52,6 +52,13 @@ protected:
 	class USphereComponent* AreaSphere;
 
 	/// <summary>
+	/// Sphere which defines how close the Actor
+	/// can be approached
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* BorderSphere;
+
+	/// <summary>
 	/// Interact widget component
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

@@ -27,6 +27,12 @@ AWizardActor::AWizardActor()
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
+	// Create BorderSphere
+	BorderSphere = CreateDefaultSubobject<USphereComponent>(TEXT("BorderSphere"));
+	BorderSphere->SetupAttachment(RootComponent);
+	BorderSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BorderSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
 	// Create Interact widget
 	InteractComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("InteractWidget"));
 	InteractComponent->SetupAttachment(RootComponent);
@@ -40,6 +46,8 @@ void AWizardActor::BeginPlay()
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+
+	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	if (InteractComponent) InteractComponent->SetVisibility(false);
 
