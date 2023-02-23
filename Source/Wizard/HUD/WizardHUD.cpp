@@ -12,6 +12,8 @@
 #include "Wizard/HUD/WizardWidgetClasses/Combat/SpellMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatMenuWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CurrentStepWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Combat/StepResultWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Combat/CombatScoreWidget.h"
 #include "Components/ScaleBox.h"
 #include "Components/VerticalBox.h"
 #include "Components/CanvasPanelSlot.h"
@@ -78,19 +80,12 @@ void AWizardHUD::HideLeftPanel()
 	}
 }
 
-void AWizardHUD::ShowItemPanel()
+void AWizardHUD::ClearBottomBox()
 {
-	if (WizardOverlay && WizardOverlay->GetItemPanelBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetItemPanelBox());
-		if (Slot) Slot->SetAlignment(FVector2D(.5f, 1.f));
-	}
-}
-
-void AWizardHUD::HideItemPanel()
-{
-	if (WizardOverlay && WizardOverlay->GetItemPanelBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetItemPanelBox());
-		if (Slot) Slot->SetAlignment(FVector2D(.5f, 0.f));
+	if (WizardOverlay && WizardOverlay->GetBottomBox()) {
+		if (WizardOverlay->GetBottomBox()->HasAnyChildren()) {
+			WizardOverlay->GetBottomBox()->ClearChildren();
+		}
 	}
 }
 #pragma endregion
@@ -197,9 +192,9 @@ void AWizardHUD::SetStoreCatalog(AStore* Store)
 
 void AWizardHUD::AddCharacterItem(int32 ItemIndex)
 {
-	if (WizardOverlay && WizardOverlay->GetCharacterItemPanel()) {
+	/*if (WizardOverlay && WizardOverlay->GetCharacterItemPanel()) {
 		WizardOverlay->GetCharacterItemPanel()->AddCharacterItem(ItemIndex);
-	}
+	}*/
 }
 #pragma endregion
 
@@ -236,7 +231,7 @@ void AWizardHUD::AddChatMessage(const FText& Message)
 void AWizardHUD::CreateSpellMap(TMap<FKey, int32>& SpellMap)
 {
 	USpellMapWidget* SpellMapWidget = CreateWidget<USpellMapWidget>(GetOwningPlayerController(), WizardOverlay->GetSpellMapWidgetClass());
-	if (SpellMapWidget) {
+	if (SpellMapWidget && WizardOverlay) {
 		SpellMapWidget->ConstructSpellMap(SpellMap);
 		WizardOverlay->SetSpellMapWidget(SpellMapWidget);
 	}
@@ -292,6 +287,39 @@ void AWizardHUD::AddCurrentSpellStep(int32 CurrentSpellStep)
 			CurrentStepWidget->ConstructSpellStep(CurrentSpellStep);
 			WizardOverlay->GetCenterBox()->AddChild(CurrentStepWidget);
 		}
+	}
+}
+
+void AWizardHUD::AddSpellStepResult(bool bWasSuccessful)
+{
+	if (WizardOverlay && WizardOverlay->GetCenterBox()) {
+		if (WizardOverlay->GetCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetCenterBox()->ClearChildren();
+		}
+
+		UStepResultWidget* StepResultWidget = CreateWidget<UStepResultWidget>(GetOwningPlayerController(), WizardOverlay->GetCurrentStepResultWidgetClass());
+		if (StepResultWidget) {
+			StepResultWidget->SetResult(bWasSuccessful);
+			WizardOverlay->GetCenterBox()->AddChild(StepResultWidget);
+		}
+	}
+}
+
+void AWizardHUD::CreateCombatScore()
+{
+	if (WizardOverlay && WizardOverlay->GetCombatScoreWidgetClass()) {
+		UCombatScoreWidget* CombatScoreWidget = CreateWidget<UCombatScoreWidget>(GetOwningPlayerController(), WizardOverlay->GetCombatScoreWidgetClass());
+		if (CombatScoreWidget && WizardOverlay->GetBottomBox()) {
+			WizardOverlay->SetCombatScoreWidget(CombatScoreWidget);
+			WizardOverlay->GetBottomBox()->AddChild(WizardOverlay->GetCombatScoreWidget());
+		}
+	}
+}
+
+void AWizardHUD::AddCombatScore(int32 Score)
+{
+	if (WizardOverlay && WizardOverlay->GetCombatScoreWidget()) {
+		WizardOverlay->GetCombatScoreWidget()->SetCombatScore(FText::FromString(FString::Printf(TEXT("%d"), Score)));
 	}
 }
 #pragma endregion

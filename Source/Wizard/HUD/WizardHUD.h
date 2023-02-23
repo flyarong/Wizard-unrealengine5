@@ -38,6 +38,11 @@ public:
 	void ClearCenterBox();
 
 	/// <summary>
+	/// Function to clear the Bottom Box in the Overlay
+	/// </summary>
+	void ClearBottomBox();
+
+	/// <summary>
 	/// Function to show the Current District
 	/// Panel on the Overlay
 	/// </summary>
@@ -60,18 +65,6 @@ public:
 	/// from the Overlay
 	/// </summary>
 	void HideLeftPanel();
-
-	/// <summary>
-	/// Function to show the Character's Item Panel
-	/// on the Overlay
-	/// </summary>
-	void ShowItemPanel();
-
-	/// <summary>
-	/// Function to hide the Character's Item Panel
-	/// from the Overlay
-	/// </summary>
-	void HideItemPanel();
 #pragma endregion
 
 #pragma region Player
@@ -211,6 +204,27 @@ public:
 	/// </summary>
 	/// <param name="CurrentSpellStep">Index of the current Spell Step</param>
 	void AddCurrentSpellStep(int32 CurrentSpellStep);
+
+	/// <summary>
+	/// Function to add the current Step result
+	/// to the Overlay
+	/// </summary>
+	/// <param name="bWasSuccessful">Whether the result was successful or not</param>
+	void AddSpellStepResult(bool bWasSuccessful);
+
+	/// <summary>
+	/// Function to create the Combat Score
+	/// on the Overlay
+	/// </summary>
+	/// <param name="Score">The Combat Score</param>
+	void CreateCombatScore();
+
+	/// <summary>
+	/// Function to add the Combat Score
+	/// to the Overlay
+	/// </summary>
+	/// <param name="Score">The Combat Score</param>
+	void AddCombatScore(int32 Score);
 #pragma endregion
 
 private:

@@ -229,6 +229,20 @@ public:
 	/// Function to remove the previous Spell Step from the HUD
 	/// </summary>
 	void RemoveHUDPreviouseSpellStep();
+
+	/// <summary>
+	/// Function to add the Result of the current Step
+	/// to the HUD
+	/// </summary>
+	/// <param name="bWasSuccessful">Whether it was successful or not</param>
+	void AddHUDSpellStepResult(bool bWasSuccessful);
+
+	/// <summary>
+	/// Function to add the current Combat Score
+	/// on the HUD
+	/// </summary>
+	/// <param name="Score">The Combat Score</param>
+	void AddHUDCombatScore(int32 Score);
 #pragma endregion
 
 #pragma region InputPointers

@@ -60,6 +60,7 @@ protected:
 
 private:
 		
+#pragma region Pointers
 	/// <summary>
 	/// Pointer to the player character
 	/// </summary>
@@ -77,6 +78,62 @@ private:
 	/// </summary>
 	UPROPERTY(Replicated)
 	AWizardActor* CombatTarget;
+#pragma endregion
+
+#pragma region Sounds
+	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
+	class USoundCue* StartSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
+	USoundCue* CastSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
+	USoundCue* CastFailSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
+	USoundCue* SuccessSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
+	USoundCue* FailSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
+	USoundCue* HitSound;
+#pragma endregion
+
+#pragma region Niagara
+	/// <summary>
+	/// Niagara system component for handling
+	/// the Combat Effects
+	/// </summary>
+	UPROPERTY()
+	class UNiagaraComponent* CombatEffectComponent;
+
+	/// <summary>
+	/// Niagara System effect for Casting
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat Effects")
+	class UNiagaraSystem* CastEffect;
+
+	/// <summary>
+	/// Niagara System effect for Hitting
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat Effects")
+	UNiagaraSystem* HitEffect;
+
+	/// <summary>
+	/// Multicast RPC to play combat effects on all machines
+	/// </summary>
+	/// <param name="Sound">Combat Sound to play</param>
+	/// <param name="Effect">Niagara System to spawn</param>
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastPlayEffect(USoundCue* Sound, UNiagaraSystem* Effect = nullptr);
+
+	/// <summary>
+	/// Multicast RPC to destroy combat effects on all machines
+	/// </summary>
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastDestroyEffect();
+#pragma endregion
 
 	/// <summary>
 	/// Timer handle to wait for input during the
@@ -159,8 +216,15 @@ private:
 	void UpdateSpellBar(float DeltaTime);
 
 	/// <summary>
+	/// Multicast RPC to reset the SpellBar
+	/// </summary>
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastResetSpellBar();
+
+	/// <summary>
 	/// Boolean for determining whether or not
-	/// the combat has started
+	/// the SpellBar should be updated with the proper
+	/// Amount
 	/// </summary>
 	UPROPERTY()
 	bool bSpellBarShouldUpdate = false;
@@ -250,8 +314,28 @@ private:
 	void OnRep_InitNextStep();
 
 	/// <summary>
+	/// Boolean for whether or not the Current Step
+	/// was successful or not
+	/// </summary>
+	UPROPERTY()
+	bool bStepWasSuccessful = false;
+
+	/// <summary>
+	/// Function to handle the initiation
+	/// of the next step
+	/// </summary>
+	void InitNextStep();
+
+	/// <summary>
 	/// Function to remove the previous
 	/// Spell step from the screen
 	/// </summary>
 	void RemovePreviousStep();
+
+	/// <summary>
+	/// Client RPC to trigger a local message
+	/// that the Character is out of Power
+	/// </summary>
+	UFUNCTION(Client, UnReliable)
+	void ClientNotEnoughPowerMessage();
 };

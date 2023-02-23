@@ -461,7 +461,7 @@ void AWizardPlayerController::AddHUDCombatMenu()
 	if (WizardHUD) {
 		WizardHUD->HideCurrentDistrict();
 		WizardHUD->HideLeftPanel();
-		WizardHUD->HideItemPanel();
+		WizardHUD->CreateCombatScore();
 		WizardHUD->AddCombatMenu();
 	}
 }
@@ -472,10 +472,10 @@ void AWizardPlayerController::ResetHUD()
 	if (WizardHUD) {
 		SetShowMouseCursor(true);
 		WizardHUD->ClearCenterBox();
+		WizardHUD->ClearBottomBox();
 		WizardHUD->RemoveSpellMap();
 		WizardHUD->ShowCurrentDistrict();
 		WizardHUD->ShowLeftPanel();
-		WizardHUD->ShowItemPanel();
 	}
 }
 
@@ -492,6 +492,22 @@ void AWizardPlayerController::RemoveHUDPreviouseSpellStep()
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		WizardHUD->ClearCenterBox();
+	}
+}
+
+void AWizardPlayerController::AddHUDSpellStepResult(bool bWasSuccessful)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddSpellStepResult(bWasSuccessful);
+	}
+}
+
+void AWizardPlayerController::AddHUDCombatScore(int32 Score)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddCombatScore(Score);
 	}
 }
 #pragma endregion
