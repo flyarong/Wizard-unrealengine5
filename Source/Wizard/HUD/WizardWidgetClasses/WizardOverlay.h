@@ -39,6 +39,12 @@ private:
 	class USpellMapWidget* SpellMapWidget;
 
 	/// <summary>
+	/// Widget used on the Overlay to store the Combat Score
+	/// </summary>
+	UPROPERTY()
+	class UCombatScoreWidget* CombatScoreWidget;
+
+	/// <summary>
 	/// Widget class for the Combat Menu
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -49,6 +55,18 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<class UUserWidget> CurrentStepWidgetClass;
+
+	/// <summary>
+	/// Widget class for the Current Spell Step Result
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<class UUserWidget> CurrentStepResultWidgetClass;
+
+	/// <summary>
+	/// Widget class for the Combat Score
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TSubclassOf<class UUserWidget> CombatScoreWidgetClass;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CharacterNameText;
@@ -117,7 +135,7 @@ private:
 	UScaleBox* TopRightBox;
 
 	UPROPERTY(meta = (BindWidget))
-	UScaleBox* ItemPanelBox;
+	UScaleBox* BottomBox;
 
 	UPROPERTY(meta = (BindWidget))
 	class UVerticalBox* EventBox;
@@ -128,16 +146,20 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UChatBoxWidget* ChatBox;
 
-	UPROPERTY(meta = (BindWidget))
-	class UCharacterItemPanelWidget* CharacterItemPanel;
+	/*UPROPERTY(meta = (BindWidget))
+	class UCharacterItemPanelWidget* CharacterItemPanel;*/
 
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
 	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }
 	FORCEINLINE void SetSpellMapWidget(USpellMapWidget* Map) { SpellMapWidget = Map; }
+	FORCEINLINE UCombatScoreWidget* GetCombatScoreWidget() const { return CombatScoreWidget; }
+	FORCEINLINE void SetCombatScoreWidget(UCombatScoreWidget* CombatWidget) { CombatScoreWidget = CombatWidget; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatMenuWidgetClass() const { return CombatMenuWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepWidgetClass() const { return CurrentStepWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepResultWidgetClass() const { return CurrentStepResultWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetCombatScoreWidgetClass() const { return CombatScoreWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
@@ -171,9 +193,9 @@ public:
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UScaleBox* GetTopRightBox() const { return TopRightBox; }
-	FORCEINLINE UScaleBox* GetItemPanelBox() const { return ItemPanelBox; }
+	FORCEINLINE UScaleBox* GetBottomBox() const { return BottomBox; }
 	FORCEINLINE UVerticalBox* GetEventBox() const { return EventBox; }
 	FORCEINLINE UVerticalBox* GetLeftSideBox() const { return LeftSideBox; }
 	FORCEINLINE UChatBoxWidget* GetChatBox() const { return ChatBox; }
-	FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
+	//FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
 };
