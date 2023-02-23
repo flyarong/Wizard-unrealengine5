@@ -3,18 +3,15 @@
 
 #include "BaseMessageWidget.h"
 #include "Components/VerticalBox.h"
-#include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 
-void UBaseMessageWidget::AddMessageToOverlay(UWizardOverlay* Overlay)
+void UBaseMessageWidget::AddMessageToOverlay(UVerticalBox* EventBox)
 {
-	if (Overlay->GetEventBox()) {
-		UVerticalBox* Box = Overlay->GetEventBox();
-
-		if (Box->GetAllChildren().Num() >= NumOfMessages) {
-			Box->GetAllChildren()[0]->RemoveFromParent(); // Remove first one already if it hasn't timed out yet
+	if (EventBox) {
+		if (EventBox->GetAllChildren().Num() >= NumOfMessages) {
+			EventBox->GetAllChildren()[0]->RemoveFromParent(); // Remove first one already if it hasn't timed out yet
 		}
 
-		Box->AddChildToVerticalBox(this);
+		EventBox->AddChildToVerticalBox(this);
 		
 		FTimerHandle MsgTimer;
 		GetWorld()->GetTimerManager().SetTimer(

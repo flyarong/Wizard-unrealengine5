@@ -20,7 +20,7 @@ protected:
 	/// Function to add a new message to the
 	/// overlay
 	/// </summary>
-	void AddMessageToOverlay(class UWizardOverlay* Overlay);
+	void AddMessageToOverlay(class UVerticalBox* EventBox);
 
 	/// <summary>
 	/// Number of messages to show in the messagebox

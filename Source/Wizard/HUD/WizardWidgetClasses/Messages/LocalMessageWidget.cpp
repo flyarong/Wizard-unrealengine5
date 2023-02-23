@@ -5,7 +5,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-void ULocalMessageWidget::AddLocalMessage(UWizardOverlay* Overlay, FText Message, EAttribute AttributeType)
+void ULocalMessageWidget::AddLocalMessage(UVerticalBox* EventBox, FText Message, EAttribute AttributeType)
 {
 	if (MessageText && MessageImage) {
 		MessageText->SetText(Message);
@@ -35,6 +35,6 @@ void ULocalMessageWidget::AddLocalMessage(UWizardOverlay* Overlay, FText Message
 			break;
 		}
 
-		AddMessageToOverlay(Overlay);
+		AddMessageToOverlay(EventBox);
 	}
 }
