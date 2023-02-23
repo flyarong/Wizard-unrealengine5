@@ -16,6 +16,7 @@ void ULocalMessageWidget::AddLocalMessage(UWizardOverlay* Overlay, FText Message
 		case EAttribute::EA_Defense:
 			break;
 		case EAttribute::EA_Power:
+			MessageImage->SetBrushFromTexture(PowerImage);
 			break;
 		case EAttribute::EA_XP:
 			MessageImage->SetBrushFromTexture(XPImage);

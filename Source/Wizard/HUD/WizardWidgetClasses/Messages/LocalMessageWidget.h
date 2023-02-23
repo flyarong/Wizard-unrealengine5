@@ -32,4 +32,10 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Message")
 	class UTexture2D* XPImage;
+
+	/// <summary>
+	/// Power image to show next to the message
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Message")
+	UTexture2D* PowerImage;
 };
