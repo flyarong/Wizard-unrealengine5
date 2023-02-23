@@ -54,11 +54,6 @@ void AWizardHUD::ClearCenterBox()
 	}
 }
 
-void AWizardHUD::ShowCurrentDistrict()
-{
-	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeIn();
-}
-
 void AWizardHUD::HideCurrentDistrict()
 {
 	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeOut();

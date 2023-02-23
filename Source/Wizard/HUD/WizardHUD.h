@@ -43,12 +43,6 @@ public:
 	void ClearBottomBox();
 
 	/// <summary>
-	/// Function to show the Current District
-	/// Panel on the Overlay
-	/// </summary>
-	void ShowCurrentDistrict();
-
-	/// <summary>
 	/// Function to hide the Current District
 	/// Panel from the Overlay
 	/// </summary>

@@ -474,7 +474,6 @@ void AWizardPlayerController::ResetHUD()
 		WizardHUD->ClearCenterBox();
 		WizardHUD->ClearBottomBox();
 		WizardHUD->RemoveSpellMap();
-		WizardHUD->ShowCurrentDistrict();
 		WizardHUD->ShowLeftPanel();
 	}
 }
