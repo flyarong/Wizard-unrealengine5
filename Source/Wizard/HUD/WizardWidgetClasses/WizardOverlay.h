@@ -27,6 +27,18 @@ private:
 	TSubclassOf<class UUserWidget> CatalogWidgetClass;
 
 	/// <summary>
+	/// Widget class for the local Message
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Messages")
+	TSubclassOf<class UUserWidget> LocalMessageWidgetClass;
+
+	/// <summary>
+	/// Widget class for the public Message
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Messages")
+	TSubclassOf<class UUserWidget> PublicMessageWidgetClass;
+
+	/// <summary>
 	/// Widget class for the SpellMap
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -78,34 +90,25 @@ private:
 	class UButton* ProfileButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* OffenseText;
+	UButton* InventoryButton;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* OffenseTextModifier;
+	UButton* SettingsButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* OffenseText;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* DefenseText;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DefenseTextModifier;
-
-	UPROPERTY(meta = (BindWidget))
 	UTextBlock* WisdomText;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* WisdomTextModifier;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* IntelligenceText;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* IntelligenceTextModifier;
-
-	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AgilityText;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* AgilityTextModifier;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CurrentDistrictText;
@@ -126,6 +129,12 @@ private:
 	UTextBlock* XPText;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* GoodSpellText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* DarkSpellText;
+
+	UPROPERTY(meta = (BindWidget))
 	class UMiniMapWidget* MiniMap;
 
 	UPROPERTY(meta = (BindWidget))
@@ -138,10 +147,16 @@ private:
 	UScaleBox* BottomBox;
 
 	UPROPERTY(meta = (BindWidget))
-	class UVerticalBox* EventBox;
+	class UVerticalBox* LocalEventBox;
 	
 	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* PublicEventBox;
+
+	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* LeftSideBox;
+
+	UPROPERTY(meta = (BindWidget))
+	UVerticalBox* RightSideBox;
 
 	UPROPERTY(meta = (BindWidget))
 	class UChatBoxWidget* ChatBox;
@@ -151,6 +166,8 @@ private:
 
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetLocalMessageWidgetClass() const { return LocalMessageWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetPublicMessageWidgetClass() const { return PublicMessageWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
 	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }
 	FORCEINLINE void SetSpellMapWidget(USpellMapWidget* Map) { SpellMapWidget = Map; }
@@ -162,6 +179,8 @@ public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatScoreWidgetClass() const { return CombatScoreWidgetClass; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
+	FORCEINLINE UButton* GetInventoryButton() const { return InventoryButton; }
+	FORCEINLINE UButton* GetSettingsButton() const { return SettingsButton; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
 	FORCEINLINE void SetHealthBarPercentage(float Health, float MaxHealth) { HealthBar->SetWizardBarPercent(Health, MaxHealth); };
 	FORCEINLINE UWizardProgressBarWidget* GetHealthBar() const { return HealthBar; }
@@ -173,29 +192,30 @@ public:
 	FORCEINLINE void PlayDistrictPanelFadeOut() { PlayAnimation(DistrictPanelFadeOut); }
 	FORCEINLINE void SetXPText(FText XP) { XPText->SetText(XP); };
 	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
+	FORCEINLINE void SetGoodSpellText(FText GoodSpell) { GoodSpellText->SetText(GoodSpell); };
+	FORCEINLINE UTextBlock* GetGoodSpellText() const { return GoodSpellText; }
+	FORCEINLINE void SetDarkSpellText(FText DarkSpell) { DarkSpellText->SetText(DarkSpell); };
+	FORCEINLINE UTextBlock* GetDarkSpellText() const { return DarkSpellText; }
 	FORCEINLINE void SetCharacterNameText(FText Name) { CharacterNameText->SetText(Name); };
 	FORCEINLINE UTextBlock* GetCharacterNameText() const { return CharacterNameText; }
 	FORCEINLINE void SetOffenseText(FText Offense) { OffenseText->SetText(Offense); };
 	FORCEINLINE UTextBlock* GetOffenseText() const { return OffenseText; }
-	FORCEINLINE void SetOffenseTextModifier(FText Modifier) { OffenseTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetDefenseText(FText Defense) { DefenseText->SetText(Defense); };
 	FORCEINLINE UTextBlock* GetDefenseText() const { return DefenseText; }
-	FORCEINLINE void SetDefenseTextModifier(FText Modifier) { DefenseTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetWisdomText(FText Wisdom) { WisdomText->SetText(Wisdom); };
 	FORCEINLINE UTextBlock* GetWisdomText() const { return WisdomText; }
-	FORCEINLINE void SetWisdomTextModifier(FText Modifier) { WisdomTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetIntelligenceText(FText Intelligence) { IntelligenceText->SetText(Intelligence); };
 	FORCEINLINE UTextBlock* GetIntelligenceText() const { return IntelligenceText; }
-	FORCEINLINE void SetIntelligenceTextModifier(FText Modifier) { IntelligenceTextModifier->SetText(Modifier); };
 	FORCEINLINE void SetAgilityText(FText Agility) { AgilityText->SetText(Agility); };
 	FORCEINLINE UTextBlock* GetAgilityText() const { return AgilityText; }
-	FORCEINLINE void SetAgilityTextModifier(FText Modifier) { AgilityTextModifier->SetText(Modifier); };
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UScaleBox* GetTopRightBox() const { return TopRightBox; }
 	FORCEINLINE UScaleBox* GetBottomBox() const { return BottomBox; }
-	FORCEINLINE UVerticalBox* GetEventBox() const { return EventBox; }
+	FORCEINLINE UVerticalBox* GetLocalEventBox() const { return LocalEventBox; }
+	FORCEINLINE UVerticalBox* GetPublicEventBox() const { return PublicEventBox; }
 	FORCEINLINE UVerticalBox* GetLeftSideBox() const { return LeftSideBox; }
+	FORCEINLINE UVerticalBox* GetRightSideBox() const { return RightSideBox; }
 	FORCEINLINE UChatBoxWidget* GetChatBox() const { return ChatBox; }
 	//FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
 };

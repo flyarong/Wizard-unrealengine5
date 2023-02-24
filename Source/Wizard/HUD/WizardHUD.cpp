@@ -8,12 +8,15 @@
 #include "Wizard/HUD/WizardWidgetClasses/Items/CharacterItemPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Messages/PublicMessageWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/ChatBoxWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/SpellMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatMenuWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CurrentStepWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/StepResultWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatScoreWidget.h"
+#include "Wizard/Interfaces/PublicMessageActor.h"
+#include "Wizard/WizardTypes/ActionTypes.h"
 #include "Components/ScaleBox.h"
 #include "Components/VerticalBox.h"
 #include "Components/CanvasPanelSlot.h"
@@ -23,10 +26,9 @@
 
 bool AWizardHUD::CreateWizardOverlay()
 {
-	PlayerController = GetOwningPlayerController();
-	if (PlayerController && WizardOverlayClass)
+	if (WizardOverlayClass)
 	{
-		WizardOverlay = CreateWidget<UWizardOverlay>(PlayerController, WizardOverlayClass);
+		WizardOverlay = CreateWidget<UWizardOverlay>(GetOwningPlayerController(), WizardOverlayClass);
 		WizardOverlay->AddToViewport();
 		
 		return true;
@@ -36,6 +38,38 @@ bool AWizardHUD::CreateWizardOverlay()
 }
 
 #pragma region General
+void AWizardHUD::ShowLeftPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
+		if (Slot) Slot->SetAlignment(FVector2D(0, 0));
+	}
+}
+
+void AWizardHUD::HideLeftPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
+		if (Slot) Slot->SetAlignment(FVector2D(1, 0));
+	}
+}
+
+void AWizardHUD::ShowRightPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetRightSideBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetRightSideBox());
+		if (Slot) Slot->SetAlignment(FVector2D(1, 0));
+	}
+}
+
+void AWizardHUD::HideRightPanel()
+{
+	if (WizardOverlay && WizardOverlay->GetRightSideBox()) {
+		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetRightSideBox());
+		if (Slot) Slot->SetAlignment(FVector2D(0, 0));
+	}
+}
+
 void AWizardHUD::ClearTopRightBox()
 {
 	if (WizardOverlay && WizardOverlay->GetTopRightBox()) {
@@ -54,27 +88,6 @@ void AWizardHUD::ClearCenterBox()
 	}
 }
 
-void AWizardHUD::HideCurrentDistrict()
-{
-	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeOut();
-}
-
-void AWizardHUD::ShowLeftPanel()
-{
-	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
-		if (Slot) Slot->SetAlignment(FVector2D(0, 0));
-	}
-}
-
-void AWizardHUD::HideLeftPanel()
-{
-	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
-		if (Slot) Slot->SetAlignment(FVector2D(1, 0));
-	}
-}
-
 void AWizardHUD::ClearBottomBox()
 {
 	if (WizardOverlay && WizardOverlay->GetBottomBox()) {
@@ -82,6 +95,11 @@ void AWizardHUD::ClearBottomBox()
 			WizardOverlay->GetBottomBox()->ClearChildren();
 		}
 	}
+}
+
+void AWizardHUD::HideCurrentDistrict()
+{
+	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeOut();
 }
 #pragma endregion
 
@@ -205,11 +223,28 @@ void AWizardHUD::SetPOIOnMiniMap(AActor* POIOwner)
 #pragma region Messages
 void AWizardHUD::AddLocalMessage(const FString& Message, EAttribute AttributeType)
 {
-	PlayerController = PlayerController == nullptr ? GetOwningPlayerController() : PlayerController;
-	if (PlayerController) {
-		ULocalMessageWidget* LocalMessageWidget = CreateWidget<ULocalMessageWidget>(PlayerController, LocalMessageWidgetClass);
-		if (LocalMessageWidget && WizardOverlay) {
-			LocalMessageWidget->AddLocalMessage(WizardOverlay, FText::FromString(Message), AttributeType);
+	if (WizardOverlay && WizardOverlay->GetLocalMessageWidgetClass()) {
+		ULocalMessageWidget* LocalMessageWidget = CreateWidget<ULocalMessageWidget>(GetOwningPlayerController(), WizardOverlay->GetLocalMessageWidgetClass());
+		if (LocalMessageWidget && WizardOverlay->GetLocalEventBox()) {
+			LocalMessageWidget->AddLocalMessage(WizardOverlay->GetLocalEventBox(), FText::FromString(Message), AttributeType);
+		}
+	}
+}
+
+void AWizardHUD::AddPublicMessage(IPublicMessageActor* Source, EAction EventAction, IPublicMessageActor* Target)
+{
+	if (WizardOverlay && WizardOverlay->GetPublicMessageWidgetClass()) {
+		UPublicMessageWidget* PublicMessageWidget = CreateWidget<UPublicMessageWidget>(
+			GetOwningPlayerController(), 
+			WizardOverlay->GetPublicMessageWidgetClass()
+		);
+		if (PublicMessageWidget && WizardOverlay->GetPublicEventBox()) {
+			PublicMessageWidget->AddPublicMessage(
+				WizardOverlay->GetPublicEventBox(), 
+				Source->GetIcon(),
+				EventAction,
+				Target->GetIcon()
+			);
 		}
 	}
 }

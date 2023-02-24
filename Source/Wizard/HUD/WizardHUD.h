@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "Wizard/WizardTypes/AttributeTypes.h"
+#include "Wizard/WizardTypes/ActionTypes.h"
 #include "WizardHUD.generated.h"
 
 /**
@@ -59,6 +60,18 @@ public:
 	/// from the Overlay
 	/// </summary>
 	void HideLeftPanel();
+
+	/// <summary>
+	/// Function to show the Right Side Panel
+	/// on the Overlay
+	/// </summary>
+	void ShowRightPanel();
+
+	/// <summary>
+	/// Function to hide the Right Side Panel
+	/// from the Overlay
+	/// </summary>
+	void HideRightPanel();
 #pragma endregion
 
 #pragma region Player
@@ -163,6 +176,14 @@ public:
 	void AddLocalMessage(const FString& Message, EAttribute AttributeType);
 
 	/// <summary>
+	/// Function to add a Public Message to the Overlay
+	/// </summary>
+	/// <param name="Source">Source of the Event</param>
+	/// <param name="EventAction">Event type</param>
+	/// <param name="Target">Event Target</param>
+	void AddPublicMessage(class IPublicMessageActor* Source, EAction EventAction, IPublicMessageActor* Target);
+
+	/// <summary>
 	/// Function to add a Chat Message to the ChatBox
 	/// </summary>
 	/// <param name="Message">The message written in chat</param>
@@ -222,20 +243,12 @@ public:
 #pragma endregion
 
 private:
-	
-	APlayerController* PlayerController;
 
 	/// <summary>
 	/// Widget Class of the gameplay overlay
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Wizard Overlay")
 	TSubclassOf<class UUserWidget> WizardOverlayClass;
-
-	/// <summary>
-	/// Widget class for the local Message
-	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Wizard Overlay")
-	TSubclassOf<class UUserWidget> LocalMessageWidgetClass;
 
 	/// <summary>
 	/// Pointer to the gameplay overlay
