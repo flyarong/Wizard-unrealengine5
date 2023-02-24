@@ -115,6 +115,11 @@ void AWizardCharacter::PostInitializeComponents()
 	}
 }
 
+UTexture2D* AWizardCharacter::GetIcon()
+{
+	return POI->GetIconImage();
+}
+
 void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 {
 	const FString Path{ CHARACTER_DATA_TABLE_PATH };

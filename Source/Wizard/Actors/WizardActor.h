@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Wizard/Interfaces/PublicMessageActor.h"
 #include "WizardActor.generated.h"
 
 /**
@@ -11,7 +12,7 @@
 * that can be interacted with in the Game
 */
 UCLASS()
-class WIZARD_API AWizardActor : public AActor
+class WIZARD_API AWizardActor : public AActor, public IPublicMessageActor
 {
 	GENERATED_BODY()
 	
@@ -21,6 +22,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual class UTexture2D* GetIcon() override;
 
 	/// <summary>
 	/// Function to set whether or not the

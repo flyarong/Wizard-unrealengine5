@@ -338,4 +338,11 @@ private:
 	/// </summary>
 	UFUNCTION(Client, UnReliable)
 	void ClientNotEnoughPowerMessage();
+
+	/// <summary>
+	/// Multicast RPC to add a Public Message
+	/// about the Combat Victory
+	/// </summary>
+	UFUNCTION(NetMulticast, UnReliable)
+	void MulticastBroadcastVictory();
 };

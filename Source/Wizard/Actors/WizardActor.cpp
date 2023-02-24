@@ -75,6 +75,11 @@ void AWizardActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLife
 	DOREPLIFETIME(AWizardActor, bCanInteract);
 }
 
+UTexture2D* AWizardActor::GetIcon()
+{
+	return POI->GetIconImage();
+}
+
 void AWizardActor::SetCanInteract(bool bIsInteractable)
 {
 	bCanInteract = bIsInteractable;

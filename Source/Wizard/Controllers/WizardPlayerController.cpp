@@ -403,6 +403,14 @@ void AWizardPlayerController::AddHUDLocalMessage(const FString& Message, EAttrib
 	}
 }
 
+void AWizardPlayerController::AddHUDVictoryPublicMessage(IPublicMessageActor* WCharacter, IPublicMessageActor* DefeatedActor)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddPublicMessage(WCharacter, EAction::EA_Combat, DefeatedActor);
+	}
+}
+
 void AWizardPlayerController::ServerSendChatMessage_Implementation(const FString& Sender, const FText& Message)
 {
 	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;

@@ -170,6 +170,14 @@ public:
 	void AddHUDLocalMessage(const FString& Message, EAttribute AttributeType);
 
 	/// <summary>
+	/// Function to add a Public Message about
+	/// a Character's victory in combat
+	/// </summary>
+	/// <param name="Character">The Character</param>
+	/// <param name="DefeatedActor">Actor defeated</param>
+	void AddHUDVictoryPublicMessage(class IPublicMessageActor* WCharacter, class IPublicMessageActor* DefeatedActor);
+
+	/// <summary>
 	/// Server RPC for sending Chat messages
 	/// </summary>
 	/// <param name="Sender">Name of the player who sends the message</param>

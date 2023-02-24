@@ -182,12 +182,13 @@ void UCombatComponent::SetCurrentSpellStep()
 		StepIndex = -1;
 		MulticastResetSpellBar();
 
-		// If Combat succeeds, destroy Target
+		// If Combat succeeds, destroy Target and add Public Message about Victory
 		int32 Result = FMath::FloorToInt32<float>(Successes);
 		if (CombatTarget && Result >= CombatTarget->GetHealth()) {
 			MulticastPlayEffect(SuccessSound);
 			MulticastDestroyEffect();
 			MulticastPlayEffect(HitSound, HitEffect);
+			MulticastBroadcastVictory();
 			CombatTarget->Destroy();
 		}
 		else {
@@ -331,4 +332,12 @@ void UCombatComponent::MulticastPlayEffect_Implementation(USoundCue* Sound, UNia
 void UCombatComponent::MulticastDestroyEffect_Implementation()
 {
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
+}
+
+void UCombatComponent::MulticastBroadcastVictory_Implementation()
+{
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (WController) {
+		WController->AddHUDVictoryPublicMessage(Character, CombatTarget);
+	}
 }

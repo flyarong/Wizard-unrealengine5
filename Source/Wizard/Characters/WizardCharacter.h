@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Wizard/Interfaces/PublicMessageActor.h"
 #include "Wizard/Items/Item.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "WizardCharacter.generated.h"
 
 UCLASS(Blueprintable)
-class AWizardCharacter : public ACharacter
+class AWizardCharacter : public ACharacter, public IPublicMessageActor
 {
 	GENERATED_BODY()
 
@@ -21,6 +22,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void PostInitializeComponents() override;
+	virtual class UTexture2D* GetIcon() override;
 
 	/// <summary>
 	/// Function for initializing the character's properties
