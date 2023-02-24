@@ -14,6 +14,9 @@ class WIZARD_API AGoodSpell : public ASpell
 {
 	GENERATED_BODY()
 	
+public:
+	AGoodSpell();
+
 protected:
 	virtual void SetSpellScore() override;
 };
