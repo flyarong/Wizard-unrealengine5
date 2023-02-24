@@ -74,7 +74,7 @@ void UPointOfInterestWidget::UpdateRelativeLocation()
 	SetRenderTranslation(RenderTranslation);
 
 	// Hide POI image on MiniMap, if it is at the edge and not static
-	if (!bIsStatic && RenderTranslation.Length() >= MiniMap->MiniMapRadius * 0.9f) {
+	if (!bIsStatic && RenderTranslation.Length() >= MiniMap->MiniMapRadius * 0.7f) {
 		POIImage->SetVisibility(ESlateVisibility::Hidden);	
 	}
 	else {
@@ -103,7 +103,7 @@ float UPointOfInterestWidget::FindAngle(FVector2D CameraLocation, FVector2D Acto
 
 FVector2D UPointOfInterestWidget::ClampPOIIconLocation(float Radius, float Degrees)
 {
-	float RadiusBorder = MiniMap->MiniMapRadius * 0.9f;
+	float RadiusBorder = MiniMap->MiniMapRadius * 0.7f;
 
 	return FVector2D(
 		-1 * (UKismetMathLibrary::Cos(Degrees) * FMath::Clamp(Radius, 0.f, RadiusBorder)),
