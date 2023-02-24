@@ -55,11 +55,22 @@ void UAttributeComponent::OnRep_Health()
 }
 
 #pragma region Power
-void UAttributeComponent::SpendPower(float Cost)
+void UAttributeComponent::SpendPower(float Cost, EAction ActionType)
 {
 	if (Character && Character->HasAuthority()) {
-		int32 Subtrahend = Agility == 0 ? Cost : Cost / Agility;
-		Power = (FMath::Clamp(Power - Subtrahend, 0.f, MaxPower));
+		int32 Subtrahend = Cost;
+		switch (ActionType)
+		{
+		case EAction::EA_Movement:
+			Subtrahend = Agility == 0 ? Cost : Cost / Agility;
+			Power = (FMath::Clamp(Power - Subtrahend, 0.f, MaxPower));
+			break;
+		case EAction::EA_Combat:
+			Power = (FMath::Clamp(Power - Subtrahend, 0.f, MaxPower));
+			break;
+		default:
+			break;
+		}
 		UpdateHUDPower();
 	}
 }

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Wizard/WizardTypes/ActionTypes.h"
 #include "AttributeComponent.generated.h"
 
 /**
@@ -25,7 +26,8 @@ public:
 	/// Function to handle Power expenditure
 	/// </summary>
 	/// <param name="Cost">The number of Power to be lost</param>
-	void SpendPower(float Cost);
+	/// <param name="ActionType">Action type the Cost is calculated based on</param>
+	void SpendPower(float Cost, EAction ActionType);
 
 	/// <summary>
 	/// Function to add more Power

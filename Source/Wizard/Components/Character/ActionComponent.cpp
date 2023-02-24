@@ -64,7 +64,7 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 {
 	Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller && Character->GetAttribute() && CurrentDistrict) {
-		Character->GetAttribute()->SpendPower(CurrentDistrict->GetCost());
+		Character->GetAttribute()->SpendPower(CurrentDistrict->GetCost(), EAction::EA_Movement);
 		Controller->SetHUDCurrentDistrict(CurrentDistrict->GetDistrictName());
 	}
 }
@@ -231,7 +231,7 @@ void UActionComponent::EndCombat()
 
 void UActionComponent::MulticastAimCharacterToTarget_Implementation(AWizardActor* Target)
 {
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation() + FVector(0.f, 0.f, 100.f));
-	Character->K2_SetActorRotation(LookAtRotation, false);
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation());
+	Character->K2_SetActorRotation(FRotator(Character->GetActorRotation().Pitch, LookAtRotation.Yaw, Character->GetActorRotation().Roll), false);
 }
 #pragma endregion
