@@ -74,6 +74,12 @@ private:
 	class AWizardPlayerController* WController;
 
 	/// <summary>
+	/// Pointer to the gamemode
+	/// </summary>
+	UPROPERTY()
+	class AWizardGameMode* WGameMode;
+
+	/// <summary>
 	/// Target Actor of the Combat
 	/// </summary>
 	UPROPERTY(Replicated)
@@ -338,11 +344,4 @@ private:
 	/// </summary>
 	UFUNCTION(Client, UnReliable)
 	void ClientNotEnoughPowerMessage();
-
-	/// <summary>
-	/// Multicast RPC to add a Public Message
-	/// about the Combat Victory
-	/// </summary>
-	UFUNCTION(NetMulticast, UnReliable)
-	void MulticastBroadcastVictory();
 };

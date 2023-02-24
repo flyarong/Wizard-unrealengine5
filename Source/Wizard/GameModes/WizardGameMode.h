@@ -37,6 +37,14 @@ public:
 	/// <param name="Message">The message to broadcast</param>
 	void BroadcastChatMessage(const FText& Message);
 
+	/// <summary>
+	/// Function to broadcast the Public Message
+	/// about a Character's victory in Combat
+	/// </summary>
+	/// <param name="WCharacter">The Character</param>
+	/// <param name="CombatTarget">The Actor defeated in Combat</param>
+	void BroadcastVictory(class AWizardCharacter* WCharacter, class AWizardActor* CombatTarget);
+
 protected:
 	virtual void BeginPlay() override;
 

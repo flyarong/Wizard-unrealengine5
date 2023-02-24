@@ -11,6 +11,7 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Actors/WizardActor.h"
+#include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -153,7 +154,7 @@ void UCombatComponent::ResetHUD()
 void UCombatComponent::StartCombat()
 {
 	if (Character && Character->GetAttribute() && CombatTarget) {
-		Character->GetAttribute()->SpendPower(CombatTarget->GetCost());
+		Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
 		MulticastPlayEffect(StartSound, CastEffect);
 		FTimerHandle StartCombatTimer;
 		GetWorld()->GetTimerManager().SetTimer(
@@ -188,7 +189,12 @@ void UCombatComponent::SetCurrentSpellStep()
 			MulticastPlayEffect(SuccessSound);
 			MulticastDestroyEffect();
 			MulticastPlayEffect(HitSound, HitEffect);
-			MulticastBroadcastVictory();
+
+			WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
+			if (WGameMode) {
+				WGameMode->BroadcastVictory(Character, CombatTarget);
+			}
+
 			CombatTarget->Destroy();
 		}
 		else {
@@ -332,12 +338,4 @@ void UCombatComponent::MulticastPlayEffect_Implementation(USoundCue* Sound, UNia
 void UCombatComponent::MulticastDestroyEffect_Implementation()
 {
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
-}
-
-void UCombatComponent::MulticastBroadcastVictory_Implementation()
-{
-	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
-	if (WController) {
-		WController->AddHUDVictoryPublicMessage(Character, CombatTarget);
-	}
 }

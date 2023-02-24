@@ -4,6 +4,8 @@
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/GameInstance/WizardGameInstance.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
+#include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Actors/WizardActor.h"
 #include "GameFramework/PlayerState.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
@@ -86,6 +88,17 @@ void AWizardGameMode::BroadcastChatMessage(const FText& Message)
 		if (WizardPlayer)
 		{
 			WizardPlayer->ClientAddHUDChatMessage(Message);
+		}
+	}
+}
+
+void AWizardGameMode::BroadcastVictory(AWizardCharacter* WCharacter, AWizardActor* CombatTarget)
+{
+	for (auto& WizardPlayer : WizardPlayers)
+	{
+		if (WizardPlayer)
+		{
+			WizardPlayer->ClientAddHUDVictoryPublicMessage(WCharacter, CombatTarget);
 		}
 	}
 }

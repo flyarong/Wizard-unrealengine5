@@ -7,6 +7,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Wizard/Actors/WizardActor.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -403,7 +404,7 @@ void AWizardPlayerController::AddHUDLocalMessage(const FString& Message, EAttrib
 	}
 }
 
-void AWizardPlayerController::AddHUDVictoryPublicMessage(IPublicMessageActor* WCharacter, IPublicMessageActor* DefeatedActor)
+void AWizardPlayerController::ClientAddHUDVictoryPublicMessage_Implementation(AWizardCharacter* WCharacter, AWizardActor* DefeatedActor)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
