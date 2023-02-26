@@ -133,7 +133,10 @@ void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 	switch (ContextType)
 	{
 	case EInputContext::EIC_Default:
-		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(false);
+		if (GameplayCamera) {
+			GameplayCamera->SetEnableCameraMovementWithMouse(false); // TODO true
+			bCanCameraMove = true;
+		}
 		if (EnhancedInputSubsystem->HasMappingContext(CombatMappingContext)) {
 			EnhancedInputSubsystem->RemoveMappingContext(CombatMappingContext, Options);
 		}
@@ -141,7 +144,10 @@ void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 		SetCameraPositionToDefault();
 		break;
 	case EInputContext::EIC_Combat:
-		if (GameplayCamera) GameplayCamera->SetEnableCameraMovementWithMouse(false);
+		if (GameplayCamera) {
+			GameplayCamera->SetEnableCameraMovementWithMouse(false);
+			bCanCameraMove = false;
+		}
 		if (EnhancedInputSubsystem->HasMappingContext(DefaultMappingContext)) {
 			EnhancedInputSubsystem->RemoveMappingContext(DefaultMappingContext, Options);
 		}
@@ -149,6 +155,11 @@ void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 		SetCameraPositionToCombat();
 		break;
 	case EInputContext::EIC_None:
+		if (GameplayCamera) {
+			GameplayCamera->SetEnableCameraMovementWithMouse(false);
+			bCanCameraMove = false;
+		}
+		SetCameraPositionToDefault();
 		if (EnhancedInputSubsystem->HasMappingContext(DefaultMappingContext)) {
 			EnhancedInputSubsystem->RemoveMappingContext(DefaultMappingContext, Options);
 		}
@@ -217,7 +228,7 @@ void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerC
 #pragma region CameraMovement
 void AWizardPlayerController::SetCameraFocusOnWizard()
 {
-	if (GameplayCamera) {
+	if (GameplayCamera && bCanCameraMove) {
 		GameplayCamera->SetCameraFocusOnWizard();
 	}
 }
@@ -238,21 +249,21 @@ void AWizardPlayerController::SetCameraPositionToCombat()
 
 void AWizardPlayerController::OnMouseWheelAxis(const FInputActionValue& ActionValue)
 {
-	if (GameplayCamera) {
+	if (GameplayCamera && bCanCameraMove) {
 		GameplayCamera->SetPositionWithMouseWheel(ActionValue.Get<float>());
 	}
 }
 
 void AWizardPlayerController::OnMouseRotateYaw(const FInputActionValue& ActionValue)
 {
-	if (GameplayCamera) {
+	if (GameplayCamera && bCanCameraMove) {
 		GameplayCamera->MouseRotate(ActionValue.Get<float>());
 	}
 }
 
 void AWizardPlayerController::OnKeyMove(const FInputActionValue& ActionValue)
 {
-	if (GameplayCamera) {
+	if (GameplayCamera && bCanCameraMove) {
 		GameplayCamera->KeyMove(ActionValue.Get<FVector>());
 	}
 }

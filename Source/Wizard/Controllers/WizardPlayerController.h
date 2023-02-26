@@ -329,6 +329,13 @@ protected:
 	/// Callback function for Combat started input event
 	/// </summary>
 	void OnCombatKeyStarted(const FInputActionValue& ActionValue);
+
+	/// <summary>
+	/// Boolean for whether or not the Camera can
+	/// be moved with Input
+	/// </summary>
+	UPROPERTY()
+	bool bCanCameraMove = true;
 #pragma endregion
 
 private:
