@@ -21,7 +21,7 @@ void UCharacterItemWidget::OnItemButtonClicked()
 	ItemButton->SetIsEnabled(false);
 	WCharacter = WCharacter == nullptr ? Cast<AWizardCharacter>(GetOwningPlayerPawn()) : WCharacter;
 	if (WCharacter) {
-		WCharacter->ServerUseItem(ItemIndex);
+		//WCharacter->ServerUseItem(ItemIndex);
 		RemoveFromParent();
 		if (ItemButton->OnClicked.IsBound()) {
 			ItemButton->OnClicked.RemoveDynamic(this, &UCharacterItemWidget::OnItemButtonClicked);

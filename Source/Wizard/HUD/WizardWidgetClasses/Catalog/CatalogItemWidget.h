@@ -21,8 +21,8 @@ public:
 	/// <summary>
 	/// Function to create an Item on the Catalog
 	/// </summary>
-	/// <param name="ItemActor">DataTable Row to create the widget from</param>
-	void CreateItem(int32 Index, FItemDataTable ItemRow);
+	/// <param name="ItemRow">DataTable Row to create the widget from</param>
+	void CreateItem(const FItemDataTable& ItemRow);
 
 private:
 
@@ -31,9 +31,6 @@ private:
 	/// </summary>
 	UPROPERTY()
 	FItemDataTable Item;
-
-	UPROPERTY()
-	int32 ItemIndex;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ItemImage;

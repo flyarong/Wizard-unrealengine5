@@ -21,12 +21,6 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
-	/// Function to get the store's catalog
-	/// </summary>
-	/// <returns>Catalog map holding all the Item structs the Store is offering</returns>
-	TMap<int32, FItemDataTable> GetStoreCatalog();
-
-	/// <summary>
 	/// Function to add a new random
 	/// Item to the catalog
 	/// </summary>
@@ -52,10 +46,10 @@ private:
 
 	/// <summary>
 	/// The array of Items a Store
-	/// is currently offer
+	/// is currently offering
 	/// </summary>
 	UPROPERTY(Replicated)
-	TArray<int32> CatalogIndexes;
+	TArray<FItemDataTable> Catalog;
 
 	/// <summary>
 	/// Number of items a Store is
@@ -68,7 +62,7 @@ private:
 	/// The array of Items a Store
 	/// can offer
 	/// </summary>
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	TArray<FItemDataTable> Products;
 
 	/// <summary>
@@ -136,4 +130,6 @@ private:
 	);
 #pragma endregion	
 
+public:
+	FORCEINLINE TArray<FItemDataTable> GetStoreCatalog() const { return Catalog; }
 };

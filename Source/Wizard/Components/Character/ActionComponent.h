@@ -49,10 +49,9 @@ public:
 	/// Function to buy an item from
 	/// the current store's catalog
 	/// </summary>
-	/// <param name="ItemIndex">Index of the Item in the Product Catalog</param>
 	/// <param name="ItemRow">Item to buy</param>
 	UFUNCTION(Server, Reliable)
-	void ServerBuyItem(int32 ItemIndex, FItemDataTable ItemRow);
+	void ServerBuyItem(const FItemDataTable& ItemRow);
 
 	/// <summary>
 	/// Function to set the currently overlapped Spell

@@ -8,10 +8,9 @@
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 
-void UCatalogItemWidget::CreateItem(int32 Index, FItemDataTable ItemRow)
+void UCatalogItemWidget::CreateItem(const FItemDataTable& ItemRow)
 {
 	Item = ItemRow;
-	ItemIndex = Index;
 
 	ItemNameText->SetText(FText::FromString(Item.ItemName));
 	ItemImage->SetBrushFromTexture(Item.ItemImage);
@@ -26,7 +25,7 @@ void UCatalogItemWidget::OnBuyButtonClicked()
 	BuyButton->SetIsEnabled(false);
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter && WCharacter->GetAction()) {
-		WCharacter->GetAction()->ServerBuyItem(ItemIndex, Item);
+		WCharacter->GetAction()->ServerBuyItem(Item);
 	}
 	BuyButton->SetIsEnabled(true);
 }

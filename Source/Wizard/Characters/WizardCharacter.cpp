@@ -93,8 +93,7 @@ void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AWizardCharacter, ItemIndexes);
-	DOREPLIFETIME(AWizardCharacter, LatestItem);
+	DOREPLIFETIME(AWizardCharacter, Items);
 }
 
 void AWizardCharacter::PostInitializeComponents()
@@ -167,43 +166,25 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 }
 
 #pragma region Items
-void AWizardCharacter::AddNewItem(int32 ItemIndex, FItemDataTable ItemRow)
+void AWizardCharacter::AddNewItem(const FItemDataTable& ItemRow)
 {
-	ItemIndexes.Add(ItemIndex);
-	LatestItem = ItemRow;
-	Items.Add(ItemIndexes.Last(), LatestItem);
-
-	Attribute->SpendXP(LatestItem.Cost);
-	AddHUDItem(ItemIndexes.Last());
+	Items.Add(ItemRow);
+	Attribute->SpendXP(ItemRow.Cost);
 }
 
-void AWizardCharacter::OnRep_ItemIndexes()
+void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 {
-	AddHUDItem(ItemIndexes.Last());
-}
+	if (!Items.Contains(Item)) return;
 
-void AWizardCharacter::AddHUDItem(int32 ItemIndex)
-{
-	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
-	if (PlayerController) {
-		PlayerController->AddHUDCharacterItem(ItemIndex);
-	}
-}
-
-void AWizardCharacter::ServerUseItem_Implementation(int32 ItemIndex)
-{
-	if (!ItemIndexes.Contains(ItemIndex) || !Items.Contains(ItemIndex)) {
-		return;
-	}
-
-	switch (Items[ItemIndex].BoostType)
+	switch (Item.BoostType) // TODO change to attribute type - no need for boost type
 	{
 	case EBoost::EB_Health:
 		break;
 	case EBoost::EB_Defense:
 		break;
 	case EBoost::EB_Power:
-		Attribute->AddPower(Items[ItemIndex].BoostAmount); // TODO remove item from Items and ItemIndexes
+		Items.Remove(Item);
+		Attribute->AddPower(Item.BoostAmount);
 		break;
 	case EBoost::EB_Wisdom:
 		break;

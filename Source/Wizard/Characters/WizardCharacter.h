@@ -35,9 +35,8 @@ public:
 	/// Function to add a new Item to the
 	/// Character's Items
 	/// </summary>
-	/// <param name="ItemIndex">Items index</param>
 	/// <param name="ItemRow">Item DataTable row element</param>
-	void AddNewItem(int32 ItemIndex, FItemDataTable ItemRow);
+	void AddNewItem(const FItemDataTable& ItemRow);
 
 	/// <summary>
 	/// Server RPC to use an Item from
@@ -45,7 +44,7 @@ public:
 	/// </summary>
 	/// <param name="ItemIndex">Item's index the Character wants to use</param>
 	UFUNCTION(Server, Reliable)
-	void ServerUseItem(int32 ItemIndex);
+	void ServerUseItem(const FItemDataTable& Item);
 
 private:
 
@@ -121,32 +120,12 @@ private:
 	/// Replicated array used to control
 	/// the Character's Items from the server
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_ItemIndexes)
-	TArray<int32> ItemIndexes;
-
-	UFUNCTION()
-	void OnRep_ItemIndexes();
-
-	/// <summary>
-	/// Last Item that has been added
-	/// to the Character's Items
-	/// </summary>
 	UPROPERTY(Replicated)
-	FItemDataTable LatestItem;
-
-	/// <summary>
-	/// Map that contains the Character's Items
-	/// on the server
-	/// </summary>
-	UPROPERTY()
-	TMap<int32, FItemDataTable> Items;
-
-	/// <summary>
-	/// Function to add the new Item
-	/// to the HUD
-	/// </summary>
-	void AddHUDItem(int32 ItemIndex);
+	TArray<FItemDataTable> Items;
 #pragma endregion
+
+	UPROPERTY()
+	bool bIsInCombat = false;
 
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
@@ -154,6 +133,7 @@ public:
 	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
 	FORCEINLINE UCharacterPOIComponent* GetPOI() const { return POI; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
-	FORCEINLINE FItemDataTable GetLatestItem() const { return LatestItem; }
+	FORCEINLINE bool GetIsInCombat() const { return bIsInCombat; }
+	FORCEINLINE void SetIsInCombat(bool bInCombat) { bIsInCombat = bInCombat; }
 };
 

@@ -61,8 +61,7 @@ void AStore::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME(AStore, CatalogIndexes);
-	DOREPLIFETIME(AStore, Products);
+	DOREPLIFETIME(AStore, Catalog);
 }
 
 #pragma region Catalog
@@ -82,22 +81,8 @@ void AStore::CreateCatalog()
 void AStore::AddItemToCatalog()
 {
 	int32 Index = FMath::RandRange(0, Products.Num() - 1);
-	while (CatalogIndexes.Contains(Index)) {
-		Index = FMath::RandRange(0, Products.Num() - 1);
-	}
-
-	CatalogIndexes.Add(Index);
-}
-
-TMap<int32, FItemDataTable> AStore::GetStoreCatalog()
-{
-	TMap<int32, FItemDataTable> Catalog;
-
-	for (auto& ProductIndex : CatalogIndexes) {
-		Catalog.Add(ProductIndex, Products[ProductIndex]);
-	}
-
-	return Catalog;
+	Catalog.Add(Products[Index]);
+	Products.RemoveAt(Index);
 }
 
 void AStore::GetProducts()
@@ -121,12 +106,12 @@ TArray<UDataTable*> AStore::GetProductTables()
 	UDataTable* HealthItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *HealthItemSelectorTablePath));
 	const FString PowerItemSelectorTablePath{ POWER_ITEM_DATA_TABLE_PATH };
 	UDataTable* PowerItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *PowerItemSelectorTablePath));
-	const FString EnergyItemSelectorTablePath{ ENERGY_ITEM_DATA_TABLE_PATH };
-	UDataTable* EnergyItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *EnergyItemSelectorTablePath));
+	const FString DefenseItemSelectorTablePath{ DEFENSE_ITEM_DATA_TABLE_PATH };
+	UDataTable* DefenseItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *DefenseItemSelectorTablePath));
 	const FString AgilityItemSelectorTablePath{ AGILITY_ITEM_DATA_TABLE_PATH };
 	UDataTable* AgilityItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *AgilityItemSelectorTablePath));
-	const FString CombatItemSelectorTablePath{ COMBAT_ITEM_DATA_TABLE_PATH };
-	UDataTable* CombatItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *CombatItemSelectorTablePath));
+	const FString OffenseItemSelectorTablePath{ OFFENSE_ITEM_DATA_TABLE_PATH };
+	UDataTable* OffenseItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *OffenseItemSelectorTablePath));
 	const FString IntelligenceItemSelectorTablePath{ INTELLIGENCE_ITEM_DATA_TABLE_PATH };
 	UDataTable* IntelligenceItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *IntelligenceItemSelectorTablePath));
 	const FString WisdomItemSelectorTablePath{ WISDOM_ITEM_DATA_TABLE_PATH };
@@ -141,16 +126,18 @@ TArray<UDataTable*> AStore::GetProductTables()
 		if (PowerItemSelectorTableObject) {
 			TableObjects.Add(PowerItemSelectorTableObject);
 		}
-		if (EnergyItemSelectorTableObject) {
-			TableObjects.Add(EnergyItemSelectorTableObject);
-		}
 		break;
 	case EStore::ES_Forge:
+		if (OffenseItemSelectorTableObject) {
+			TableObjects.Add(OffenseItemSelectorTableObject);
+		}
+		if (DefenseItemSelectorTableObject) {
+			TableObjects.Add(DefenseItemSelectorTableObject);
+		}
+		break;
+	case EStore::EA_MAX: // TODO need third store type for these
 		if (AgilityItemSelectorTableObject) {
 			TableObjects.Add(AgilityItemSelectorTableObject);
-		}
-		if (CombatItemSelectorTableObject) {
-			TableObjects.Add(CombatItemSelectorTableObject);
 		}
 		if (IntelligenceItemSelectorTableObject) {
 			TableObjects.Add(IntelligenceItemSelectorTableObject);
@@ -158,8 +145,6 @@ TArray<UDataTable*> AStore::GetProductTables()
 		if (WisdomItemSelectorTableObject) {
 			TableObjects.Add(WisdomItemSelectorTableObject);
 		}
-		break;
-	case EStore::EA_MAX:
 		break;
 	default:
 		break;

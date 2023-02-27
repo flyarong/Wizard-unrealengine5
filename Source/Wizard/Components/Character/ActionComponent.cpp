@@ -128,11 +128,11 @@ void UActionComponent::LeaveStore()
 	CurrentStore = nullptr;
 }
 
-void UActionComponent::ServerBuyItem_Implementation(int32 ItemIndex, FItemDataTable ItemRow)
+void UActionComponent::ServerBuyItem_Implementation(const FItemDataTable& ItemRow)
 {
 	if (Character && Character->GetAttribute()) {
 		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && CurrentStore) {
-			Character->AddNewItem(ItemIndex, ItemRow);
+			Character->AddNewItem(ItemRow);
 		}
 		else {
 			ClientAddLocalMessage(FString(TEXT("You don't have enough")), EAttribute::EA_XP);
@@ -158,7 +158,6 @@ void UActionComponent::SetOverlappedSpell(ASpell* Spell)
 		OverlappedSpell = Spell;
 		if (Character && Character->IsLocallyControlled() && 
 			OverlappedSpell && OverlappedSpell->GetCanInteract()) {
-			// CombatCost = OverlappedSpell->GetCost(); // don't need this; just use GetCost() when it is needed
 			OverlappedSpell->ShowInteractWidget(true);
 		}
 	}

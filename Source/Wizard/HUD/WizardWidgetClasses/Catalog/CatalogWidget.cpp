@@ -26,7 +26,7 @@ bool UCatalogWidget::CreateCatalog(AStore* Store)
 			for (auto& Item : Store->GetStoreCatalog()) {
 				UCatalogItemWidget* CatalogItem = CreateWidget<UCatalogItemWidget>(PlayerController, CatalogItemWidgetClass);
 				if (CatalogItem) {
-					CatalogItem->CreateItem(Item.Key, Item.Value);
+					CatalogItem->CreateItem(Item);
 					ItemPanel->AddChildToUniformGrid(CatalogItem, 0, Column);
 					Column++;
 				}

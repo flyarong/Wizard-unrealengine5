@@ -10,10 +10,10 @@ void UCharacterItemPanelWidget::AddCharacterItem(int32 ItemIndex)
 {
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (CharacterItemBox && CharacterItemWidgetClass && WCharacter) {
-		FItemDataTable Item = WCharacter->GetLatestItem();
+		//FItemDataTable Item = WCharacter->GetLatestItem();
 		UCharacterItemWidget* CharacterItem = CreateWidget<UCharacterItemWidget>(GetOwningPlayer(), CharacterItemWidgetClass);
 		if (CharacterItem) {
-			CharacterItem->CreateItem(WCharacter, ItemIndex, Item);
+			//CharacterItem->CreateItem(WCharacter, ItemIndex, Item);
 			CharacterItemBox->AddChildToHorizontalBox(CharacterItem);
 		}
 	}
