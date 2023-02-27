@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Wizard/Actors/WizardActor.h"
+#include "Wizard/Actors/WizardCombatActor.h"
 #include "Spell.generated.h"
 
 /**
 * Spell Actor base class
 */
 UCLASS()
-class WIZARD_API ASpell : public AWizardActor
+class WIZARD_API ASpell : public AWizardCombatActor
 {
 	GENERATED_BODY()
 	
@@ -24,13 +24,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	/// <summary>
-	/// Function to set the result of
-	/// destroying the Spell
-	/// TODO - need to decide function name later
-	/// </summary>
-	virtual void SetSpellScore();
 
 private:
 #pragma region Components

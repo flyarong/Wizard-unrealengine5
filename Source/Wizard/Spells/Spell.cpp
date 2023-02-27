@@ -39,11 +39,6 @@ void ASpell::BeginPlay()
 	AreaSphere->OnClicked.AddDynamic(this, &ASpell::OnSpellClicked);
 }
 
-void ASpell::SetSpellScore()
-{
-
-}
-
 // Called every frame
 void ASpell::Tick(float DeltaTime)
 {
@@ -100,6 +95,4 @@ void ASpell::Destroyed()
 			GetActorRotation()
 		);
 	}
-
-	SetSpellScore();
 }

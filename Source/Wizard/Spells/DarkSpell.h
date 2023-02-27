@@ -14,6 +14,4 @@ class WIZARD_API ADarkSpell : public ASpell
 {
 	GENERATED_BODY()
 	
-protected:
-	virtual void SetSpellScore() override;
 };

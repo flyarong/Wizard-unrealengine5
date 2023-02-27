@@ -3,8 +3,3 @@
 
 #include "DarkSpell.h"
 
-void ADarkSpell::SetSpellScore()
-{
-	Super::SetSpellScore();
-
-}

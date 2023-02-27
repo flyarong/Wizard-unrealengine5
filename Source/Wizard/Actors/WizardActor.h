@@ -80,15 +80,6 @@ protected:
 	FString InteractText;
 
 	/// <summary>
-	/// Cost of the Actor interaction
-	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Cost")
-	float Cost = 0.f;
-
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	int32 Health = 1;
-
-	/// <summary>
 	/// Boolean for whether or not the Actor
 	/// can be interacted with
 	/// </summary>
@@ -96,7 +87,5 @@ protected:
 	bool bCanInteract = true;
 
 public:
-	FORCEINLINE float GetCost() const { return Cost; }
-	FORCEINLINE int32 GetHealth() const { return Health; }
 	FORCEINLINE bool GetCanInteract() const { return bCanInteract; }
 };
