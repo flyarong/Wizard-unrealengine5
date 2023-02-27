@@ -25,7 +25,7 @@ public:
 	/// </summary>
 	/// <param name="AttributeForCombat">Attribute Value to use during Combat</param>
 	/// <param name="Target">Actor who is the target of the Combat</param>
-	void InitCombat(int32 AttributeForCombat, class AWizardActor* Target);
+	void InitCombat(int32 AttributeForCombat, class AWizardCombatActor* Target);
 
 	/// <summary>
 	/// Function to Stop the Combat
@@ -83,7 +83,17 @@ private:
 	/// Target Actor of the Combat
 	/// </summary>
 	UPROPERTY(Replicated)
-	AWizardActor* CombatTarget;
+	AWizardCombatActor* CombatTarget;
+#pragma endregion
+
+#pragma region Animation Montages
+	UPROPERTY(EditAnywhere, Category = "Animation Montages")
+	class UAnimMontage* CombatMontage;
+
+	/// <summary>
+	/// Function to play the Combat Animation Montage
+	/// </summary>
+	void PlayCombatMontage(FName Section);
 #pragma endregion
 
 #pragma region Sounds
@@ -104,6 +114,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
 	USoundCue* HitSound;
+
+	/// <summary>
+	/// Function to play a SoundCue
+	/// </summary>
+	/// <param name="Sound">Sound to play</param>
+	void PlaySound(USoundCue* Sound);
 #pragma endregion
 
 #pragma region Niagara
@@ -127,18 +143,10 @@ private:
 	UNiagaraSystem* HitEffect;
 
 	/// <summary>
-	/// Multicast RPC to play combat effects on all machines
+	/// Function to play Niagara effects during combat
 	/// </summary>
-	/// <param name="Sound">Combat Sound to play</param>
 	/// <param name="Effect">Niagara System to spawn</param>
-	UFUNCTION(NetMulticast, UnReliable)
-	void MulticastPlayEffect(USoundCue* Sound, UNiagaraSystem* Effect = nullptr);
-
-	/// <summary>
-	/// Multicast RPC to destroy combat effects on all machines
-	/// </summary>
-	UFUNCTION(NetMulticast, UnReliable)
-	void MulticastDestroyEffect();
+	void PlayNiagaraEffect(UNiagaraSystem* Effect);
 #pragma endregion
 
 	/// <summary>
@@ -174,15 +182,15 @@ private:
 	void OnRep_Successes();
 
 	/// <summary>
-	/// Function to setup Combat on the screen
+	/// Function to setup Combat gameplay
 	/// </summary>
-	void SetupCombatHUD();
+	void SetupCombat();
 
 	/// <summary>
-	/// Function to reset the screen from Combat 
+	/// Function to reset the gameplay from Combat 
 	/// to Default
 	/// </summary>
-	void ResetHUD();
+	void Reset();
 
 	/// <summary>
 	/// Material Instance for the Spell Bar
@@ -339,9 +347,50 @@ private:
 	void RemovePreviousStep();
 
 	/// <summary>
+	/// Function to calculate the outcome of
+	/// the Combat once it ends
+	/// </summary>
+	void CalculateCombatResult();
+
+	/// <summary>
 	/// Client RPC to trigger a local message
 	/// that the Character is out of Power
 	/// </summary>
 	UFUNCTION(Client, UnReliable)
 	void ClientNotEnoughPowerMessage();
+
+	/// <summary>
+	/// Multicast RPC to replicate some functionality
+	/// on all machines when Combat starts
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastStartCombat();
+
+	/// <summary>
+	/// Multicast RPC to replicate some functionality
+	/// on all machines when Spell Step is successful
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastStepSuccess();
+
+	/// <summary>
+	/// Multicast RPC to replicate some functionality
+	/// on all machines when Spell Step fails
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastStepFail();
+
+	/// <summary>
+	/// Multicast RPC to replicate some functionality
+	/// on all machines when Combat is successful
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCombatSuccess();
+
+	/// <summary>
+	/// Multicast RPC to replicate some functionality
+	/// on all machines when Combat fails
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCombatFail();
 };

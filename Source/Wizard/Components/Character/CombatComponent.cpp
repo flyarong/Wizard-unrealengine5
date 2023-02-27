@@ -10,7 +10,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
-#include "Wizard/Actors/WizardActor.h"
+#include "Wizard/Characters/WizardAnimInstance.h"
+#include "Wizard/Actors/WizardCombatActor.h"
 #include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
@@ -62,7 +63,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, bInitNextStep);
 }
 
-void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardActor* Target)
+void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardCombatActor* Target)
 {
 	if (Character && Character->GetAttribute() && Target) {
 		if (Character->GetAttribute()->GetPower() < Target->GetCost()) {
@@ -75,12 +76,13 @@ void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardActor* Target
 		CombatAttribute = AttributeForCombat;
 		CombatTarget = Target;
 		SuccessRate = CombatAttribute / NumberOfSteps;
-		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombatHUD();
+		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombat();
 	}
 }
 
 void UCombatComponent::ClientNotEnoughPowerMessage_Implementation()
 {
+	PlaySound(CastFailSound);
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		WController->AddHUDLocalMessage(FString(TEXT("You don't have enough")), EAttribute::EA_Power);
@@ -113,15 +115,15 @@ void UCombatComponent::OnRep_CombatAttribute()
 {
 	if (Character && Character->IsLocallyControlled()) {
 		if (CombatAttribute > 0) {
-			SetupCombatHUD();
+			SetupCombat();
 		}
 		else {
-			ResetHUD();
+			Reset();
 		}
 	}
 }
 
-void UCombatComponent::SetupCombatHUD()
+void UCombatComponent::SetupCombat()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
@@ -138,11 +140,11 @@ void UCombatComponent::StopCombat()
 	CombatAttribute = 0.f;
 	CombatTarget = nullptr;
 	SuccessRate = 0.f;
-
-	if (Character && Character->IsLocallyControlled()) ResetHUD();
+	
+	if (Character && Character->IsLocallyControlled()) Reset();
 }
 
-void UCombatComponent::ResetHUD()
+void UCombatComponent::Reset()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
@@ -154,8 +156,9 @@ void UCombatComponent::ResetHUD()
 void UCombatComponent::StartCombat()
 {
 	if (Character && Character->GetAttribute() && CombatTarget) {
-		Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
-		MulticastPlayEffect(StartSound, CastEffect);
+		Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat); // TODO do this in combatactor aftermath function
+		Character->SetIsInCombat(true);
+		MulticastStartCombat();
 		FTimerHandle StartCombatTimer;
 		GetWorld()->GetTimerManager().SetTimer(
 			StartCombatTimer,
@@ -168,7 +171,7 @@ void UCombatComponent::StartCombat()
 
 void UCombatComponent::SetCurrentSpellStep()
 {
-	if (StepIndex < Steps.Num() - 1) {
+	if (StepIndex < Steps.Num() - 1) { // set Step
 		StepIndex++;
 		AddCurrentStep();
 		bInitNextStep = false;
@@ -179,32 +182,34 @@ void UCombatComponent::SetCurrentSpellStep()
 			StepTime
 		);
 	}
-	else {
+	else { // Combat ends
 		StepIndex = -1;
 		MulticastResetSpellBar();
-
-		// If Combat succeeds, destroy Target and add Public Message about Victory
-		int32 Result = FMath::FloorToInt32<float>(Successes);
-		if (CombatTarget && Result >= CombatTarget->GetHealth()) {
-			MulticastPlayEffect(SuccessSound);
-			MulticastDestroyEffect();
-			MulticastPlayEffect(HitSound, HitEffect);
-
-			WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
-			if (WGameMode) {
-				WGameMode->BroadcastVictory(Character, CombatTarget);
-			}
-
-			CombatTarget->Destroy();
-		}
-		else {
-			MulticastPlayEffect(FailSound);
-			MulticastDestroyEffect();
-		}
+		CalculateCombatResult();
 
 		if (Character && Character->GetAction()) {
 			Character->GetAction()->EndCombat();
 		}
+	}
+}
+
+void UCombatComponent::CalculateCombatResult()
+{
+	int32 Result = FMath::FloorToInt32<float>(Successes);
+	if (CombatTarget && Result >= CombatTarget->GetHealth()) { // Success
+		MulticastCombatSuccess();
+		// TODO goodspell attribute ++
+
+		WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
+		if (WGameMode) {
+			WGameMode->BroadcastVictory(Character, CombatTarget);
+		}
+
+		CombatTarget->Destroy();
+	}
+	else { // Failure
+		CombatTarget->DamageActor(Result);
+		MulticastCombatFail();
 	}
 }
 
@@ -277,13 +282,13 @@ void UCombatComponent::ValidateInput(int32 Input)
 
 	// Check if user input Symbol Index equals to current Step Symbol Index
 	if (SpellIndexes[Input] == Steps[StepIndex]) {
-		MulticastPlayEffect(CastSound);
+		MulticastStepSuccess();
 		Successes += SuccessRate;
 		bSpellBarShouldUpdate = true;
 		bStepWasSuccessful = true;
 	}
 	else {
-		MulticastPlayEffect(CastFailSound);
+		MulticastStepFail();
 	}
 
 	StartNextStep();
@@ -315,7 +320,51 @@ void UCombatComponent::MulticastResetSpellBar_Implementation()
 	SpellBar->SetScalarParameterValue(SpellBarParameterValue, 0.f);
 }
 
-void UCombatComponent::MulticastPlayEffect_Implementation(USoundCue* Sound, UNiagaraSystem* Effect = nullptr)
+void UCombatComponent::MulticastStartCombat_Implementation()
+{
+	PlayCombatMontage(FName("Start"));
+	PlaySound(StartSound);
+	PlayNiagaraEffect(CastEffect);
+}
+
+void UCombatComponent::MulticastStepSuccess_Implementation()
+{
+	PlaySound(CastSound);
+}
+
+void UCombatComponent::MulticastStepFail_Implementation()
+{
+	PlaySound(CastFailSound);
+}
+
+void UCombatComponent::MulticastCombatSuccess_Implementation()
+{
+	PlaySound(SuccessSound);
+	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
+	PlayCombatMontage(FName("Success"));
+	PlaySound(HitSound);
+	PlayNiagaraEffect(HitEffect);
+	Character->SetIsInCombat(false);
+}
+
+void UCombatComponent::MulticastCombatFail_Implementation()
+{
+	PlaySound(FailSound);
+	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
+	PlayCombatMontage(FName("Fail"));
+	Character->SetIsInCombat(false);
+}
+
+void UCombatComponent::PlayCombatMontage(FName Section)
+{
+	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
+	if (AnimInstance) {
+		AnimInstance->Montage_Play(CombatMontage);
+		AnimInstance->Montage_JumpToSection(Section);
+	}
+}
+
+void UCombatComponent::PlaySound(USoundCue* Sound)
 {
 	if (Sound) {
 		UGameplayStatics::PlaySoundAtLocation(
@@ -324,7 +373,10 @@ void UCombatComponent::MulticastPlayEffect_Implementation(USoundCue* Sound, UNia
 			Character->GetActorLocation()
 		);
 	}
+}
 
+void UCombatComponent::PlayNiagaraEffect(UNiagaraSystem* Effect)
+{
 	if (Effect) {
 		CombatEffectComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,
@@ -333,9 +385,4 @@ void UCombatComponent::MulticastPlayEffect_Implementation(USoundCue* Sound, UNia
 			Character->GetActorRotation()
 		);
 	}
-}
-
-void UCombatComponent::MulticastDestroyEffect_Implementation()
-{
-	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
 }

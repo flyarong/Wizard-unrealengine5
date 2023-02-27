@@ -20,6 +20,17 @@ void UWizardAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
 
+	if (WizardCharacter == nullptr) {
+		WizardCharacter = Cast<AWizardCharacter>(TryGetPawnOwner());
+		if (WizardCharacter) {
+			WizardCharacterMovement = WizardCharacter->GetCharacterMovement();
+		}
+	}
+
+	if (WizardCharacter) {
+		bIsInCombat = WizardCharacter->GetIsInCombat();
+	}
+
 	if (WizardCharacterMovement)
 	{
 		// we only need the X and Y vectors for ground speed
