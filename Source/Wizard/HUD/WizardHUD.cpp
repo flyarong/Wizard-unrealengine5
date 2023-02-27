@@ -183,6 +183,19 @@ void AWizardHUD::SetAgility(int32 NewAgility)
 		WizardOverlay->SetAgilityText(FText::AsNumber(NewAgility));
 	}
 }
+
+void AWizardHUD::SetSpells(int32 NewSpell, bool bIsGoodSpell)
+{
+	if (WizardOverlay) {
+		FText SpellText = FText::FromString(FString::Printf(TEXT("%d"), NewSpell));
+		if (bIsGoodSpell) {
+			if (WizardOverlay->GetGoodSpellText()) WizardOverlay->SetGoodSpellText(SpellText);
+		}
+		else {
+			if (WizardOverlay->GetDarkSpellText()) WizardOverlay->SetDarkSpellText(SpellText);
+		}
+	}
+}
 #pragma endregion
 
 #pragma region Store/Catalog

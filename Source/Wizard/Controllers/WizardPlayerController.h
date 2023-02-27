@@ -127,6 +127,14 @@ public:
 	/// on the HUD
 	/// </summary>
 	void SetHUDAgility(int32 NewAgility);
+
+	/// <summary>
+	/// Function to set the number of Good/Dark Spells
+	/// on the HUd
+	/// </summary>
+	/// <param name="NewSpell">Amount to set</param>
+	/// <param name="IsGoodSpell">Whether the Spell is a GoodSpell or DarkSpell</param>
+	void SetHUDSpells(int32 NewSpell, bool bIsGoodSpell = true);
 #pragma endregion
 
 #pragma region HUD/Store/Catalog

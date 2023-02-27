@@ -141,6 +141,14 @@ public:
 	/// on the HUD
 	/// </summary>
 	void SetAgility(int32 NewAgility);
+
+	/// <summary>
+	/// Function to set the new Spell value
+	/// on the HUD
+	/// </summary>
+	/// <param name="NewSpell">The new Spell amount</param>
+	/// <param name="bIsGoodSpell">Whether the Spell is a Good Spell or a Dark Spell</param>
+	void SetSpells(int32 NewSpell, bool bIsGoodSpell);
 #pragma endregion
 
 #pragma region Store/Catalog

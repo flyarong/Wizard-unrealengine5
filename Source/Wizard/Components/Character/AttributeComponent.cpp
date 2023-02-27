@@ -17,7 +17,6 @@ UAttributeComponent::UAttributeComponent()
 	XP = 20;
 }
 
-
 // Called when the game starts
 void UAttributeComponent::BeginPlay()
 {
@@ -46,6 +45,8 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UAttributeComponent, Intelligence);
 	DOREPLIFETIME(UAttributeComponent, Offense);
 	DOREPLIFETIME(UAttributeComponent, Agility);
+	DOREPLIFETIME(UAttributeComponent, GoodSpells);
+	DOREPLIFETIME(UAttributeComponent, DarkSpells);
 }
 
 
@@ -98,6 +99,7 @@ void UAttributeComponent::UpdateHUDPower()
 }
 #pragma endregion
 
+#pragma region XP
 void UAttributeComponent::SpendXP(int32 Cost)
 {
 	if (Character && Character->HasAuthority()) {
@@ -119,3 +121,50 @@ void UAttributeComponent::UpdateHUDXP()
 		Controller->SetHUDXP(XP);
 	}
 }
+#pragma endregion
+
+#pragma region Spells
+void UAttributeComponent::AddGoodSpell(int32 GoodSpellAmount)
+{
+	if (Character && Character->HasAuthority()) {
+		GoodSpells += GoodSpellAmount;
+		UpdateHUDGoodSpells();
+	}
+}
+
+void UAttributeComponent::OnRep_GoodSpells()
+{
+	UpdateHUDGoodSpells();
+}
+
+void UAttributeComponent::UpdateHUDGoodSpells()
+{
+	Controller = (Controller == nullptr) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDSpells(GoodSpells);
+	}
+}
+
+void UAttributeComponent::AddDarkSpell(int32 DarkSpellAmount)
+{
+	if (Character && Character->HasAuthority()) {
+		DarkSpells += DarkSpellAmount;
+		UpdateHUDDarkSpells();
+	}
+}
+
+void UAttributeComponent::OnRep_DarkSpells()
+{
+	UpdateHUDDarkSpells();
+}
+
+void UAttributeComponent::UpdateHUDDarkSpells()
+{
+	Controller = (Controller == nullptr) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDSpells(DarkSpells, false);
+	}
+}
+#pragma endregion

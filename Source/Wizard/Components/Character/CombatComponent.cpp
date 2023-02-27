@@ -9,6 +9,8 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetMaterialLibrary.h"
+#include "Wizard/Spells/GoodSpell.h"
+#include "Wizard/Spells/DarkSpell.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Characters/WizardAnimInstance.h"
 #include "Wizard/Actors/WizardCombatActor.h"
@@ -155,8 +157,7 @@ void UCombatComponent::Reset()
 
 void UCombatComponent::StartCombat()
 {
-	if (Character && Character->GetAttribute() && CombatTarget) {
-		Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat); // TODO do this in combatactor aftermath function
+	if (Character) {
 		Character->SetIsInCombat(true);
 		MulticastStartCombat();
 		FTimerHandle StartCombatTimer;
@@ -185,6 +186,7 @@ void UCombatComponent::SetCurrentSpellStep()
 	else { // Combat ends
 		StepIndex = -1;
 		MulticastResetSpellBar();
+		if (CombatTarget && Character->GetAttribute()) Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
 		CalculateCombatResult();
 
 		if (Character && Character->GetAction()) {
@@ -198,7 +200,14 @@ void UCombatComponent::CalculateCombatResult()
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (CombatTarget && Result >= CombatTarget->GetHealth()) { // Success
 		MulticastCombatSuccess();
-		// TODO goodspell attribute ++
+		if (Character->GetAttribute()) {
+			if (CombatTarget->IsA(AGoodSpell::StaticClass())) {
+				Character->GetAttribute()->AddGoodSpell(1);
+			}
+			else if (CombatTarget->IsA(ADarkSpell::StaticClass())) {
+				Character->GetAttribute()->AddDarkSpell(1);
+			}
+		}
 
 		WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
 		if (WGameMode) {

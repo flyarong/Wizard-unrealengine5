@@ -368,6 +368,14 @@ void AWizardPlayerController::SetHUDAgility(int32 NewAgility)
 	}
 }
 
+void AWizardPlayerController::SetHUDSpells(int32 NewSpell, bool bIsGoodSpell)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->SetSpells(NewSpell, bIsGoodSpell);
+	}
+}
+
 #pragma endregion
 
 #pragma region HUD/Store/Catalog

@@ -41,6 +41,18 @@ public:
 	/// <param name="Cost">The number of XP to be spent</param>
 	void SpendXP(int32 Cost);
 
+	/// <summary>
+	/// Function to add more GoodSpell
+	/// </summary>
+	/// <param name="GoodSpellAmount">Amount to add</param>
+	void AddGoodSpell(int32 GoodSpellAmount);
+
+	/// <summary>
+	/// Function to add more DarkSpell
+	/// </summary>
+	/// <param name="DarkSpellAmount">Amount to add</param>
+	void AddDarkSpell(int32 DarkSpellAmount);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -106,6 +118,32 @@ private:
 	/// on the HUD
 	/// </summary>
 	void UpdateHUDPower();
+#pragma endregion
+
+#pragma region Spells
+	UPROPERTY(ReplicatedUsing = OnRep_GoodSpells, EditAnywhere, Category = "Wizard Attributes")
+	int32 GoodSpells = 0;
+
+	UFUNCTION()
+	void OnRep_GoodSpells();
+
+	/// <summary>
+	/// Function to update the GoodSpells
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDGoodSpells();
+
+	UPROPERTY(ReplicatedUsing = OnRep_DarkSpells, EditAnywhere, Category = "Wizard Attributes")
+	int32 DarkSpells = 0;
+
+	UFUNCTION()
+	void OnRep_DarkSpells();
+
+	/// <summary>
+	/// Function to update the DarkSpells
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDDarkSpells();
 #pragma endregion
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
