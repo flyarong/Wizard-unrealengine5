@@ -52,6 +52,13 @@ public:
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 BoostAmount;
+
+	/// <summary>
+	/// Custom operator for Equals
+	/// </summary>
+	/// <param name="Rhs">Right hand side Item to compare to</param>
+	/// <returns>Whether the two Items are the same one</returns>
+	bool operator==(const FItemDataTable& Rhs) const;
 };
 
 UCLASS()

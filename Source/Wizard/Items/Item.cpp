@@ -3,6 +3,11 @@
 
 #include "Item.h"
 
+bool FItemDataTable::operator==(const FItemDataTable& Rhs) const
+{
+	return ItemName == Rhs.ItemName;
+}
+
 // Sets default values
 AItem::AItem()
 {
@@ -25,4 +30,3 @@ void AItem::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
