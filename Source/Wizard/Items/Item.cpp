@@ -8,6 +8,11 @@ bool FItemDataTable::operator==(const FItemDataTable& Rhs) const
 	return ItemName == Rhs.ItemName;
 }
 
+uint32 GetTypeHash(const FItemDataTable& Rhs)
+{
+	return GetTypeHash(Rhs.ItemName);
+}
+
 // Sets default values
 AItem::AItem()
 {
