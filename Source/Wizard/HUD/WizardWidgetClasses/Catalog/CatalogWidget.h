@@ -40,4 +40,11 @@ private:
 
 	UFUNCTION()
 	void CloseCatalog();
+
+	/// <summary>
+	/// Variable determining the max number of Items
+	/// per Row in the Uniform Grid
+	/// </summary>
+	UPROPERTY(EditAnywhere)
+	int32 NumOfItemsPerRow = 3;
 };

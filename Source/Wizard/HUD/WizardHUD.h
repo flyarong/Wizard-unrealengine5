@@ -7,6 +7,7 @@
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "Wizard/WizardTypes/AttributeTypes.h"
 #include "Wizard/WizardTypes/ActionTypes.h"
+#include "Wizard/Items/Item.h"
 #include "WizardHUD.generated.h"
 
 /**
@@ -151,7 +152,7 @@ public:
 	void SetSpells(int32 NewSpell, bool bIsGoodSpell);
 #pragma endregion
 
-#pragma region Store/Catalog
+#pragma region Items
 	/// <summary>
 	/// Function to show the currently browsed store's
 	/// catalog on the HUD
@@ -160,10 +161,15 @@ public:
 	void SetStoreCatalog(class AStore* Store);
 
 	/// <summary>
-	/// Function to add a new item to the
-	/// Character's Item Panel
+	/// Function to update the Character's Inventory
 	/// </summary>
-	void AddCharacterItem(int32 ItemIndex);
+	void UpdateCharacterInventory(const TArray<FItemDataTable>& Items);
+
+	/// <summary>
+	/// Function to show the Character's Inventory 
+	/// on the Overlay
+	/// </summary>
+	void ShowCharacterInventory();
 #pragma endregion
 
 #pragma region MiniMap

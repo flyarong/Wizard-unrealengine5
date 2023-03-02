@@ -5,7 +5,7 @@
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/HUD/WizardWidgetClasses/MiniMap/MiniMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Catalog/CatalogWidget.h"
-#include "Wizard/HUD/WizardWidgetClasses/Items/CharacterItemPanelWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Items/CharacterInventoryWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/PublicMessageWidget.h"
@@ -132,6 +132,7 @@ void AWizardHUD::SetCharacterImage(UTexture2D* CharacterImage)
 	if (WController && WizardOverlay && WizardOverlay->GetProfileImage() && WizardOverlay->GetProfileButton()) {
 		WizardOverlay->SetProfileImage(CharacterImage);
 		WizardOverlay->GetProfileButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::SetCameraFocusOnWizard);
+		WizardOverlay->GetInventoryButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::OpenHUDInventory);
 	}
 }
 
@@ -198,7 +199,7 @@ void AWizardHUD::SetSpells(int32 NewSpell, bool bIsGoodSpell)
 }
 #pragma endregion
 
-#pragma region Store/Catalog
+#pragma region Items
 void AWizardHUD::SetStoreCatalog(AStore* Store)
 {
 	if (WizardOverlay && WizardOverlay->GetCenterBox()) {
@@ -216,11 +217,28 @@ void AWizardHUD::SetStoreCatalog(AStore* Store)
 	}
 }
 
-void AWizardHUD::AddCharacterItem(int32 ItemIndex)
+void AWizardHUD::UpdateCharacterInventory(const TArray<FItemDataTable>& Items)
 {
-	/*if (WizardOverlay && WizardOverlay->GetCharacterItemPanel()) {
-		WizardOverlay->GetCharacterItemPanel()->AddCharacterItem(ItemIndex);
-	}*/
+	if (WizardOverlay) {
+		if (WizardOverlay->GetInventoryWidget() == nullptr && WizardOverlay->GetInventoryWidgetClass()) {
+			UCharacterInventoryWidget* InventoryWidget = CreateWidget<UCharacterInventoryWidget>(
+					GetOwningPlayerController(),
+					WizardOverlay->GetInventoryWidgetClass()
+				);
+			if (InventoryWidget) WizardOverlay->SetInventoryWidget(InventoryWidget);
+		}
+		
+		if (WizardOverlay->GetInventoryWidget()) {
+			WizardOverlay->GetInventoryWidget()->UpdateInventory(Items);
+		}
+	}
+}
+void AWizardHUD::ShowCharacterInventory()
+{
+	ClearCenterBox();
+	if (WizardOverlay && WizardOverlay->GetCenterBox() && WizardOverlay->GetInventoryWidget()) {
+		WizardOverlay->GetCenterBox()->AddChild(WizardOverlay->GetInventoryWidget());
+	}
 }
 #pragma endregion
 

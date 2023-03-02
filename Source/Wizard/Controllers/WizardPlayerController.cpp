@@ -375,10 +375,9 @@ void AWizardPlayerController::SetHUDSpells(int32 NewSpell, bool bIsGoodSpell)
 		WizardHUD->SetSpells(NewSpell, bIsGoodSpell);
 	}
 }
-
 #pragma endregion
 
-#pragma region HUD/Store/Catalog
+#pragma region HUD/Items
 void AWizardPlayerController::SetHUDStoreCatalog(AStore* Store)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
@@ -387,11 +386,25 @@ void AWizardPlayerController::SetHUDStoreCatalog(AStore* Store)
 	}
 }
 
-void AWizardPlayerController::AddHUDCharacterItem(int32 ItemIndex)
+void AWizardPlayerController::OpenHUDInventory()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardCharacter) {
+		WizardCharacter->PlayOpenInventorySound();
+		if (WizardCharacter->GetItems().Num() > 0) {
+			WizardHUD->ShowCharacterInventory();
+		}
+		else {
+			WizardHUD->AddLocalMessage(FString(TEXT("You don't have any Items in your Inventory!")), EAttribute::EA_MAX);
+		}
+	}
+}
+
+void AWizardPlayerController::UpdateHUDCharacterInventory(const TArray<FItemDataTable>& Items)
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->AddCharacterItem(ItemIndex);
+		WizardHUD->UpdateCharacterInventory(Items);
 	}
 }
 #pragma endregion

@@ -36,13 +36,10 @@ private:
 	class UImage* ItemImage;
 
 	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* ItemNameText;
-
-	UPROPERTY(meta = (BindWidget))
 	UImage* BoostImage;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* BoostText;
+	class UTextBlock* BoostText;
 
 	UPROPERTY(meta = (BindWidget))
 	UImage* PriceImage;

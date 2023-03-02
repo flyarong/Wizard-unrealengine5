@@ -3,7 +3,9 @@
 
 #include "ActionComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "Sound/SoundCue.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Wizard/Stores/Store.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -133,11 +135,18 @@ void UActionComponent::ServerBuyItem_Implementation(const FItemDataTable& ItemRo
 	if (Character && Character->GetAttribute()) {
 		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && CurrentStore) {
 			Character->AddNewItem(ItemRow);
+			ClientPlaySound(SuccessfulPurchaseSound);
 		}
 		else {
 			ClientAddLocalMessage(FString(TEXT("You don't have enough")), EAttribute::EA_XP);
+			ClientPlaySound(FailedPurchaseSound);
 		}
 	}
+}
+
+void UActionComponent::ClientPlaySound_Implementation(USoundCue* Sound)
+{
+	Character->PlaySound(Sound);
 }
 #pragma endregion
 

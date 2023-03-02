@@ -137,7 +137,7 @@ public:
 	void SetHUDSpells(int32 NewSpell, bool bIsGoodSpell = true);
 #pragma endregion
 
-#pragma region HUD/Store/Catalog
+#pragma region HUD/Items
 	/// <summary>
 	/// Function to set the store's catalog
 	/// on the player's HUD
@@ -146,10 +146,17 @@ public:
 	void SetHUDStoreCatalog(class AStore* Store);
 
 	/// <summary>
-	/// Function to add a new Item
-	/// to the Character's Items list on the HUD
+	/// Function to open the Inventory
+	/// on the HUD
 	/// </summary>
-	void AddHUDCharacterItem(int32 ItemIndex);
+	UFUNCTION()
+	void OpenHUDInventory();
+
+	/// <summary>
+	/// Function to update the Character's
+	/// Inventory in the HUD
+	/// </summary>
+	void UpdateHUDCharacterInventory(const TArray<FItemDataTable>& Items);
 #pragma endregion
 
 #pragma region HUD/MiniMap

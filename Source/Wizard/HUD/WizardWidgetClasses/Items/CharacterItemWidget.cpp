@@ -4,27 +4,28 @@
 #include "CharacterItemWidget.h"
 #include "Components/Image.h"
 #include "Components/Button.h"
+#include "Components/TextBlock.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 #include "Wizard/Characters/WizardCharacter.h"
 
-void UCharacterItemWidget::CreateItem(AWizardCharacter* Owner, int32 Index, FItemDataTable ItemElement)
+void UCharacterItemWidget::CreateItem(const FItemDataTable& ItemElement, int32 Count)
 {
-	WCharacter = Owner;
-
-	ItemIndex = Index;
 	Item = ItemElement;
+	ItemCount = Count;
 	ItemImage->SetBrushFromTexture(Item.ItemImage);
+	BoostImage->SetBrushFromTexture(Item.BoostImage);
+	BoostAmountText->SetText(FText::FromString(FString::Printf(TEXT("+%d"), Item.BoostAmount)));
+	QuantityText->SetText(FText::FromString(FString::Printf(TEXT("%d"), ItemCount)));
 	ItemButton->OnClicked.AddDynamic(this, &UCharacterItemWidget::OnItemButtonClicked);
 }
 
 void UCharacterItemWidget::OnItemButtonClicked()
 {
 	ItemButton->SetIsEnabled(false);
-	WCharacter = WCharacter == nullptr ? Cast<AWizardCharacter>(GetOwningPlayerPawn()) : WCharacter;
+	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter) {
-		//WCharacter->ServerUseItem(ItemIndex);
-		RemoveFromParent();
-		if (ItemButton->OnClicked.IsBound()) {
-			ItemButton->OnClicked.RemoveDynamic(this, &UCharacterItemWidget::OnItemButtonClicked);
-		}
+		WCharacter->PlayUseSound();
+		WCharacter->ServerUseItem(Item);
 	}
 }

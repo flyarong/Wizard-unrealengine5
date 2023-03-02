@@ -12,7 +12,6 @@ void UCatalogItemWidget::CreateItem(const FItemDataTable& ItemRow)
 {
 	Item = ItemRow;
 
-	ItemNameText->SetText(FText::FromString(Item.ItemName));
 	ItemImage->SetBrushFromTexture(Item.ItemImage);
 	BoostImage->SetBrushFromTexture(Item.BoostImage);
 	BoostText->SetText(FText::FromString(FString::Printf(TEXT("+%d"), Item.BoostAmount)));
@@ -22,10 +21,8 @@ void UCatalogItemWidget::CreateItem(const FItemDataTable& ItemRow)
 
 void UCatalogItemWidget::OnBuyButtonClicked()
 {
-	BuyButton->SetIsEnabled(false);
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter && WCharacter->GetAction()) {
 		WCharacter->GetAction()->ServerBuyItem(Item);
 	}
-	BuyButton->SetIsEnabled(true);
 }

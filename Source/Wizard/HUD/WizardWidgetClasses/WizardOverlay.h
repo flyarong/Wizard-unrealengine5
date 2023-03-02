@@ -23,8 +23,14 @@ private:
 	/// <summary>
 	/// Widget class for the Catalog
 	/// </summary>
-	UPROPERTY(EditAnywhere, Category = "Catalog")
+	UPROPERTY(EditAnywhere, Category = "Items")
 	TSubclassOf<class UUserWidget> CatalogWidgetClass;
+
+	/// <summary>
+	/// Widget class for the Inventory
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Items")
+	TSubclassOf<class UUserWidget> InventoryWidgetClass;
 
 	/// <summary>
 	/// Widget class for the local Message
@@ -43,18 +49,6 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<class UUserWidget> SpellMapWidgetClass;
-
-	/// <summary>
-	/// Widget used on the Overlay to store the SpellMap
-	/// </summary>
-	UPROPERTY()
-	class USpellMapWidget* SpellMapWidget;
-
-	/// <summary>
-	/// Widget used on the Overlay to store the Combat Score
-	/// </summary>
-	UPROPERTY()
-	class UCombatScoreWidget* CombatScoreWidget;
 
 	/// <summary>
 	/// Widget class for the Combat Menu
@@ -79,6 +73,24 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TSubclassOf<class UUserWidget> CombatScoreWidgetClass;
+
+	/// <summary>
+	/// Widget used on the Overlay to store the SpellMap
+	/// </summary>
+	UPROPERTY()
+	class USpellMapWidget* SpellMapWidget;
+
+	/// <summary>
+	/// Widget used on the Overlay to store the Combat Score
+	/// </summary>
+	UPROPERTY()
+	class UCombatScoreWidget* CombatScoreWidget;
+
+	/// <summary>
+	/// Widget used on the Overlay to show the Character's Inventory
+	/// </summary>
+	UPROPERTY()
+	class UCharacterInventoryWidget* InventoryWidget;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CharacterNameText;
@@ -161,22 +173,22 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UChatBoxWidget* ChatBox;
 
-	/*UPROPERTY(meta = (BindWidget))
-	class UCharacterItemPanelWidget* CharacterItemPanel;*/
-
 public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetInventoryWidgetClass() const { return InventoryWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetLocalMessageWidgetClass() const { return LocalMessageWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetPublicMessageWidgetClass() const { return PublicMessageWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
-	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }
-	FORCEINLINE void SetSpellMapWidget(USpellMapWidget* Map) { SpellMapWidget = Map; }
-	FORCEINLINE UCombatScoreWidget* GetCombatScoreWidget() const { return CombatScoreWidget; }
-	FORCEINLINE void SetCombatScoreWidget(UCombatScoreWidget* CombatWidget) { CombatScoreWidget = CombatWidget; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatMenuWidgetClass() const { return CombatMenuWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepWidgetClass() const { return CurrentStepWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepResultWidgetClass() const { return CurrentStepResultWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatScoreWidgetClass() const { return CombatScoreWidgetClass; }
+	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }
+	FORCEINLINE void SetSpellMapWidget(USpellMapWidget* Map) { SpellMapWidget = Map; }
+	FORCEINLINE UCombatScoreWidget* GetCombatScoreWidget() const { return CombatScoreWidget; }
+	FORCEINLINE void SetCombatScoreWidget(UCombatScoreWidget* CombatWidget) { CombatScoreWidget = CombatWidget; }
+	FORCEINLINE UCharacterInventoryWidget* GetInventoryWidget() const { return InventoryWidget; }
+	FORCEINLINE void SetInventoryWidget(UCharacterInventoryWidget* Inventory) { InventoryWidget = Inventory; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
 	FORCEINLINE UButton* GetInventoryButton() const { return InventoryButton; }
@@ -217,5 +229,4 @@ public:
 	FORCEINLINE UVerticalBox* GetLeftSideBox() const { return LeftSideBox; }
 	FORCEINLINE UVerticalBox* GetRightSideBox() const { return RightSideBox; }
 	FORCEINLINE UChatBoxWidget* GetChatBox() const { return ChatBox; }
-	//FORCEINLINE UCharacterItemPanelWidget* GetCharacterItemPanel() const { return CharacterItemPanel; }
 };

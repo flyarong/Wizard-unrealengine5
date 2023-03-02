@@ -46,6 +46,20 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerUseItem(const FItemDataTable& Item);
 
+	/// <summary>
+	/// Function to Play an AnimMontage
+	/// on the Character
+	/// </summary>
+	/// <param name="Montage">Montage to play</param>
+	/// <param name="Section">Section to jump to</param>
+	void PlayMontage(UAnimMontage* Montage, FName Section);
+
+	/// <summary>
+	/// Function to play a SoundCue
+	/// </summary>
+	/// <param name="Sound">Sound to play</param>
+	void PlaySound(class USoundCue* Sound);
+
 private:
 
 	/// <summary>
@@ -115,13 +129,40 @@ private:
 	class UCharacterPOIComponent* POI;
 #pragma endregion
 
+#pragma region Animation Montages
+	UPROPERTY(EditAnywhere, Category = "Animation Montages")
+	class UAnimMontage* InteractMontage;
+
+	/// <summary>
+	/// Multicast RPC to play the Interact Animation Montage
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayInteractMontage(FName Section);
+#pragma endregion
+
 #pragma region Items
 	/// <summary>
 	/// Replicated array used to control
 	/// the Character's Items from the server
 	/// </summary>
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_Items)
 	TArray<FItemDataTable> Items;
+
+	UFUNCTION()
+	void OnRep_Items();
+
+	/// <summary>
+	/// Function to update the Character's Inventory
+	/// </summary>
+	void UpdateInventory();
+#pragma endregion
+
+#pragma region Sounds
+	UPROPERTY(EditAnywhere, Category = "Item Sounds")
+	class USoundCue* OpenInventorySound;
+
+	UPROPERTY(EditAnywhere, Category = "Item Sounds")
+	USoundCue* UseSound;
 #pragma endregion
 
 	UPROPERTY()
@@ -133,7 +174,10 @@ public:
 	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
 	FORCEINLINE UCharacterPOIComponent* GetPOI() const { return POI; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
+	FORCEINLINE TArray<FItemDataTable> GetItems() const { return Items; }
 	FORCEINLINE bool GetIsInCombat() const { return bIsInCombat; }
 	FORCEINLINE void SetIsInCombat(bool bInCombat) { bIsInCombat = bInCombat; }
+	FORCEINLINE void PlayUseSound() { PlaySound(UseSound); }
+	FORCEINLINE void PlayOpenInventorySound() { PlaySound(OpenInventorySound); }
 };
 

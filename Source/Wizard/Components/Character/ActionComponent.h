@@ -165,6 +165,18 @@ private:
 	/// browsed store's catalog
 	/// </summary>
 	void ShowStoreCatalog();
+
+	UPROPERTY(EditAnywhere, Category = "Store Sounds")
+	class USoundCue* SuccessfulPurchaseSound;
+
+	UPROPERTY(EditAnywhere, Category = "Store Sounds")
+	USoundCue* FailedPurchaseSound;
+
+	/// <summary>
+	/// Client RPC to play a SoundCue
+	/// </summary>
+	UFUNCTION(Client, Reliable)
+	void ClientPlaySound(USoundCue* Sound);
 #pragma endregion
 
 #pragma region Messaging

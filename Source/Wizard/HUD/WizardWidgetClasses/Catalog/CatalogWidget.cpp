@@ -14,21 +14,24 @@
 bool UCatalogWidget::CreateCatalog(AStore* Store)
 {
 	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetOwningPlayer());
-	if (PlayerController) {
+	if (PlayerController && Store->GetStoreCatalog().Num() > 0) {
 		PlayerController->SetInputContext(EInputContext::EIC_None);
-		AddToViewport();
-		bIsFocusable = true;
 
-		if (Store->GetStoreCatalog().Num() > 0 && ItemPanel && ExitButton && CatalogItemWidgetClass) {
+		if (ItemPanel && ExitButton && CatalogItemWidgetClass) {
 			ExitButton->OnClicked.AddDynamic(this, &UCatalogWidget::CloseCatalog);
 
 			int32 Column = 0;
+			int32 Row = 0;
 			for (auto& Item : Store->GetStoreCatalog()) {
 				UCatalogItemWidget* CatalogItem = CreateWidget<UCatalogItemWidget>(PlayerController, CatalogItemWidgetClass);
 				if (CatalogItem) {
 					CatalogItem->CreateItem(Item);
-					ItemPanel->AddChildToUniformGrid(CatalogItem, 0, Column);
+					ItemPanel->AddChildToUniformGrid(CatalogItem, Row, Column);
 					Column++;
+					if (Column == NumOfItemsPerRow) {
+						Row++;
+						Column = 0;
+					}
 				}
 			}
 

@@ -21,17 +21,11 @@ public:
 	/// <summary>
 	/// Function to create the Character Item widget
 	/// </summary>
-	void CreateItem(class AWizardCharacter* Owner, int32 Index, FItemDataTable ItemElement);
+	/// <param name="ItemElement">Item to create the Character Item from</param>
+	/// <param name="Count">Count of this particular Item</param>
+	void CreateItem(const FItemDataTable& ItemElement, int32 Count);
 
 private:
-
-	/// <summary>
-	/// Item's owner
-	/// </summary>
-	AWizardCharacter* WCharacter;
-
-	UPROPERTY()
-	int32 ItemIndex;
 
 	/// <summary>
 	/// Item this widget is based on
@@ -39,12 +33,28 @@ private:
 	UPROPERTY()
 	FItemDataTable Item;
 
+	/// <summary>
+	/// Count of this particular Item
+	/// </summary>
+	UPROPERTY()
+	int32 ItemCount = 0;
+
 	UPROPERTY(meta = (BindWidget))
 	class UButton* ItemButton;
+
+	UFUNCTION()
+	void OnItemButtonClicked();
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ItemImage;
 
-	UFUNCTION()
-	void OnItemButtonClicked();
+	UPROPERTY(meta = (BindWidget))
+	UImage* BoostImage;
+
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* BoostAmountText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* QuantityText;
+
 };

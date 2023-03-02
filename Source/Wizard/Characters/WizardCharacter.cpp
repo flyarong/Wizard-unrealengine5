@@ -20,6 +20,8 @@
 #include "Wizard/Components/Character/CombatComponent.h"
 #include "Wizard/Components/MiniMap/CharacterPOIComponent.h"
 #include "Wizard/WizardTypes/BoostTypes.h"
+#include "Wizard/Characters/WizardAnimInstance.h"
+#include "Sound/SoundCue.h"
 
 AWizardCharacter::AWizardCharacter()
 {
@@ -170,20 +172,34 @@ void AWizardCharacter::AddNewItem(const FItemDataTable& ItemRow)
 {
 	Items.Add(ItemRow);
 	Attribute->SpendXP(ItemRow.Cost);
+	UpdateInventory();
+}
+
+void AWizardCharacter::OnRep_Items()
+{
+	UpdateInventory();
+}
+
+void AWizardCharacter::UpdateInventory()
+{
+	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
+	if (PlayerController) {
+		PlayerController->UpdateHUDCharacterInventory(Items);
+	}
 }
 
 void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 {
 	if (!Items.Contains(Item)) return;
 
-	switch (Item.BoostType) // TODO change to attribute type - no need for boost type
+	switch (Item.BoostType)
 	{
 	case EBoost::EB_Health:
 		break;
 	case EBoost::EB_Defense:
 		break;
 	case EBoost::EB_Power:
-		Items.Remove(Item);
+		Items.RemoveSingle(Item);
 		Attribute->AddPower(Item.BoostAmount);
 		break;
 	case EBoost::EB_Wisdom:
@@ -197,5 +213,33 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 	default:
 		break;
 	}
+
+	MulticastPlayInteractMontage(FName("Use"));
+	UpdateInventory();
 }
 #pragma endregion
+
+void AWizardCharacter::MulticastPlayInteractMontage_Implementation(FName Section)
+{
+	PlayMontage(InteractMontage, Section);
+}
+
+void AWizardCharacter::PlayMontage(UAnimMontage* Montage, FName Section)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance) {
+		AnimInstance->Montage_Play(Montage);
+		AnimInstance->Montage_JumpToSection(Section);
+	}
+}
+
+void AWizardCharacter::PlaySound(USoundCue* Sound)
+{
+	if (Sound) {
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			Sound,
+			GetActorLocation()
+		);
+	}
+}
