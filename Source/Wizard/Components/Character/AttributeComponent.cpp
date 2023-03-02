@@ -108,6 +108,14 @@ void UAttributeComponent::SpendXP(int32 Cost)
 	}
 }
 
+void UAttributeComponent::AddXP(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		XP += AmountToAdd;
+		UpdateHUDXP();
+	}
+}
+
 void UAttributeComponent::OnRep_XP()
 {
 	UpdateHUDXP();

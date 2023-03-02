@@ -42,6 +42,12 @@ public:
 	void SpendXP(int32 Cost);
 
 	/// <summary>
+	/// Function to add more XP
+	/// </summary>
+	/// <param name="AmountToAdd">Amount of XP to add</param>
+	void AddXP(int32 AmountToAdd);
+
+	/// <summary>
 	/// Function to add more GoodSpell
 	/// </summary>
 	/// <param name="GoodSpellAmount">Amount to add</param>
