@@ -76,6 +76,11 @@ void AStore::CreateCatalog()
 			AddItemToCatalog();
 		}
 	}
+	else {
+		for (int32 i = 0; i < Products.Num(); i++) {
+			AddItemToCatalog();
+		}
+	}
 }
 
 void AStore::AddItemToCatalog()
