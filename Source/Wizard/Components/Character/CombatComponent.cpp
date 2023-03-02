@@ -216,7 +216,7 @@ void UCombatComponent::CalculateCombatResult()
 		CombatTarget->Destroy();
 	}
 	else { // Failure
-		CombatTarget->DamageActor(Result);
+		CombatTarget->ReceiveDamage(Result);
 		MulticastCombatFail();
 	}
 }

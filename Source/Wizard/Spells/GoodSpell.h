@@ -16,6 +16,6 @@ class WIZARD_API AGoodSpell : public ASpell
 	
 public:
 	AGoodSpell();
-	virtual void DamageActor(int32 Damage) override;
+	virtual void ReceiveDamage(int32 Damage) override;
 
 };

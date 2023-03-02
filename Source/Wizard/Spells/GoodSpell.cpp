@@ -9,7 +9,7 @@ AGoodSpell::AGoodSpell()
 	Health = 2;
 }
 
-void AGoodSpell::DamageActor(int32 Damage)
+void AGoodSpell::ReceiveDamage(int32 Damage)
 {
 	// No Damage to GoodSpell after Combat failed
 }
