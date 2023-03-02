@@ -5,7 +5,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 
-void ULocalMessageWidget::AddLocalMessage(UVerticalBox* EventBox, FText Message, EAttribute AttributeType)
+void ULocalMessageWidget::AddLocalMessage(UVerticalBox* EventBox, const FText& Message, EAttribute AttributeType)
 {
 	if (MessageText && MessageImage) {
 		MessageText->SetText(Message);
@@ -30,6 +30,7 @@ void ULocalMessageWidget::AddLocalMessage(UVerticalBox* EventBox, FText Message,
 		case EAttribute::EA_Agility:
 			break;
 		case EAttribute::EA_MAX:
+			MessageImage->SetRenderOpacity(0.f);
 			break;
 		default:
 			break;

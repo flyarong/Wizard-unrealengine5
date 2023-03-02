@@ -17,7 +17,7 @@ class WIZARD_API ULocalMessageWidget : public UBaseMessageWidget
 	
 public:
 
-	void AddLocalMessage(class UVerticalBox* EventBox, class FText MessageText, EAttribute AttributeType);
+	void AddLocalMessage(class UVerticalBox* EventBox, const class FText& Message, EAttribute AttributeType);
 
 private:
 
