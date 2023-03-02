@@ -114,12 +114,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat Sounds")
 	USoundCue* HitSound;
-
-	/// <summary>
-	/// Function to play a SoundCue
-	/// </summary>
-	/// <param name="Sound">Sound to play</param>
-	void PlaySound(USoundCue* Sound);
 #pragma endregion
 
 #pragma region Niagara

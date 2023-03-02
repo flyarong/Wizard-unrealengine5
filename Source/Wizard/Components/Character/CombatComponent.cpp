@@ -84,7 +84,7 @@ void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardCombatActor* 
 
 void UCombatComponent::ClientNotEnoughPowerMessage_Implementation()
 {
-	PlaySound(CastFailSound);
+	Character->PlaySound(CastFailSound);
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
 		WController->AddHUDLocalMessage(FString(TEXT("You don't have enough")), EAttribute::EA_Power);
@@ -158,7 +158,6 @@ void UCombatComponent::Reset()
 void UCombatComponent::StartCombat()
 {
 	if (Character) {
-		Character->SetIsInCombat(true);
 		MulticastStartCombat();
 		FTimerHandle StartCombatTimer;
 		GetWorld()->GetTimerManager().SetTimer(
@@ -331,34 +330,35 @@ void UCombatComponent::MulticastResetSpellBar_Implementation()
 
 void UCombatComponent::MulticastStartCombat_Implementation()
 {
+	Character->SetIsInCombat(true);
 	PlayCombatMontage(FName("Start"));
-	PlaySound(StartSound);
+	Character->PlaySound(StartSound);
 	PlayNiagaraEffect(CastEffect);
 }
 
 void UCombatComponent::MulticastStepSuccess_Implementation()
 {
-	PlaySound(CastSound);
+	Character->PlaySound(CastSound);
 }
 
 void UCombatComponent::MulticastStepFail_Implementation()
 {
-	PlaySound(CastFailSound);
+	Character->PlaySound(CastFailSound);
 }
 
 void UCombatComponent::MulticastCombatSuccess_Implementation()
 {
-	PlaySound(SuccessSound);
+	Character->PlaySound(SuccessSound);
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
 	PlayCombatMontage(FName("Success"));
-	PlaySound(HitSound);
+	Character->PlaySound(HitSound);
 	PlayNiagaraEffect(HitEffect);
 	Character->SetIsInCombat(false);
 }
 
 void UCombatComponent::MulticastCombatFail_Implementation()
 {
-	PlaySound(FailSound);
+	Character->PlaySound(FailSound);
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
 	PlayCombatMontage(FName("Fail"));
 	Character->SetIsInCombat(false);
@@ -366,22 +366,7 @@ void UCombatComponent::MulticastCombatFail_Implementation()
 
 void UCombatComponent::PlayCombatMontage(FName Section)
 {
-	UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
-	if (AnimInstance) {
-		AnimInstance->Montage_Play(CombatMontage);
-		AnimInstance->Montage_JumpToSection(Section);
-	}
-}
-
-void UCombatComponent::PlaySound(USoundCue* Sound)
-{
-	if (Sound) {
-		UGameplayStatics::PlaySoundAtLocation(
-			this,
-			Sound,
-			Character->GetActorLocation()
-		);
-	}
+	Character->PlayMontage(CombatMontage, Section);
 }
 
 void UCombatComponent::PlayNiagaraEffect(UNiagaraSystem* Effect)
