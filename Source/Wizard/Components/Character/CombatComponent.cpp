@@ -56,9 +56,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME(UCombatComponent, SpellInputs);
 	DOREPLIFETIME(UCombatComponent, SpellIndexes);
-	DOREPLIFETIME(UCombatComponent, CombatAttribute);
 	DOREPLIFETIME(UCombatComponent, CombatTarget);
-	DOREPLIFETIME(UCombatComponent, SuccessRate);
 	DOREPLIFETIME(UCombatComponent, Successes);
 	DOREPLIFETIME(UCombatComponent, Steps);
 	DOREPLIFETIME(UCombatComponent, StepIndex);
@@ -75,9 +73,8 @@ void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardCombatActor* 
 
 		SetSpellIndexes();
 		SetSpellSteps();
-		CombatAttribute = AttributeForCombat;
 		CombatTarget = Target;
-		SuccessRate = CombatAttribute / NumberOfSteps;
+		SuccessRate = static_cast<float>(AttributeForCombat) / NumberOfSteps;
 		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombat();
 	}
 }
@@ -113,10 +110,10 @@ void UCombatComponent::SetSpellSteps()
 	}
 }
 
-void UCombatComponent::OnRep_CombatAttribute()
+void UCombatComponent::OnRep_CombatTarget()
 {
 	if (Character && Character->IsLocallyControlled()) {
-		if (CombatAttribute > 0) {
+		if (CombatTarget) {
 			SetupCombat();
 		}
 		else {
@@ -139,7 +136,6 @@ void UCombatComponent::StopCombat()
 {
 	if (Steps.Num() > 0) Steps = TArray<int32>();
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
-	CombatAttribute = 0.f;
 	CombatTarget = nullptr;
 	SuccessRate = 0.f;
 	

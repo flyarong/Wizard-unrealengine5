@@ -7,7 +7,9 @@
 #include "Components/ActorComponent.h"
 #include "CombatComponent.generated.h"
 
-
+/*
+* Character Component for handling Combat functionality
+*/
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WIZARD_API UCombatComponent : public UActorComponent
 {
@@ -82,8 +84,11 @@ private:
 	/// <summary>
 	/// Target Actor of the Combat
 	/// </summary>
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_CombatTarget)
 	AWizardCombatActor* CombatTarget;
+
+	UFUNCTION()
+	void OnRep_CombatTarget();
 #pragma endregion
 
 #pragma region Animation Montages
@@ -150,19 +155,9 @@ private:
 	FTimerHandle CurrentStepTimer;
 
 	/// <summary>
-	/// The value of the Attribute used
-	/// during Combat
-	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_CombatAttribute)
-	float CombatAttribute = 0.f;
-
-	UFUNCTION()
-	void OnRep_CombatAttribute();
-
-	/// <summary>
 	/// Rate of success for the Character in Combat
 	/// </summary>
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	float SuccessRate = 0.f;
 
 	/// <summary>
