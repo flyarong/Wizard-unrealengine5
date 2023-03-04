@@ -171,6 +171,8 @@ void UCombatComponent::StartCombat()
 
 void UCombatComponent::SetCurrentSpellStep()
 {
+	if (!Character || !CombatTarget) return;
+
 	if (StepIndex < Steps.Num() - 1) { // set Step
 		StepIndex++;
 		AddCurrentStep();
@@ -182,30 +184,25 @@ void UCombatComponent::SetCurrentSpellStep()
 			StepTime
 		);
 	}
-	else { // Combat ends
+	else if (Character->GetAttribute() && Character->GetAction()) { // Combat ends
 		StepIndex = -1;
 		MulticastResetSpellBar();
-		if (CombatTarget && Character->GetAttribute()) Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
+		Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
 		CalculateCombatResult();
-
-		if (Character && Character->GetAction()) {
-			Character->GetAction()->EndCombat();
-		}
+		Character->GetAction()->EndCombat();
 	}
 }
 
 void UCombatComponent::CalculateCombatResult()
 {
 	int32 Result = FMath::FloorToInt32<float>(Successes);
-	if (CombatTarget && Result >= CombatTarget->GetHealth()) { // Success
+	if (Result >= CombatTarget->GetHealth()) { // Success
 		MulticastCombatSuccess();
-		if (Character->GetAttribute()) {
-			if (CombatTarget->IsA(AGoodSpell::StaticClass())) {
-				Character->GetAttribute()->AddGoodSpell(1);
-			}
-			else if (CombatTarget->IsA(ADarkSpell::StaticClass())) {
-				Character->GetAttribute()->AddDarkSpell(1);
-			}
+		if (CombatTarget->IsA(AGoodSpell::StaticClass())) {
+			Character->GetAttribute()->AddGoodSpell(1);
+		}
+		else if (CombatTarget->IsA(ADarkSpell::StaticClass())) {
+			Character->GetAttribute()->AddDarkSpell(1);
 		}
 
 		WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
