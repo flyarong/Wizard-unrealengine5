@@ -132,8 +132,9 @@ void UActionComponent::LeaveStore()
 
 void UActionComponent::ServerBuyItem_Implementation(const FItemDataTable& ItemRow)
 {
-	if (Character && Character->GetAttribute()) {
-		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && CurrentStore) {
+	if (Character && Character->GetAttribute() && !ItemRow.ItemName.IsEmpty() && CurrentStore) {
+		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost)) {
+			Character->GetAttribute()->SpendXP(ItemRow.Cost);
 			Character->AddNewItem(ItemRow);
 			ClientPlaySound(SuccessfulPurchaseSound);
 		}
