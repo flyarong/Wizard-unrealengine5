@@ -1,0 +1,56 @@
+[
+	{
+		"Name": "SpellboundMantle",
+		"ItemName": "Spellbound Mantle",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_08_b.Tex_cloth_08_b'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "ThunderguardLinenCloak",
+		"ItemName": "Thunderguard Linen Cloak",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_08.Tex_cloth_08'",
+		"Cost": 50,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "HatredChainGauntlets",
+		"ItemName": "Hatred Chain Gauntlets",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_08.Tex_spare_parts_08'",
+		"Cost": 55,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "DraughtofHaste",
+		"ItemName": "Draught of Haste",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_reagent_02.Tex_reagent_02'",
+		"Cost": 45,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "VialofDawn",
+		"ItemName": "Vial of Dawn",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_reagent_10.Tex_reagent_10'",
+		"Cost": 35,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "WhistlingWoolDrape",
+		"ItemName": "Whistling Wool Drape",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_06.Tex_cloth_06'",
+		"Cost": 60,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
+		"BoostType": "EB_Agility",
+		"BoostAmount": 1
+	}
+]

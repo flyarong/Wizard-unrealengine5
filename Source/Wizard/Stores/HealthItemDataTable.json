@@ -43,5 +43,14 @@
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
 		"BoostType": "EB_Health",
 		"BoostAmount": 20
+	},
+	{
+		"Name": "PhilterofAwakening",
+		"ItemName": "Philter of Awakening",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_container_03.Tex_container_03'",
+		"Cost": 35,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__33_.Tex_ic__33_'",
+		"BoostType": "EB_Health",
+		"BoostAmount": 15
 	}
 ]

@@ -18,3 +18,4 @@ DECLARE_LOG_CATEGORY_EXTERN(LogWizard, Log, All);
 #define INTELLIGENCE_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/IntelligenceItemDataTable.IntelligenceItemDataTable'")
 #define POWER_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/PowerItemDataTable.PowerItemDataTable'")
 #define WISDOM_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/WisdomItemDataTable.WisdomItemDataTable'")
+#define XP_ITEM_DATA_TABLE_PATH TEXT("/Script/Engine.DataTable'/Game/Wizard/Blueprints/Stores/DataTables/XPItemDataTable.XPItemDataTable'")

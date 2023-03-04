@@ -43,5 +43,14 @@
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
 		"BoostType": "EB_Defense",
 		"BoostAmount": 1
+	},
+	{
+		"Name": "AncientBronzeTunic",
+		"ItemName": "Ancient Bronze Tunic",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_12.Tex_cloth_12'",
+		"Cost": 50,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1
 	}
 ]

@@ -1,0 +1,56 @@
+[
+	{
+		"Name": "CloakoftheScourge",
+		"ItemName": "Cloak of the Scourge",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_03_b.Tex_cloth_03_b'",
+		"Cost": 60,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "OminousGlaive",
+		"ItemName": "Ominous Glaive",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_07.Tex_herbs_07'",
+		"Cost": 55,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "Sunshard",
+		"ItemName": "Sunshard",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_leather_10.Tex_leather_10'",
+		"Cost": 50,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "HowlingCudgel",
+		"ItemName": "Howling Cudgel",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_09_b.Tex_herbs_09_b'",
+		"Cost": 45,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "FirestormParagon",
+		"ItemName": "Firestorm Paragon",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_gemstone_05_b.Tex_gemstone_05_b'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "DragonbreathBaton",
+		"ItemName": "Dragonbreath Baton",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_mushrooms_08_b.Tex_mushrooms_08_b'",
+		"Cost": 65,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1
+	}
+]

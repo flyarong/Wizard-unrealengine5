@@ -7,5 +7,50 @@
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
 		"BoostType": "EB_Offense",
 		"BoostAmount": 1
+	},
+	{
+		"Name": "TwistedAdamantiteCuirass",
+		"ItemName": "Twisted Adamantite Cuirass",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_10_b.Tex_spare_parts_10_b'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "Warcry",
+		"ItemName": "Warcry",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_02_b.Tex_spare_parts_02_b'",
+		"Cost": 45,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "Barrage",
+		"ItemName": "Barrage",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_leather_02.Tex_leather_02'",
+		"Cost": 55,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "FavorofAuras",
+		"ItemName": "Favor of Auras",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_03.Tex_recipes_03'",
+		"Cost": 60,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "WrapsoftheEast",
+		"ItemName": "Wraps of the East",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_ingots_04.Tex_ingots_04'",
+		"Cost": 65,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1
 	}
 ]

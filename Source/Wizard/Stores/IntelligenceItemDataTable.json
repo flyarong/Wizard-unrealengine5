@@ -1,0 +1,56 @@
+[
+	{
+		"Name": "PhilosophersRod",
+		"ItemName": "Philosopher's Rod",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_07_b.Tex_spare_parts_07_b'",
+		"Cost": 35,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "PauschTracer",
+		"ItemName": "Pausch Tracer",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_bone_01_b.Tex_bone_01_b'",
+		"Cost": 45,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "BhabhaBooster",
+		"ItemName": "Bhabha Booster",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_reagent_08.Tex_reagent_08'",
+		"Cost": 60,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "SalamMasker",
+		"ItemName": "Salam Masker",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_container_11_b.Tex_container_11_b'",
+		"Cost": 55,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "CrickRealigner",
+		"ItemName": "Crick Realigner",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_08.Tex_recipes_08'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	},
+	{
+		"Name": "IonicSplitter",
+		"ItemName": "Ionic Splitter",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_stone_11_b.Tex_stone_11_b'",
+		"Cost": 50,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1
+	}
+]

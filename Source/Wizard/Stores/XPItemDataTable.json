@@ -1,0 +1,56 @@
+[
+	{
+		"Name": "CrownBlorsi",
+		"ItemName": "Crown Blorsi",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"Cost": 0,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"BoostType": "EB_XP",
+		"BoostAmount": 5
+	},
+	{
+		"Name": "WhiteGold",
+		"ItemName": "White Gold",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"Cost": 0,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"BoostType": "EB_XP",
+		"BoostAmount": 10
+	},
+	{
+		"Name": "Yfnia",
+		"ItemName": "Yfnia",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"Cost": 0,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"BoostType": "EB_XP",
+		"BoostAmount": 15
+	},
+	{
+		"Name": "DragonGold",
+		"ItemName": "Dragon Gold",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"Cost": 0,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"BoostType": "EB_XP",
+		"BoostAmount": 20
+	},
+	{
+		"Name": "SanguineLari",
+		"ItemName": "Sanguine Lari",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"Cost": 0,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"BoostType": "EB_XP",
+		"BoostAmount": 25
+	},
+	{
+		"Name": "Wroizal",
+		"ItemName": "Wroizal",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"Cost": 0,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__28_.Tex_ic__28_'",
+		"BoostType": "EB_XP",
+		"BoostAmount": 5
+	}
+]

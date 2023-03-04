@@ -4,7 +4,7 @@
 		"ItemName": "Amulet of Grief",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_gemstone_03_b.Tex_gemstone_03_b'",
 		"Cost": 70,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__38_.Tex_ic__38_'",
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
 		"BoostAmount": 25
 	},
@@ -13,7 +13,7 @@
 		"ItemName": "Lizfeldite",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_gemstone_04.Tex_gemstone_04'",
 		"Cost": 50,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__38_.Tex_ic__38_'",
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
 		"BoostAmount": 20
 	},
@@ -22,7 +22,7 @@
 		"ItemName": "Brown Simradorite",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_gemstone_02_b.Tex_gemstone_02_b'",
 		"Cost": 60,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__38_.Tex_ic__38_'",
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
 		"BoostAmount": 15
 	},
@@ -31,7 +31,7 @@
 		"ItemName": "Hagoxene",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_ingots_08.Tex_ingots_08'",
 		"Cost": 30,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__38_.Tex_ic__38_'",
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
 		"BoostAmount": 10
 	},
@@ -40,8 +40,17 @@
 		"ItemName": "Prussian Blue Colougite",
 		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_08_b.Tex_feather_08_b'",
 		"Cost": 25,
-		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__38_.Tex_ic__38_'",
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
 		"BoostAmount": 10
+	},
+	{
+		"Name": "FlaskofPremonition",
+		"ItemName": "Flask of Premonition",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_reagent_01.Tex_reagent_01'",
+		"Cost": 40,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
+		"BoostType": "EB_Power",
+		"BoostAmount": 15
 	}
 ]
