@@ -64,7 +64,7 @@ public:
 	/// Custom GetTypeHash to be able to use this struct
 	/// as key in TMap
 	/// </summary>
-	friend uint32 GetTypeHash(const FItemDataTable& Rhs);
+	friend uint32 GetTypeHash(const FItemDataTable& ItemRow);
 };
 
 UCLASS()
@@ -77,52 +77,58 @@ public:
 	AItem();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void Destroyed() override;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	/// <summary>
-	/// Item's name
-	/// </summary>
-	UPROPERTY()
-	FString ItemName;
+	UFUNCTION()
+	virtual void OnSphereOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
 
 	/// <summary>
-	/// Item's image
+	/// Function to assign an FItemDataTable Row
+	/// to this Item Actor
 	/// </summary>
-	UPROPERTY()
-	UTexture2D* ItemImage;
+	/// <returns>The randomly selected ItemRow</returns>
+	FItemDataTable GetItemRow();
 
 	/// <summary>
-	/// Item's cost
+	/// DataTable object based on this
+	/// Item's Boost type
 	/// </summary>
-	UPROPERTY()
-	int32 Cost;
+	UPROPERTY(EditAnywhere)
+	UDataTable* ItemTableObject;
 
 	/// <summary>
-	/// Skill's image
+	/// FItemDataTable Row based on this Item's
+	/// Boost type
 	/// </summary>
 	UPROPERTY()
-	UTexture2D* BoostImage;
+	FItemDataTable ItemRow;
 
-	/// <summary>
-	/// What skill does it boost
-	/// </summary>
-	UPROPERTY()
-	EBoost BoostType;
+private:
 
-	/// <summary>
-	/// Item's boost amount
-	/// </summary>
-	UPROPERTY()
-	int32 BoostAmount;
+	UPROPERTY(EditAnywhere)
+	class USphereComponent* OverlapSphere;
 
-public:	
-	FORCEINLINE FString GetItemName() const { return ItemName; }
-	FORCEINLINE UTexture2D* GetItemImage() const { return ItemImage; }
-	FORCEINLINE int32 GetCost() const { return Cost; }
-	FORCEINLINE UTexture2D* GetBoostImage() const { return BoostImage; }
-	FORCEINLINE EBoost GetBoostType() const { return BoostType; }
-	FORCEINLINE int32 GetBoostAmount() const { return BoostAmount; }
+	UPROPERTY(EditAnywhere)
+	class USoundCue* PickupSound;
+
+	UPROPERTY(VisibleAnywhere)
+	class UNiagaraComponent* ItemEffectComponent;
+
+	UPROPERTY(EditAnywhere)
+	class UNiagaraSystem* PickupEffect;
+	
+	UFUNCTION()
+	void BindOverlapTimerFinished();
+
 };
