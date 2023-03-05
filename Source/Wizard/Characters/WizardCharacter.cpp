@@ -58,9 +58,9 @@ AWizardCharacter::AWizardCharacter()
 	CombatMesh->SetupAttachment(RootComponent);
 	CombatMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CombatMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
-	CombatMesh->SetRelativeLocation(FVector(-30.f, 115.f, 0.f));
+	CombatMesh->SetRelativeLocation(FVector(-20.f, 115.f, 0.f));
 	CombatMesh->SetRelativeRotation(FRotator(180.f, 40.f, 90.f));
-	CombatMesh->SetRelativeScale3D(FVector(0.03f, 1.5f, 1.f));
+	CombatMesh->SetRelativeScale3D(FVector(.5f, .5f, .5f));
 	Combat->SetIsReplicated(true);
 
 	// Create Point of Interest Component
@@ -171,7 +171,6 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 void AWizardCharacter::AddNewItem(const FItemDataTable& ItemRow)
 {
 	Items.Add(ItemRow);
-	Attribute->SpendXP(ItemRow.Cost);
 	UpdateInventory();
 }
 
@@ -192,6 +191,7 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 {
 	if (!Items.Contains(Item)) return;
 
+	Items.RemoveSingle(Item);
 	switch (Item.BoostType)
 	{
 	case EBoost::EB_Health:
@@ -199,7 +199,6 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 	case EBoost::EB_Defense:
 		break;
 	case EBoost::EB_Power:
-		Items.RemoveSingle(Item);
 		Attribute->AddPower(Item.BoostAmount);
 		break;
 	case EBoost::EB_Wisdom:

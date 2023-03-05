@@ -42,9 +42,15 @@ public:
 	/// Server RPC to use an Item from
 	/// the Character's Items
 	/// </summary>
-	/// <param name="ItemIndex">Item's index the Character wants to use</param>
+	/// <param name="Item">Item DataTable Row the Character wants to use</param>
 	UFUNCTION(Server, Reliable)
 	void ServerUseItem(const FItemDataTable& Item);
+
+	/// <summary>
+	/// Multicast RPC to play the Interact Animation Montage
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayInteractMontage(FName Section);
 
 	/// <summary>
 	/// Function to Play an AnimMontage
@@ -129,15 +135,16 @@ private:
 	class UCharacterPOIComponent* POI;
 #pragma endregion
 
-#pragma region Animation Montages
+#pragma region Animation
 	UPROPERTY(EditAnywhere, Category = "Animation Montages")
 	class UAnimMontage* InteractMontage;
 
 	/// <summary>
-	/// Multicast RPC to play the Interact Animation Montage
+	/// Boolean for whether or not the Character
+	/// is in Combat
 	/// </summary>
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastPlayInteractMontage(FName Section);
+	UPROPERTY()
+	bool bIsInCombat = false;
 #pragma endregion
 
 #pragma region Items
@@ -164,9 +171,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Item Sounds")
 	USoundCue* UseSound;
 #pragma endregion
-
-	UPROPERTY()
-	bool bIsInCombat = false;
 
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
