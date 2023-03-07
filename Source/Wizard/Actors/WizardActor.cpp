@@ -2,7 +2,6 @@
 
 
 #include "WizardActor.h"
-#include "Net/UnrealNetwork.h"
 #include "Components/WidgetComponent.h"
 #include "Components/SphereComponent.h"
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
@@ -49,7 +48,7 @@ void AWizardActor::BeginPlay()
 
 	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
-	if (InteractComponent) InteractComponent->SetVisibility(false);
+	ShowInteractWidget(false);
 
 	POI->SetupPOI(this);
 }
@@ -68,21 +67,9 @@ void AWizardActor::Tick(float DeltaTime)
 	}
 }
 
-void AWizardActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(AWizardActor, bCanInteract);
-}
-
 UTexture2D* AWizardActor::GetIcon()
 {
 	return POI->GetIconImage();
-}
-
-void AWizardActor::SetCanInteract(bool bIsInteractable)
-{
-	bCanInteract = bIsInteractable;
 }
 
 void AWizardActor::ShowInteractWidget(bool bShowInteractWidget)

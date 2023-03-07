@@ -20,16 +20,16 @@ public:
 	/// Function to damage the Actor after Combat
 	/// </summary>
 	virtual void ReceiveDamage(int32 Damage);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	/// <summary>
+	/// Function to set whether or not the
+	/// Actor can be interacted with
+	/// </summary>
+	void SetCanInteract(bool bIsInteractable);
 
 protected:
 	virtual void BeginPlay() override;
-
-	/// <summary>
-	/// Callback function to spawn Item(s)
-	/// after this Actor is destroyed
-	/// </summary>
-	UFUNCTION()
-	void SpawnPickupItem(AActor* DestroyedActor);
 
 	/// <summary>
 	/// Item classes that can be spawned and picked up
@@ -58,7 +58,43 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	int32 Health = 1;
 
+#pragma region Callbacks
+	/// <summary>
+	/// Callback function to spawn Item(s)
+	/// after this Actor is destroyed
+	/// </summary>
+	UFUNCTION()
+	void SpawnPickupItem(AActor* DestroyedActor);
+
+	UFUNCTION()
+	void OnActorBeginOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
+	UFUNCTION()
+	void OnActorEndOverlap(
+		UPrimitiveComponent* OverlappedComp,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex
+	);
+#pragma endregion
+
+	// <summary>
+	/// Boolean for whether the Actor
+	/// can be interacted with or it is already
+	/// being interacted with by another Player
+	/// </summary>
+	UPROPERTY(Replicated)
+	bool bCanInteract = true;
+
 public:
+	FORCEINLINE bool GetCanInteract() const { return bCanInteract; }
 	FORCEINLINE float GetCost() const { return Cost; }
 	FORCEINLINE int32 GetHealth() const { return Health; }
 };

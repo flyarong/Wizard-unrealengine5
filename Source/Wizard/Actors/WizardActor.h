@@ -21,14 +21,7 @@ public:
 	AWizardActor();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual class UTexture2D* GetIcon() override;
-
-	/// <summary>
-	/// Function to set whether or not the
-	/// Actor can be interacted with
-	/// </summary>
-	void SetCanInteract(bool bIsInteractable);
 
 	/// <summary>
 	/// Function to show/hide the Interact Widget
@@ -78,14 +71,4 @@ protected:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Interaction")
 	FString InteractText;
-
-	/// <summary>
-	/// Boolean for whether or not the Actor
-	/// can be interacted with
-	/// </summary>
-	UPROPERTY(Replicated)
-	bool bCanInteract = true;
-
-public:
-	FORCEINLINE bool GetCanInteract() const { return bCanInteract; }
 };
