@@ -46,24 +46,6 @@ private:
 
 #pragma region Callbacks
 	UFUNCTION()
-	void OnSpellBeginOverlap(
-		UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
-
-	UFUNCTION()
-	void OnSpellEndOverlap(
-		UPrimitiveComponent* OverlappedComp,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex
-	);
-
-	UFUNCTION()
 	void OnSpellClicked(
 		UPrimitiveComponent* TouchedComp,
 		FKey ButtonPressed

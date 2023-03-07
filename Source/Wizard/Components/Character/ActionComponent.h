@@ -54,16 +54,16 @@ public:
 	void ServerBuyItem(const FItemDataTable& ItemRow);
 
 	/// <summary>
-	/// Function to set the currently overlapped Spell
+	/// Function to set the currently overlapped Combat Actor
 	/// </summary>
-	/// <param name="Spell">Spell being overlapped</param>
-	void SetOverlappedSpell(class ASpell* Spell);
+	/// <param name="CombatActor">Combat Actor being overlapped</param>
+	void SetOverlappedCombatActor(class AWizardCombatActor* CombatActor);
 
 	/// <summary>
-	/// Function to execute when overlapping with a Spell
+	/// Function to execute when overlapping with a Combat Actor
 	/// ends
 	/// </summary>
-	void LeaveSpell();
+	void LeaveCombatActor();
 	
 	/// <summary>
 	/// Server RPC to initiate Combat against
@@ -189,19 +189,16 @@ private:
 	void ClientAddLocalMessage(const FString& Message, EAttribute AttributeType);
 #pragma endregion
 
-#pragma region Spells
+#pragma region Combat
 	/// <summary>
-	/// Spell the Character is currently overlapping
+	/// Combat Actor the Character is currently overlapping
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_OverlappedSpell)
-	class ASpell* OverlappedSpell;
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappedCombatActor)
+	AWizardCombatActor* OverlappedCombatActor;
 
 	UFUNCTION()
-	void OnRep_OverlappedSpell(ASpell* PreviousSpell);
-#pragma endregion
-
-#pragma region Combat
-	
+	void OnRep_OverlappedCombatActor(AWizardCombatActor* PreviousActor);
+		
 	/// <summary>
 	/// Multicast RPC to make the Character
 	/// face the Target Combat Actor
@@ -209,18 +206,12 @@ private:
 	/// <param name="Target">Actor the Character is in Combat with</param>
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastAimCharacterToTarget(class AWizardActor* Target);
-
-	/// <summary>
-	/// Attribute to use during Combat
-	/// </summary>
-	UPROPERTY(Replicated)
-	int32 CombatAttribute = 0;
 #pragma endregion
 
 public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
 	FORCEINLINE AStore* GetCurrentStore() const { return CurrentStore; }
-	FORCEINLINE ASpell* GetOverlappedSpell() const { return OverlappedSpell; }
+	FORCEINLINE AWizardCombatActor* GetOverlappedCombatActor() const { return OverlappedCombatActor; }
 
 };

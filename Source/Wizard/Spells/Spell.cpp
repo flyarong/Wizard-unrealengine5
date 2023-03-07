@@ -31,11 +31,6 @@ void ASpell::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Setup Events
-	if (HasAuthority()) {
-		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &ASpell::OnSpellBeginOverlap);
-		AreaSphere->OnComponentEndOverlap.AddDynamic(this, &ASpell::OnSpellEndOverlap);
-	}
 	AreaSphere->OnClicked.AddDynamic(this, &ASpell::OnSpellClicked);
 }
 
@@ -46,22 +41,6 @@ void ASpell::Tick(float DeltaTime)
 }
 
 #pragma region Events
-void ASpell::OnSpellBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	if (Character && Character->GetAction()) {
-		Character->GetAction()->SetOverlappedSpell(this);
-	}
-}
-
-void ASpell::OnSpellEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	if (Character && Character->GetAction()) {
-		Character->GetAction()->LeaveSpell();
-	}
-}
-
 void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed)
 {
 	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
@@ -69,7 +48,7 @@ void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
-			Character->GetAction()->GetOverlappedSpell() == this && bCanInteract) {
+			Character->GetAction()->GetOverlappedCombatActor() == this && bCanInteract) {
 			Character->GetAction()->ServerInitSpellCombat();
 		}
 	}

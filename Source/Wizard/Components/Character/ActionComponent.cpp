@@ -12,8 +12,8 @@
 #include "Wizard/Components/Character/CombatComponent.h"
 #include "Wizard/Components/Districts/District.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
-#include "Wizard/Spells/Spell.h"
 #include "Wizard/Actors/WizardActor.h"
+#include "Wizard/Actors/WizardCombatActor.h"
 
 // Sets default values for this component's properties
 UActionComponent::UActionComponent()
@@ -45,8 +45,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
 	DOREPLIFETIME(UActionComponent, bCanBrowse);
 	DOREPLIFETIME(UActionComponent, CurrentStore);
-	DOREPLIFETIME(UActionComponent, OverlappedSpell);
-	DOREPLIFETIME(UActionComponent, CombatAttribute);
+	DOREPLIFETIME(UActionComponent, OverlappedCombatActor);
 }
 
 #pragma region Movement
@@ -161,47 +160,45 @@ void UActionComponent::ClientAddLocalMessage_Implementation(const FString& Messa
 }
 #pragma endregion
 
-#pragma region Spells
-void UActionComponent::SetOverlappedSpell(ASpell* Spell)
+#pragma region Combat
+void UActionComponent::SetOverlappedCombatActor(AWizardCombatActor* CombatActor)
 {
-	if (OverlappedSpell == nullptr) { // can only overlap one Spell at a time
-		OverlappedSpell = Spell;
+	if (OverlappedCombatActor == nullptr) { // can only overlap one Spell at a time
+		OverlappedCombatActor = CombatActor;
 		if (Character && Character->IsLocallyControlled() && 
-			OverlappedSpell && OverlappedSpell->GetCanInteract()) {
-			OverlappedSpell->ShowInteractWidget(true);
+			OverlappedCombatActor && OverlappedCombatActor->GetCanInteract()) {
+			OverlappedCombatActor->ShowInteractWidget(true);
 		}
 	}
 }
 
-void UActionComponent::OnRep_OverlappedSpell(ASpell* PreviousSpell)
+void UActionComponent::OnRep_OverlappedCombatActor(AWizardCombatActor* PreviousActor)
 {
 	if (Character && Character->IsLocallyControlled() &&
-		OverlappedSpell && OverlappedSpell->GetCanInteract()) {
-		OverlappedSpell->ShowInteractWidget(true);
+		OverlappedCombatActor && OverlappedCombatActor->GetCanInteract()) {
+		OverlappedCombatActor->ShowInteractWidget(true);
 	}
-	else if (Character && Character->IsLocallyControlled() && PreviousSpell) {
-		PreviousSpell->ShowInteractWidget(false);
+	else if (Character && Character->IsLocallyControlled() && PreviousActor) {
+		PreviousActor->ShowInteractWidget(false);
 	}
 }
 
-void UActionComponent::LeaveSpell()
+void UActionComponent::LeaveCombatActor()
 {
-	if (Character && Character->IsLocallyControlled() && OverlappedSpell) {
-		OverlappedSpell->ShowInteractWidget(false);
+	if (Character && Character->IsLocallyControlled() && OverlappedCombatActor) {
+		OverlappedCombatActor->ShowInteractWidget(false);
 	}
 	
-	OverlappedSpell = nullptr;
+	OverlappedCombatActor = nullptr;
 }
-#pragma endregion
 
-#pragma region Combat
 void UActionComponent::ServerInitSpellCombat_Implementation()
 {
-	if (OverlappedSpell) OverlappedSpell->SetCanInteract(false);
+	if (OverlappedCombatActor) OverlappedCombatActor->SetCanInteract(false);
 
 	if (Character && Character->GetCombat() && Character->GetAttribute()) {
-		MulticastAimCharacterToTarget(OverlappedSpell);
-		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom(), OverlappedSpell);
+		MulticastAimCharacterToTarget(OverlappedCombatActor);
+		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom(), OverlappedCombatActor);
 	}
 }
 
@@ -211,7 +208,7 @@ void UActionComponent::ServerCancelCombat_Implementation()
 		Character->GetCombat()->StopCombat();
 	}
 
-	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true);
+	if (OverlappedCombatActor) OverlappedCombatActor->SetCanInteract(true);
 }
 
 void UActionComponent::ServerStartCombat_Implementation()
@@ -235,7 +232,7 @@ void UActionComponent::EndCombat()
 		Character->GetCombat()->StopCombat();
 	}
 
-	if (OverlappedSpell) OverlappedSpell->SetCanInteract(true);
+	if (OverlappedCombatActor) OverlappedCombatActor->SetCanInteract(true);
 }
 
 void UActionComponent::MulticastAimCharacterToTarget_Implementation(AWizardActor* Target)
