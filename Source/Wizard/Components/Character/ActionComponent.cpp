@@ -12,8 +12,8 @@
 #include "Wizard/Components/Character/CombatComponent.h"
 #include "Wizard/Components/Districts/District.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
-#include "Wizard/Actors/WizardActor.h"
-#include "Wizard/Actors/WizardCombatActor.h"
+#include "Wizard/Interfaces/WizardActor.h"
+#include "Wizard/Interfaces/WizardCombatActor.h"
 
 // Sets default values for this component's properties
 UActionComponent::UActionComponent()
@@ -44,8 +44,7 @@ void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME(UActionComponent, CurrentDistrict);
 	DOREPLIFETIME(UActionComponent, bCanBrowse);
-	DOREPLIFETIME(UActionComponent, CurrentStore);
-	DOREPLIFETIME(UActionComponent, OverlappedCombatActor);
+	DOREPLIFETIME(UActionComponent, OverlappedWizardActor);
 }
 
 #pragma region Movement
@@ -71,27 +70,40 @@ void UActionComponent::UpdateHUDCurrentDistrict()
 }
 #pragma endregion
 
-#pragma region Buying
-void UActionComponent::SetCurrentStore(AStore* Store)
+#pragma region Interaction
+void UActionComponent::SetCurrentWizardActor(const TScriptInterface<IWizardActor>& WizardActor)
 {
-	if (CurrentStore == nullptr) { // can only overlap one Store at a time
-		CurrentStore = Store;
-		if (Character && Character->IsLocallyControlled() && CurrentStore) {
-			CurrentStore->ShowInteractWidget(true);
+	if (OverlappedWizardActor == nullptr) { // can only overlap one WizardActor at a time
+		OverlappedWizardActor = WizardActor;
+		if (Character && Character->IsLocallyControlled() && OverlappedWizardActor && 
+			OverlappedWizardActor->GetCanInteract()) {
+			OverlappedWizardActor->ShowInteractWidget(true);
 		}
 	}
 }
 
-void UActionComponent::OnRep_CurrentStore(AStore* PreviousStore)
+void UActionComponent::OnRep_OverlappedWizardActor(const TScriptInterface<IWizardActor>& PreviousWizardActor)
 {
-	if (Character && Character->IsLocallyControlled() && CurrentStore) {
-		CurrentStore->ShowInteractWidget(true);
-	}
-	else if (PreviousStore) {
-		PreviousStore->ShowInteractWidget(false);
+	if (Character && Character->IsLocallyControlled()) {
+		if (OverlappedWizardActor && OverlappedWizardActor->GetCanInteract()) {
+			OverlappedWizardActor->ShowInteractWidget(true);
+		}
+		else if (PreviousWizardActor) {
+			PreviousWizardActor->ShowInteractWidget(false);
+		}
 	}
 }
 
+void UActionComponent::LeaveWizardActor()
+{
+	if (Character && Character->IsLocallyControlled() && OverlappedWizardActor) {
+		OverlappedWizardActor->ShowInteractWidget(false);
+	}
+	OverlappedWizardActor = nullptr;
+}
+#pragma endregion
+
+#pragma region Buying
 void UActionComponent::OpenCatalog()
 {
 	bCanBrowse = true;
@@ -106,7 +118,8 @@ void UActionComponent::OnRep_CanBrowse()
 
 void UActionComponent::ShowStoreCatalog()
 {
-	if (bCanBrowse) {
+	if (bCanBrowse && OverlappedWizardActor) {
+		AStore* CurrentStore = Cast<AStore>(OverlappedWizardActor.GetObject());
 		Controller = (Controller == nullptr && Character) ? Cast<AWizardPlayerController>(Character->Controller) : Controller;
 		if (Controller && CurrentStore) {
 			Controller->SetHUDStoreCatalog(CurrentStore);
@@ -119,19 +132,9 @@ void UActionComponent::CloseCatalog()
 	bCanBrowse = false;
 }
 
-void UActionComponent::LeaveStore()
-{
-	if (Character && Character->IsLocallyControlled() && CurrentStore) {
-		CurrentStore->ShowInteractWidget(false);
-	}
-
-	bCanBrowse = false;
-	CurrentStore = nullptr;
-}
-
 void UActionComponent::ServerBuyItem_Implementation(const FItemDataTable& ItemRow)
 {
-	if (Character && Character->GetAttribute() && !ItemRow.ItemName.IsEmpty() && CurrentStore) {
+	if (Character && Character->GetAttribute() && !ItemRow.ItemName.IsEmpty() && OverlappedWizardActor) {
 		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost)) {
 			Character->GetAttribute()->SpendXP(ItemRow.Cost);
 			Character->AddNewItem(ItemRow);
@@ -161,44 +164,15 @@ void UActionComponent::ClientAddLocalMessage_Implementation(const FString& Messa
 #pragma endregion
 
 #pragma region Combat
-void UActionComponent::SetOverlappedCombatActor(AWizardCombatActor* CombatActor)
+void UActionComponent::ServerInitCombat_Implementation()
 {
-	if (OverlappedCombatActor == nullptr) { // can only overlap one Spell at a time
-		OverlappedCombatActor = CombatActor;
-		if (Character && Character->IsLocallyControlled() && 
-			OverlappedCombatActor && OverlappedCombatActor->GetCanInteract()) {
-			OverlappedCombatActor->ShowInteractWidget(true);
+	if (Character && Character->GetCombat() && OverlappedWizardActor) {
+		AActor* CombatTargetActor = Cast<AActor>(OverlappedWizardActor.GetObject());
+		if (CombatTargetActor) {
+			OverlappedWizardActor->SetCanInteract(false);
+			MulticastAimCharacterToTarget(CombatTargetActor);
+			Character->GetCombat()->InitCombat(CombatTargetActor);
 		}
-	}
-}
-
-void UActionComponent::OnRep_OverlappedCombatActor(AWizardCombatActor* PreviousActor)
-{
-	if (Character && Character->IsLocallyControlled() &&
-		OverlappedCombatActor && OverlappedCombatActor->GetCanInteract()) {
-		OverlappedCombatActor->ShowInteractWidget(true);
-	}
-	else if (Character && Character->IsLocallyControlled() && PreviousActor) {
-		PreviousActor->ShowInteractWidget(false);
-	}
-}
-
-void UActionComponent::LeaveCombatActor()
-{
-	if (Character && Character->IsLocallyControlled() && OverlappedCombatActor) {
-		OverlappedCombatActor->ShowInteractWidget(false);
-	}
-	
-	OverlappedCombatActor = nullptr;
-}
-
-void UActionComponent::ServerInitSpellCombat_Implementation()
-{
-	if (OverlappedCombatActor) OverlappedCombatActor->SetCanInteract(false);
-
-	if (Character && Character->GetCombat() && Character->GetAttribute()) {
-		MulticastAimCharacterToTarget(OverlappedCombatActor);
-		Character->GetCombat()->InitCombat(Character->GetAttribute()->GetWisdom(), OverlappedCombatActor);
 	}
 }
 
@@ -208,7 +182,7 @@ void UActionComponent::ServerCancelCombat_Implementation()
 		Character->GetCombat()->StopCombat();
 	}
 
-	if (OverlappedCombatActor) OverlappedCombatActor->SetCanInteract(true);
+	if (OverlappedWizardActor) OverlappedWizardActor->SetCanInteract(true);
 }
 
 void UActionComponent::ServerStartCombat_Implementation()
@@ -232,10 +206,10 @@ void UActionComponent::EndCombat()
 		Character->GetCombat()->StopCombat();
 	}
 
-	if (OverlappedCombatActor) OverlappedCombatActor->SetCanInteract(true);
+	if (OverlappedWizardActor) OverlappedWizardActor->SetCanInteract(true);
 }
 
-void UActionComponent::MulticastAimCharacterToTarget_Implementation(AWizardActor* Target)
+void UActionComponent::MulticastAimCharacterToTarget_Implementation(AActor* Target)
 {
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation());
 	Character->K2_SetActorRotation(FRotator(Character->GetActorRotation().Pitch, LookAtRotation.Yaw, Character->GetActorRotation().Roll), false);

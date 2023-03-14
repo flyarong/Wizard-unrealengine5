@@ -22,10 +22,16 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
-	/// Function to set the Store the
-	/// Player is currently at
+	/// Function to set the WizardActor the
+	/// Player is currently interacting with
 	/// </summary>
-	void SetCurrentStore(AStore* Store);
+	void SetCurrentWizardActor(const TScriptInterface<class IWizardActor>& WizardActor);
+	
+	/// <summary>
+	/// Function to leave the currently interacted
+	/// WizardActor
+	/// </summary>
+	void LeaveWizardActor();
 
 	/// <summary>
 	/// Function to open the current store's
@@ -40,37 +46,19 @@ public:
 	void CloseCatalog();
 
 	/// <summary>
-	/// Function to leave the currently visited
-	/// store
-	/// </summary>
-	void LeaveStore();
-
-	/// <summary>
 	/// Function to buy an item from
 	/// the current store's catalog
 	/// </summary>
 	/// <param name="ItemRow">Item to buy</param>
 	UFUNCTION(Server, Reliable)
 	void ServerBuyItem(const FItemDataTable& ItemRow);
-
-	/// <summary>
-	/// Function to set the currently overlapped Combat Actor
-	/// </summary>
-	/// <param name="CombatActor">Combat Actor being overlapped</param>
-	void SetOverlappedCombatActor(class AWizardCombatActor* CombatActor);
-
-	/// <summary>
-	/// Function to execute when overlapping with a Combat Actor
-	/// ends
-	/// </summary>
-	void LeaveCombatActor();
 	
 	/// <summary>
 	/// Server RPC to initiate Combat against
-	/// a Spell
+	/// a WizardCombatActor
 	/// </summary>
 	UFUNCTION(Server, Reliable)
-	void ServerInitSpellCombat();
+	void ServerInitCombat();
 
 	/// <summary>
 	/// Server RPC to cancel the Combat
@@ -139,17 +127,18 @@ private:
 	void UpdateHUDCurrentDistrict();
 #pragma endregion
 
-#pragma region Buying
+#pragma region Interaction
 	/// <summary>
-	/// Store the player is currently
-	/// browsing
+	/// Actor the Character can interact with
 	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_CurrentStore)
-	class AStore* CurrentStore;
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappedWizardActor)
+	TScriptInterface<class IWizardActor> OverlappedWizardActor;
 
 	UFUNCTION()
-	void OnRep_CurrentStore(AStore* PreviousStore);
+	void OnRep_OverlappedWizardActor(const TScriptInterface<IWizardActor>& PreviousWizardActor);
+#pragma endregion
 
+#pragma region Buying
 	/// <summary>
 	/// Whether the player can browse the
 	/// store's catalog or not
@@ -189,29 +178,18 @@ private:
 	void ClientAddLocalMessage(const FString& Message, EAttribute AttributeType);
 #pragma endregion
 
-#pragma region Combat
-	/// <summary>
-	/// Combat Actor the Character is currently overlapping
-	/// </summary>
-	UPROPERTY(ReplicatedUsing = OnRep_OverlappedCombatActor)
-	AWizardCombatActor* OverlappedCombatActor;
-
-	UFUNCTION()
-	void OnRep_OverlappedCombatActor(AWizardCombatActor* PreviousActor);
-		
+#pragma region Combat		
 	/// <summary>
 	/// Multicast RPC to make the Character
 	/// face the Target Combat Actor
 	/// </summary>
 	/// <param name="Target">Actor the Character is in Combat with</param>
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastAimCharacterToTarget(class AWizardActor* Target);
+	void MulticastAimCharacterToTarget(class AActor* Target);
 #pragma endregion
 
 public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
-	FORCEINLINE AStore* GetCurrentStore() const { return CurrentStore; }
-	FORCEINLINE AWizardCombatActor* GetOverlappedCombatActor() const { return OverlappedCombatActor; }
-
+	FORCEINLINE const TScriptInterface<IWizardActor>& GetOverlappedWizardActor() const { return OverlappedWizardActor; }
 };

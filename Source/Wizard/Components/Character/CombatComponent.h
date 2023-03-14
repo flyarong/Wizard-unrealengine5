@@ -25,9 +25,8 @@ public:
 	/// <summary>
 	/// Function to initialize Combat
 	/// </summary>
-	/// <param name="AttributeForCombat">Attribute Value to use during Combat</param>
 	/// <param name="Target">Actor who is the target of the Combat</param>
-	void InitCombat(int32 AttributeForCombat, class AWizardCombatActor* Target);
+	void InitCombat(const TScriptInterface<class IWizardCombatActor>& Target);
 
 	/// <summary>
 	/// Function to Stop the Combat
@@ -85,7 +84,7 @@ private:
 	/// Target Actor of the Combat
 	/// </summary>
 	UPROPERTY(ReplicatedUsing = OnRep_CombatTarget)
-	AWizardCombatActor* CombatTarget;
+	TScriptInterface<class IWizardCombatActor> CombatTarget;
 
 	UFUNCTION()
 	void OnRep_CombatTarget();
@@ -159,6 +158,12 @@ private:
 	/// </summary>
 	UPROPERTY()
 	float SuccessRate = 0.f;
+
+	/// <summary>
+	/// Function to set the SuccessRate
+	/// at the beginning of Combat
+	/// </summary>
+	void SetSuccessRate();
 
 	/// <summary>
 	/// Number of successes achieved by the Character

@@ -3,14 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Wizard/Actors/WizardCombatActor.h"
+#include "Wizard/Interfaces/WizardCombatActor.h"
+#include "Wizard/WizardTypes/CombatTypes.h"
 #include "Spell.generated.h"
 
 /**
 * Spell Actor base class
 */
 UCLASS()
-class WIZARD_API ASpell : public AWizardCombatActor
+class WIZARD_API ASpell : public AActor, public IWizardCombatActor
 {
 	GENERATED_BODY()
 	
@@ -20,6 +21,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void Destroyed() override;
+	virtual class UTexture2D* GetIcon() override;
+	virtual void ShowInteractWidget(bool bShowInteractWidget) override;
+	virtual void SetCanInteract(bool bIsInteractable) override;
+	virtual bool GetCanInteract() override;
+	virtual void ReceiveDamage(int32 Damage) override;
+	virtual float GetCost() override;
+	virtual int32 GetHealth() override;
+	virtual void Kill() override;
+	virtual ECombat GetCombatType() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -27,6 +37,39 @@ protected:
 
 private:
 #pragma region Components
+	/// <summary>
+	/// Actor's Point of Interest component:
+	/// shows the location of the Actor on the MiniMap
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UPointOfInterestComponent* POI;
+
+	/// <summary>
+	/// Combat Component to be able initiate 
+	/// Combat with the Actor
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UWizardCombatActorComponent* Combat;
+
+	/// <summary>
+	/// AreaSphere to interact with the Actor
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class USphereComponent* AreaSphere;
+
+	/// <summary>
+	/// Sphere which defines how close the Actor
+	/// can be approached
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* BorderSphere;
+
+	/// <summary>
+	/// Interact widget component
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UInteractComponent* InteractComponent;
+
 	UPROPERTY(EditAnywhere, Category = "Spell Effects")
 	class USoundCue* SpellSound;
 

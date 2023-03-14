@@ -10,6 +10,8 @@
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Actors/InteractComponent.h"
+#include "Wizard/Components/MiniMap/PointOfInterestComponent.h"
 #include "Wizard/HUD/WizardWidgetClasses/OverheadWidget.h"
 
 // Sets default values
@@ -18,6 +20,22 @@ AStore::AStore()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
+
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+
+	// Creating the Point Of Interest Component
+	POI = CreateDefaultSubobject<UPointOfInterestComponent>(TEXT("PointOfInterest"));
+	POI->SetIsReplicated(true);
+
+	// Create AreaSphere
+	AreaSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AreaSphere"));
+	AreaSphere->SetupAttachment(RootComponent);
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
+	// Create Interact widget
+	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("InteractWidget"));
+	InteractComponent->SetupAttachment(RootComponent);
 
 	// Create Store Mesh and set it as Root
 	StoreMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StoreMesh"));
@@ -34,6 +52,14 @@ void AStore::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+
+	ShowInteractWidget(false);
+
+	POI->SetupPOI(this);
+
 	// Setup Events
 	if (HasAuthority()) {
 		CreateCatalog();
@@ -62,6 +88,20 @@ void AStore::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AStore, Catalog);
+}
+
+void AStore::ShowInteractWidget(bool bShowInteractWidget)
+{
+	if (InteractComponent) {
+		InteractComponent->SetVisibility(bShowInteractWidget);
+	}
+}
+
+UTexture2D* AStore::GetIcon()
+{
+	if (POI) return POI->GetIconImage();
+
+	return nullptr;
 }
 
 #pragma region Catalog
@@ -164,7 +204,7 @@ void AStore::OnStoreBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
-		Character->GetAction()->SetCurrentStore(this);
+		Character->GetAction()->SetCurrentWizardActor(this);
 	}
 }
 
@@ -172,7 +212,7 @@ void AStore::OnStoreEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
-		Character->GetAction()->LeaveStore();
+		Character->GetAction()->LeaveWizardActor();
 	}	
 }
 
@@ -183,7 +223,7 @@ void AStore::OnStoreClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() &&
-			Character->GetAction()->GetCurrentStore() == this) {
+			Character->GetAction()->GetOverlappedWizardActor() == this) {
 			Character->GetAction()->OpenCatalog();
 		}
 	}

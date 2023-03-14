@@ -191,7 +191,7 @@ public:
 	/// <param name="Character">The Character</param>
 	/// <param name="DefeatedActor">Actor defeated</param>
 	UFUNCTION(Client, Reliable)
-	void ClientAddHUDVictoryPublicMessage(class AWizardCharacter* WCharacter, class AWizardActor* DefeatedActor);
+	void ClientAddHUDVictoryPublicMessage(class AWizardCharacter* WCharacter, const TScriptInterface<class IWizardCombatActor>& DefeatedActor);
 
 	/// <summary>
 	/// Server RPC for sending Chat messages

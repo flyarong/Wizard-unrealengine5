@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="WCharacter">The Character</param>
 	/// <param name="CombatTarget">The Actor defeated in Combat</param>
-	void BroadcastVictory(class AWizardCharacter* WCharacter, class AWizardActor* CombatTarget);
+	void BroadcastVictory(class AWizardCharacter* WCharacter, const TScriptInterface<class IWizardCombatActor>& CombatTarget);
 
 protected:
 	virtual void BeginPlay() override;

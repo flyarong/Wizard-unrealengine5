@@ -9,11 +9,10 @@
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Kismet/KismetMaterialLibrary.h"
-#include "Wizard/Spells/GoodSpell.h"
-#include "Wizard/Spells/DarkSpell.h"
+#include "Wizard/WizardTypes/CombatTypes.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Characters/WizardAnimInstance.h"
-#include "Wizard/Actors/WizardCombatActor.h"
+#include "Wizard/Interfaces/WizardCombatActor.h"
 #include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
@@ -63,7 +62,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, bInitNextStep);
 }
 
-void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardCombatActor* Target)
+void UCombatComponent::InitCombat(const TScriptInterface<IWizardCombatActor>& Target)
 {
 	if (Character && Character->GetAttribute() && Target) {
 		if (Character->GetAttribute()->GetPower() < Target->GetCost()) {
@@ -74,7 +73,8 @@ void UCombatComponent::InitCombat(int32 AttributeForCombat, AWizardCombatActor* 
 		SetSpellIndexes();
 		SetSpellSteps();
 		CombatTarget = Target;
-		SuccessRate = static_cast<float>(AttributeForCombat) / NumberOfSteps;
+		SetSuccessRate();
+
 		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombat();
 	}
 }
@@ -118,6 +118,24 @@ void UCombatComponent::OnRep_CombatTarget()
 		}
 		else {
 			Reset();
+		}
+	}
+}
+
+void UCombatComponent::SetSuccessRate()
+{
+	if (CombatTarget) {
+		switch (CombatTarget->GetCombatType())
+		{
+		case ECombat::EC_GoodSpell:
+			SuccessRate = static_cast<float>(Character->GetAttribute()->GetWisdom()) / NumberOfSteps;
+			break;
+		case ECombat::EC_DarkSpell:
+			SuccessRate = static_cast<float>(Character->GetAttribute()->GetWisdom()) / NumberOfSteps;
+			break;
+		default:
+			SuccessRate = static_cast<float>(Character->GetAttribute()->GetOffense()) / NumberOfSteps;
+			break;
 		}
 	}
 }
@@ -194,10 +212,10 @@ void UCombatComponent::CalculateCombatResult()
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (Result >= CombatTarget->GetHealth()) { // Success
 		MulticastCombatSuccess();
-		if (CombatTarget->IsA(AGoodSpell::StaticClass())) {
+		if (CombatTarget->GetCombatType() == ECombat::EC_GoodSpell) {
 			Character->GetAttribute()->AddGoodSpell(1);
 		}
-		else if (CombatTarget->IsA(ADarkSpell::StaticClass())) {
+		else if (CombatTarget->GetCombatType() == ECombat::EC_DarkSpell) {
 			Character->GetAttribute()->AddDarkSpell(1);
 		}
 
@@ -206,7 +224,7 @@ void UCombatComponent::CalculateCombatResult()
 			WGameMode->BroadcastVictory(Character, CombatTarget);
 		}
 
-		CombatTarget->Destroy();
+		CombatTarget->Kill();
 	}
 	else { // Failure
 		CombatTarget->ReceiveDamage(Result);

@@ -5,7 +5,7 @@
 #include "Wizard/GameInstance/WizardGameInstance.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/Characters/WizardCharacter.h"
-#include "Wizard/Actors/WizardActor.h"
+#include "Wizard/Interfaces/WizardCombatActor.h"
 #include "GameFramework/PlayerState.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
@@ -92,7 +92,7 @@ void AWizardGameMode::BroadcastChatMessage(const FText& Message)
 	}
 }
 
-void AWizardGameMode::BroadcastVictory(AWizardCharacter* WCharacter, AWizardActor* CombatTarget)
+void AWizardGameMode::BroadcastVictory(AWizardCharacter* WCharacter, const TScriptInterface<IWizardCombatActor>& CombatTarget)
 {
 	for (auto& WizardPlayer : WizardPlayers)
 	{

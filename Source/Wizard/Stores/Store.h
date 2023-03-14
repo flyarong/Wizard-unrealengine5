@@ -3,22 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Wizard/Actors/WizardActor.h"
+#include "Wizard/Interfaces/WizardActor.h"
 #include "Wizard/Items/Item.h"
-#include "Wizard/WizardTypes/StoreType.h"
+#include "Wizard/WizardTypes/StoreTypes.h"
 #include "Store.generated.h"
 
 UCLASS()
-class WIZARD_API AStore : public AWizardActor
+class WIZARD_API AStore : public AActor, public IWizardActor
 {
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AStore();
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void ShowInteractWidget(bool bShowInteractWidget) override;
+	virtual class UTexture2D* GetIcon() override;
 
 	/// <summary>
 	/// Function to add a new random
@@ -85,6 +85,25 @@ private:
 	TArray<class UDataTable*> GetProductTables();
 
 #pragma region Components
+	/// <summary>
+	/// Actor's Point of Interest component:
+	/// shows the location of the Actor on the MiniMap
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UPointOfInterestComponent* POI;
+
+	/// <summary>
+	/// AreaSphere to interact with the Actor
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class USphereComponent* AreaSphere;
+
+	/// <summary>
+	/// Interact widget component
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UInteractComponent* InteractComponent;
+
 	/// <summary>
 	/// Mesh of the Store
 	/// </summary>
