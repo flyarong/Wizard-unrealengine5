@@ -22,7 +22,6 @@ void UCharacterItemWidget::CreateItem(const FItemDataTable& ItemElement, int32 C
 
 void UCharacterItemWidget::OnItemButtonClicked()
 {
-	ItemButton->SetIsEnabled(false);
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
 	if (WCharacter) {
 		WCharacter->PlayUseSound();

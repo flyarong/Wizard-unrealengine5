@@ -66,6 +66,11 @@ public:
 	/// <param name="Sound">Sound to play</param>
 	void PlaySound(class USoundCue* Sound);
 
+	/// <summary>
+	/// Function to interrupt the Character's movement
+	/// </summary>
+	void InterruptMovement();
+
 private:
 
 	/// <summary>

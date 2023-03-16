@@ -191,7 +191,6 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 {
 	if (!Items.Contains(Item)) return;
 
-	Items.RemoveSingle(Item);
 	switch (Item.BoostType)
 	{
 	case EBoost::EB_Health:
@@ -199,6 +198,7 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 	case EBoost::EB_Defense:
 		break;
 	case EBoost::EB_Power:
+		if (Attribute->GetPower() >= Attribute->GetMaxPower()) return;
 		Attribute->AddPower(Item.BoostAmount);
 		break;
 	case EBoost::EB_Wisdom:
@@ -213,8 +213,10 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 		break;
 	}
 
-	MulticastPlayInteractMontage(FName("Use"));
+	Items.RemoveSingle(Item);
 	UpdateInventory();
+	InterruptMovement();
+	MulticastPlayInteractMontage(FName("Use"));
 }
 #pragma endregion
 
@@ -240,5 +242,13 @@ void AWizardCharacter::PlaySound(USoundCue* Sound)
 			Sound,
 			GetActorLocation()
 		);
+	}
+}
+
+void AWizardCharacter::InterruptMovement()
+{
+	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
+	if (PlayerController) {
+		PlayerController->InterruptCharacterMovement();
 	}
 }
