@@ -61,6 +61,11 @@ public:
 	/// <param name="ContextType">Type of the Input Context</param>
 	void SetInputContext(EInputContext ContextType);
 
+	/// <summary>
+	/// Function to interrupt the Character's movement
+	/// </summary>
+	void InterruptCharacterMovement();
+
 #pragma region HUD/Player
 	/// <summary>
 	/// Function for setting the current district

@@ -173,6 +173,11 @@ void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 }
 
 #pragma region CharacterMovement
+void AWizardPlayerController::InterruptCharacterMovement()
+{
+	OnInputStarted();
+}
+
 void AWizardPlayerController::OnInputStarted()
 {
 	ServerStopMovement();
