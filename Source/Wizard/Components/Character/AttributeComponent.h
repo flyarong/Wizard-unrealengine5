@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Wizard/WizardTypes/ActionTypes.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "AttributeComponent.generated.h"
 
 /**
@@ -58,6 +59,14 @@ public:
 	/// </summary>
 	/// <param name="DarkSpellAmount">Amount to add</param>
 	void AddDarkSpell(int32 DarkSpellAmount);
+
+	/// <summary>
+	/// Function that gets the value of an
+	/// Attribute based on its Type
+	/// </summary>
+	/// <param name="AttributeType">Type of the Attribute</param>
+	/// <returns>Attribute value</returns>
+	int32 GetAttributeValue(EAttribute AttributeType);
 
 protected:
 	// Called when the game starts

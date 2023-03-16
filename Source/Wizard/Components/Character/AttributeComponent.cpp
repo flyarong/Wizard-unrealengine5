@@ -17,6 +17,41 @@ UAttributeComponent::UAttributeComponent()
 	XP = 20;
 }
 
+int32 UAttributeComponent::GetAttributeValue(EAttribute AttributeType)
+{
+	int32 Value = -1;
+
+	switch (AttributeType)
+	{
+	case EAttribute::EA_Health:
+		Value = Health;
+		break;
+	case EAttribute::EA_Defense:
+		Value = Defense;
+		break;
+	case EAttribute::EA_Power:
+		Value = Power;
+		break;
+	case EAttribute::EA_XP:
+		Value = XP;
+		break;
+	case EAttribute::EA_Wisdom:
+		Value = Wisdom;
+		break;
+	case EAttribute::EA_Intelligence:
+		Value = Intelligence;
+		break;
+	case EAttribute::EA_Offense:
+		Value = Offense;
+		break;
+	case EAttribute::EA_Agility:
+		Value = Agility;
+		break;
+	}
+
+	return Value;
+}
+
 // Called when the game starts
 void UAttributeComponent::BeginPlay()
 {
