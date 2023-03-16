@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "WizardGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -44,6 +45,13 @@ public:
 	/// <param name="WCharacter">The Character</param>
 	/// <param name="CombatTarget">The Actor defeated in Combat</param>
 	void BroadcastVictory(class AWizardCharacter* WCharacter, const TScriptInterface<class IWizardCombatActor>& CombatTarget);
+
+	/// <summary>
+	/// Gets the Character with the lowest Attribute
+	/// </summary>
+	/// <param name="AttributeType">Attribute the min search is based on</param>
+	/// <returns>Character with the lowest type of Attribute</returns>
+	AWizardCharacter* GetCharacterWithLowestAttribute(EAttribute AttributeType);
 
 protected:
 	virtual void BeginPlay() override;

@@ -31,6 +31,14 @@ public:
 	/// </summary>
 	void ReceiveDamage(int32 Damage);
 
+	/// <summary>
+	/// Function that gets the amount of damage to apply to
+	/// a Character based on its Combat Score
+	/// </summary>
+	/// <param name="CharacterScore">Character's Combat Score</param>
+	/// <returns>Damage Amount to apply on the Character</returns>
+	float GetDamage(int32 CharacterScore);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -68,6 +76,19 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	int32 Health = 1;
+
+	/// <summary>
+	/// Actor's Base Damage: used in Character
+	/// Defense Combat
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	int32 BaseDamage = 1;
+
+	/// <summary>
+	/// Actor's Damage Amount per Score
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float DamageAmount = 10.f;
 
 	/// <summary>
 	/// Actor's Combat Type
@@ -116,4 +137,5 @@ public:
 	FORCEINLINE float GetCost() const { return Cost; }
 	FORCEINLINE int32 GetHealth() const { return Health; }
 	FORCEINLINE ECombat GetCombatType() const { return CombatType; }
+	FORCEINLINE int32 GetBaseDamage() const { return BaseDamage; }
 };

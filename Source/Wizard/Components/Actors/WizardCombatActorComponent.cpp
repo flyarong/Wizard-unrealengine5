@@ -74,7 +74,7 @@ void UWizardCombatActorComponent::SpawnPickupItem(AActor* DestroyedActor)
 			int32 Selection = FMath::RandRange(0, PickupClasses.Num() - 1);
 			GetWorld()->SpawnActor<AItem>(
 				PickupClasses[Selection],
-				Owner->GetActorLocation() + FVector(i * 80.f, 0.f, 0.f),
+				Owner->GetActorLocation() + FVector(i * 90.f, 0.f, 0.f),
 				Owner->GetActorRotation()
 				);
 		}
@@ -86,4 +86,9 @@ void UWizardCombatActorComponent::ReceiveDamage(int32 Damage)
 	if (CombatType == ECombat::EC_GoodSpell) return; // No Damage to GoodSpell after Combat failed
 
 	Health -= Damage;
+}
+
+float UWizardCombatActorComponent::GetDamage(int32 CharacterScore)
+{
+	return (BaseDamage - CharacterScore) * DamageAmount;
 }

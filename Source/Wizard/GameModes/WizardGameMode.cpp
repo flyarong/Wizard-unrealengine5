@@ -5,6 +5,7 @@
 #include "Wizard/GameInstance/WizardGameInstance.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Interfaces/WizardCombatActor.h"
 #include "GameFramework/PlayerState.h"
 #include "UObject/ConstructorHelpers.h"
@@ -101,4 +102,34 @@ void AWizardGameMode::BroadcastVictory(AWizardCharacter* WCharacter, const TScri
 			WizardPlayer->ClientAddHUDVictoryPublicMessage(WCharacter, CombatTarget);
 		}
 	}
+}
+
+AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute AttributeType)
+{
+	if (WizardPlayers.Num() > 0 && WizardPlayers[0] && WizardPlayers[0]->GetWizardCharacter() && WizardPlayers[0]->GetWizardCharacter()->GetAttribute()) {
+		int32 LowestValue = WizardPlayers[0]->GetWizardCharacter()->GetAttribute()->GetAttributeValue(AttributeType);
+		int32 AttrValue = -1;
+		TArray<AWizardCharacter*> WCs = TArray<AWizardCharacter*>();
+		WCs.Add(WizardPlayers[0]->GetWizardCharacter());
+		for (int32 i = 1; i < WizardPlayers.Num(); i++) {
+			if (WizardPlayers[i]) {
+				AWizardCharacter* WC = WizardPlayers[i]->GetWizardCharacter();
+				if (WC && WC->GetAttribute()) {
+					AttrValue = WC->GetAttribute()->GetAttributeValue(AttributeType);
+					if (AttrValue <= LowestValue) {
+						LowestValue = AttrValue;
+						if (AttrValue < LowestValue) WCs = TArray<AWizardCharacter*>();
+						WCs.Add(WC);
+					}
+				}
+			}
+		}
+
+		if (WCs.Num() > 0) {
+			int32 CharacterIndex = FMath::RandRange(0, WCs.Num() - 1);
+			return WCs[CharacterIndex];
+		}
+	}
+
+	return nullptr;
 }

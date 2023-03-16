@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Wizard/Interfaces/WizardCombatActor.h"
 #include "Wizard/WizardTypes/CombatTypes.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -21,13 +22,32 @@ public:
 	virtual void SetCanInteract(bool bIsInteractable) override;
 	virtual bool GetCanInteract() override;
 	virtual void ReceiveDamage(int32 Damage) override;
+	virtual float GetDamage(int32 CharacterScore) override;
 	virtual float GetCost() override;
 	virtual int32 GetHealth() override;
 	virtual void Kill() override;
 	virtual ECombat GetCombatType() override;
+	virtual void MoveCombatActor() override;
 
 protected:
 	virtual void BeginPlay() override;
+
+	/// <summary>
+	/// Controller of the Enemy Character
+	/// </summary>
+	class AAIController* EnemyController;
+
+	/// <summary>
+	/// Function to move the Enemy
+	/// </summary>
+	void MoveEnemy();
+
+	/// <summary>
+	/// Function to choose an Attribute for the Enemy to base
+	/// its movement on
+	/// </summary>
+	/// <returns>Character Attribute to focus on</returns>
+	virtual EAttribute GetChosenAttribute();
 
 private:
 #pragma region Components

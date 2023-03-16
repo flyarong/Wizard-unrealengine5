@@ -8,14 +8,15 @@
 #include "Wizard/Components/Actors/WizardCombatActorComponent.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
+#include "AIController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/GameModes/WizardGameMode.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AEnemy::AEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
-
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
 	// Creating the Point Of Interest Component
 	POI = CreateDefaultSubobject<UPointOfInterestComponent>(TEXT("PointOfInterest"));
@@ -39,6 +40,11 @@ AEnemy::AEnemy()
 	// Create Interact widget
 	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("InteractComponent"));
 	InteractComponent->SetupAttachment(RootComponent);
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 }
 
 void AEnemy::BeginPlay()
@@ -94,17 +100,25 @@ bool AEnemy::GetCanInteract()
 void AEnemy::ReceiveDamage(int32 Damage)
 {
 	if (Combat) Combat->ReceiveDamage(Damage);
+	// TODO hit animation & sound
+}
+
+float AEnemy::GetDamage(int32 CharacterScore)
+{
+	if (Combat) return Combat->GetDamage(CharacterScore);
+
+	return 0.0f;
 }
 
 float AEnemy::GetCost()
 {
-	if (Combat) Combat->GetCost();
+	if (Combat) return Combat->GetCost();
 
 	return 0.0f;
 }
 int32 AEnemy::GetHealth()
 {
-	if (Combat) Combat->GetHealth();
+	if (Combat) return Combat->GetHealth();
 
 	return int32();
 }
@@ -120,6 +134,11 @@ ECombat AEnemy::GetCombatType()
 	if (Combat) Combat->GetCombatType();
 
 	return ECombat();
+}
+
+void AEnemy::MoveCombatActor()
+{
+	MoveEnemy();
 }
 #pragma endregion
 
@@ -137,3 +156,27 @@ void AEnemy::OnEnemyClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 	}
 }
 #pragma endregion
+
+void AEnemy::MoveEnemy()
+{
+	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
+	if (WGameMode) {
+		AWizardCharacter* TargetCharacter = WGameMode->GetCharacterWithLowestAttribute(GetChosenAttribute());
+		EnemyController = EnemyController == nullptr ? Cast<AAIController>(Controller) : EnemyController;
+		if (TargetCharacter && EnemyController) {
+			EnemyController->MoveToActor(TargetCharacter);
+		}
+	}
+}
+
+EAttribute AEnemy::GetChosenAttribute()
+{
+	UEnum* AttrEnum = StaticEnum<EAttribute>();
+	if (AttrEnum) {
+		int32 EnumIndex = FMath::RandRange(0, int32(AttrEnum->GetMaxEnumValue() - 1));
+
+		return EAttribute(AttrEnum->GetValueByIndex(EnumIndex));
+	}
+
+	return EAttribute();
+}
