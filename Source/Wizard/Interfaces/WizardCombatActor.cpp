@@ -2,3 +2,12 @@
 
 
 #include "WizardCombatActor.h"
+
+float IWizardCombatActor::GetDamage(int32 CharacterScore)
+{
+	return 0.0f;
+}
+
+void IWizardCombatActor::MoveCombatActor()
+{
+}
