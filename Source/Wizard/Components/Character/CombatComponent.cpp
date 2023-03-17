@@ -60,19 +60,22 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, Steps);
 	DOREPLIFETIME(UCombatComponent, StepIndex);
 	DOREPLIFETIME(UCombatComponent, bInitNextStep);
+	DOREPLIFETIME(UCombatComponent, bIsAttacking);
 }
 
-void UCombatComponent::InitCombat(const TScriptInterface<IWizardCombatActor>& Target)
+void UCombatComponent::InitCombat(const TScriptInterface<IWizardCombatActor>& Target, bool bCharacterAttacking)
 {
 	if (Character && Character->GetAttribute() && Target) {
-		if (Character->GetAttribute()->GetPower() < Target->GetCost()) {
+		if (Character->GetAttribute()->GetPower() < Target->GetCost() && bCharacterAttacking) {
 			ClientNotEnoughPowerMessage();
+			Target->SetCanInteract(true);
 			return;
 		}
 
 		SetSpellIndexes();
 		SetSpellSteps();
 		CombatTarget = Target;
+		bIsAttacking = bCharacterAttacking;
 		SetSuccessRate();
 
 		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombat();
@@ -125,17 +128,14 @@ void UCombatComponent::OnRep_CombatTarget()
 void UCombatComponent::SetSuccessRate()
 {
 	if (CombatTarget) {
-		switch (CombatTarget->GetCombatType())
-		{
-		case ECombat::EC_GoodSpell:
+		if (CombatTarget->GetCombatType() <= ECombat::EC_DarkSpell) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetWisdom()) / NumberOfSteps;
-			break;
-		case ECombat::EC_DarkSpell:
-			SuccessRate = static_cast<float>(Character->GetAttribute()->GetWisdom()) / NumberOfSteps;
-			break;
-		default:
+		}
+		else if (bIsAttacking) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetOffense()) / NumberOfSteps;
-			break;
+		}
+		else {
+			SuccessRate = static_cast<float>(Character->GetAttribute()->GetDefense()) / NumberOfSteps;
 		}
 	}
 }
@@ -201,13 +201,20 @@ void UCombatComponent::SetCurrentSpellStep()
 	else if (Character->GetAttribute() && Character->GetAction()) { // Combat ends
 		StepIndex = -1;
 		MulticastResetSpellBar();
-		Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
-		CalculateCombatResult();
+
+		if (bIsAttacking) {
+			Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
+			CalculateCombatAttackResult();
+		}
+		else {
+			CalculateCombatDefendResult();
+		}
+
 		Character->GetAction()->EndCombat();
 	}
 }
 
-void UCombatComponent::CalculateCombatResult()
+void UCombatComponent::CalculateCombatAttackResult()
 {
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (Result >= CombatTarget->GetHealth()) { // Success
@@ -228,6 +235,21 @@ void UCombatComponent::CalculateCombatResult()
 	}
 	else { // Failure
 		CombatTarget->ReceiveDamage(Result);
+		MulticastCombatFail();
+	}
+}
+
+void UCombatComponent::CalculateCombatDefendResult()
+{
+	int32 Result = FMath::FloorToInt32<float>(Successes);
+	if (Result >= CombatTarget->GetBaseDamage()) { // Success
+		MulticastCombatSuccess(); // TODO change to defend
+		
+		// TODO apply damage on enemy if Spell was used, instead of QTE
+	}
+	else { // Failure
+		float EnemyDamage = CombatTarget->GetDamage(Result);
+		Character->GetAttribute()->ReceiveDamage(EnemyDamage);
 		MulticastCombatFail();
 	}
 }

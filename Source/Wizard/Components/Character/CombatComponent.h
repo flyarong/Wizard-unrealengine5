@@ -26,7 +26,8 @@ public:
 	/// Function to initialize Combat
 	/// </summary>
 	/// <param name="Target">Actor who is the target of the Combat</param>
-	void InitCombat(const TScriptInterface<class IWizardCombatActor>& Target);
+	/// <param name="bCharacterAttacking">Whether or not the Character is attacking or defending</param>
+	void InitCombat(const TScriptInterface<class IWizardCombatActor>& Target, bool bCharacterAttacking = true);
 
 	/// <summary>
 	/// Function to Stop the Combat
@@ -174,6 +175,13 @@ private:
 
 	UFUNCTION()
 	void OnRep_Successes();
+
+	/// <summary>
+	/// Boolean for whether or not the
+	/// Character is attacking or defending
+	/// </summary>
+	UPROPERTY(Replicated)
+	bool bIsAttacking = true;
 
 	/// <summary>
 	/// Function to setup Combat gameplay
@@ -342,9 +350,15 @@ private:
 
 	/// <summary>
 	/// Function to calculate the outcome of
-	/// the Combat once it ends
+	/// the Combat once the Attack ends
 	/// </summary>
-	void CalculateCombatResult();
+	void CalculateCombatAttackResult();
+
+	/// <summary>
+	/// Function to calculate the outcome of
+	/// the Combat once Defending ends
+	/// </summary>
+	void CalculateCombatDefendResult();
 
 	/// <summary>
 	/// Client RPC to trigger a local message
@@ -387,4 +401,7 @@ private:
 	/// </summary>
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastCombatFail();
+
+public:
+	FORCEINLINE float GetIsAttacking() const { return bIsAttacking; }
 };

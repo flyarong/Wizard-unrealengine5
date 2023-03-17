@@ -6,11 +6,20 @@
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Character/CombatComponent.h"
 
 void UCombatMenuWidget::BindEventsToButtons()
 {
-	StartButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnStartButtonClicked);
-	CancelButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnCancelButtonClicked);
+	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
+	if (WCharacter && WCharacter->GetCombat()) {
+		StartButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnStartButtonClicked);
+		if (WCharacter->GetCombat()->GetIsAttacking()) {
+			CancelButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnCancelButtonClicked);
+		}
+		else { // Can't cancel defending
+			CancelButton->RemoveFromParent();
+		}
+	}
 }
 
 void UCombatMenuWidget::OnStartButtonClicked()
