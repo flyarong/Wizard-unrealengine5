@@ -12,6 +12,7 @@
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/GameModes/WizardGameMode.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Perception/PawnSensingComponent.h"
 
 AEnemy::AEnemy()
 {
@@ -41,6 +42,11 @@ AEnemy::AEnemy()
 	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("InteractComponent"));
 	InteractComponent->SetupAttachment(RootComponent);
 
+	// Create Pawn Sensing
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 500.f;
+	PawnSensing->SetPeripheralVisionAngle(45.f);
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -62,12 +68,29 @@ void AEnemy::BeginPlay()
 
 	Combat->SetupComponent(this, AreaSphere);
 	POI->SetupPOI(this);
+
+	if (HasAuthority()) {
+		ChosenAttributeToChase = GetChosenAttribute();
+		if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::OnSeeWizard); // TODO only bind in enemy game state, unbind it otherwise
+	}
 }
 
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+EAttribute AEnemy::GetChosenAttribute()
+{
+	UEnum* AttrEnum = StaticEnum<EAttribute>();
+	if (AttrEnum) {
+		int32 EnumIndex = FMath::RandRange(0, int32(AttrEnum->GetMaxEnumValue() - 1));
+
+		return EAttribute(AttrEnum->GetValueByIndex(EnumIndex));
+	}
+
+	return EAttribute();
 }
 
 #pragma region Interface Overrides
@@ -103,6 +126,13 @@ void AEnemy::ReceiveDamage(int32 Damage)
 	// TODO hit animation & sound
 }
 
+int32 AEnemy::GetBaseDamage()
+{
+	if (Combat) return Combat->GetBaseDamage();
+
+	return int32();
+}
+
 float AEnemy::GetDamage(int32 CharacterScore)
 {
 	if (Combat) return Combat->GetDamage(CharacterScore);
@@ -131,14 +161,14 @@ void AEnemy::Kill()
 
 ECombat AEnemy::GetCombatType()
 {
-	if (Combat) Combat->GetCombatType();
+	if (Combat) return Combat->GetCombatType();
 
 	return ECombat();
 }
 
 void AEnemy::MoveCombatActor()
 {
-	MoveEnemy();
+	MoveEnemyToUnseenWizard();
 }
 #pragma endregion
 
@@ -155,28 +185,48 @@ void AEnemy::OnEnemyClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 		}
 	}
 }
+
+void AEnemy::OnSeeWizard(APawn* Pawn)
+{
+	if (Pawn->ActorHasTag(FName("WizardCharacter"))) {
+		MoveToWizard(Pawn);
+	}
+}
 #pragma endregion
 
-void AEnemy::MoveEnemy()
+void AEnemy::MoveEnemyToUnseenWizard()
 {
 	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
 	if (WGameMode) {
-		AWizardCharacter* TargetCharacter = WGameMode->GetCharacterWithLowestAttribute(GetChosenAttribute());
-		EnemyController = EnemyController == nullptr ? Cast<AAIController>(Controller) : EnemyController;
-		if (TargetCharacter && EnemyController) {
-			EnemyController->MoveToActor(TargetCharacter);
+		AWizardCharacter* TargetCharacter = WGameMode->GetCharacterWithLowestAttribute(ChosenAttributeToChase);
+		if (TargetCharacter) {
+			MoveToWizard(TargetCharacter);
+			FTimerHandle MovementTimer;
+			GetWorld()->GetTimerManager().SetTimer(
+				MovementTimer,
+				this,
+				&AEnemy::StopEnemyMovement,
+				MovementTime
+			);
 		}
 	}
 }
 
-EAttribute AEnemy::GetChosenAttribute()
+void AEnemy::MoveToWizard(AActor* TargetWizard)
 {
-	UEnum* AttrEnum = StaticEnum<EAttribute>();
-	if (AttrEnum) {
-		int32 EnumIndex = FMath::RandRange(0, int32(AttrEnum->GetMaxEnumValue() - 1));
-
-		return EAttribute(AttrEnum->GetValueByIndex(EnumIndex));
+	EnemyController = EnemyController == nullptr ? Cast<AAIController>(Controller) : EnemyController;
+	if (EnemyController && TargetWizard && TargetWizard->ActorHasTag(FName("WizardCharacter"))) {
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(TargetWizard);
+		MoveRequest.SetAcceptanceRadius(BorderSphere->GetUnscaledSphereRadius());
+		EnemyController->MoveTo(MoveRequest);
 	}
+}
 
-	return EAttribute();
+void AEnemy::StopEnemyMovement()
+{
+	EnemyController = EnemyController == nullptr ? Cast<AAIController>(Controller) : EnemyController;
+	if (EnemyController) {
+		EnemyController->StopMovement();
+	}
 }

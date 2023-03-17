@@ -22,6 +22,7 @@ public:
 	virtual void SetCanInteract(bool bIsInteractable) override;
 	virtual bool GetCanInteract() override;
 	virtual void ReceiveDamage(int32 Damage) override;
+	virtual int32 GetBaseDamage() override;
 	virtual float GetDamage(int32 CharacterScore) override;
 	virtual float GetCost() override;
 	virtual int32 GetHealth() override;
@@ -38,9 +39,11 @@ protected:
 	class AAIController* EnemyController;
 
 	/// <summary>
-	/// Function to move the Enemy
+	/// Function to move the Enemy when it
+	/// sees no Wizards
 	/// </summary>
-	void MoveEnemy();
+	UFUNCTION()
+	void MoveEnemyToUnseenWizard();
 
 	/// <summary>
 	/// Function to choose an Attribute for the Enemy to base
@@ -83,7 +86,33 @@ private:
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UInteractComponent* InteractComponent;
+
+	/// <summary>
+	/// Pawn sensing component
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UPawnSensingComponent* PawnSensing;
 #pragma endregion
+
+	/// <summary>
+	/// Number of seconds the Enemy can move
+	/// towards an unseen Wizard
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Enemy Movement")
+	float MovementTime = 5.f;
+
+	/// <summary>
+	/// Attritube to base the chasing
+	/// of an unseen Wizard on
+	/// </summary>
+	UPROPERTY()
+	EAttribute ChosenAttributeToChase;
+
+	/// <summary>
+	/// Function to move to a Wizard Character
+	/// </summary>
+	/// <param name="TargetWizard">Target Wizard to move to</param>
+	void MoveToWizard(class AActor* TargetWizard);
 
 #pragma region Callbacks
 	UFUNCTION()
@@ -91,5 +120,21 @@ private:
 		UPrimitiveComponent* TouchedComp,
 		FKey ButtonPressed
 	);
+
+	/// <summary>
+	/// Callback function to when the Enemy
+	/// sees a Wizard
+	/// </summary>
+	/// <param name="Pawn">Pawn seen</param>
+	UFUNCTION()
+	void OnSeeWizard(class APawn* Pawn);
+
+	/// <summary>
+	/// Callback function to stop the
+	/// Enemy movement when movement timer
+	/// finishes
+	/// </summary>
+	UFUNCTION()
+	void StopEnemyMovement();
 #pragma endregion
 };
