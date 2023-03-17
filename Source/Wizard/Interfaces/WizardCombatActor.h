@@ -31,6 +31,14 @@ public:
 	virtual void ReceiveDamage(int32 Damage) = 0;
 
 	/// <summary>
+	/// Function to get the Actor's
+	/// base damage used in Character defense
+	/// Combat
+	/// </summary>
+	/// <returns>Actor's Base Damage</returns>
+	virtual int32 GetBaseDamage();
+
+	/// <summary>
 	/// Function that gets the amount of damage to apply to
 	/// a Character based on its Combat Score
 	/// </summary>
