@@ -84,11 +84,37 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UAttributeComponent, DarkSpells);
 }
 
+#pragma region Health
+void UAttributeComponent::ReceiveDamage(float Damage)
+{
+	if (Character && Character->HasAuthority()) {
+		Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+		UpdateHUDHealth();
+	}
+}
+
+void UAttributeComponent::AddHealth(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Health = FMath::Clamp(Health + AmountToAdd, 0.f, MaxHealth);
+		UpdateHUDHealth();
+	}
+}
 
 void UAttributeComponent::OnRep_Health()
 {
-
+	UpdateHUDHealth();
 }
+
+void UAttributeComponent::UpdateHUDHealth()
+{
+	Controller = (Controller == nullptr) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDHealth(Health, MaxHealth);
+	}
+}
+#pragma endregion
 
 #pragma region Power
 void UAttributeComponent::SpendPower(float Cost, EAction ActionType)

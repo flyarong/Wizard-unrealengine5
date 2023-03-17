@@ -130,6 +130,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 
 		// Setup character properties when story starts
 		if (Attribute && GetMesh() && MagicStaff && SelectedCharacter) {
+			Tags.Add(FName("WizardCharacter"));
 			GetMesh()->SetSkeletalMesh(SelectedCharacter->CharacterMesh);
 			MagicStaff->SetStaticMesh(SelectedCharacter->MagicStaff);
 			
@@ -194,6 +195,8 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 	switch (Item.BoostType)
 	{
 	case EBoost::EB_Health:
+		if (Attribute->GetHealth() >= Attribute->GetMaxHealth()) return;
+		Attribute->AddHealth(Item.BoostAmount);
 		break;
 	case EBoost::EB_Defense:
 		break;

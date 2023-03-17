@@ -24,6 +24,18 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	/// <summary>
+	/// Function to receive Damage on Health
+	/// </summary>
+	/// <param name="Damage">Damage amount</param>
+	void ReceiveDamage(float Damage);
+
+	/// <summary>
+	/// Function to add more Health
+	/// </summary>
+	/// <param name="AmountToAdd">Amount of Health to add</param>
+	void AddHealth(int32 AmountToAdd);
+
+	/// <summary>
 	/// Function to handle Power expenditure
 	/// </summary>
 	/// <param name="Cost">The number of Power to be lost</param>
@@ -92,6 +104,7 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	FString Name;
 
+#pragma region Health
 	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere, Category = "Wizard Attributes")
 	float Health;
 
@@ -101,8 +114,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Wizard Attributes")
 	float MaxHealth = 100.f;
 
-	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
-	int32 Defense;
+	/// <summary>
+	/// Function to update the Health bar
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDHealth();
+#pragma endregion
 
 #pragma region XP
 	UPROPERTY(ReplicatedUsing = OnRep_XP, EditAnywhere, Category = "Wizard Attributes")
@@ -169,6 +186,9 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Offense;
+
+	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
+	int32 Defense;
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
 	int32 Agility;
