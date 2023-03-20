@@ -67,11 +67,10 @@ void AEnemy::BeginPlay()
 	ShowInteractWidget(false);
 
 	Combat->SetupComponent(this, AreaSphere);
-	POI->SetupPOI(this);
+	POI->ServerSetupPOI(this);
 
 	if (HasAuthority()) {
 		ChosenAttributeToChase = GetChosenAttribute();
-		if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::OnSeeWizard); // TODO only bind in enemy game state, unbind it otherwise
 	}
 }
 
@@ -168,7 +167,15 @@ ECombat AEnemy::GetCombatType()
 
 void AEnemy::MoveCombatActor()
 {
-	MoveEnemyToUnseenWizard();
+	if (HasAuthority()) {
+		if (PawnSensing && !PawnSensing->OnSeePawn.IsBound()) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::OnSeeWizard);
+		GetWorld()->GetTimerManager().SetTimer(
+			SensingTimer,
+			this,
+			&AEnemy::MoveEnemyToUnseenWizard,
+			1.f
+		);
+	}
 }
 #pragma endregion
 
@@ -189,11 +196,13 @@ void AEnemy::OnEnemyClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 void AEnemy::OnSeeWizard(APawn* Pawn)
 {
 	if (Pawn->ActorHasTag(FName("WizardCharacter"))) {
+		GetWorld()->GetTimerManager().ClearTimer(SensingTimer);
 		MoveToWizard(Pawn);
 	}
 }
 #pragma endregion
 
+#pragma region Movement
 void AEnemy::MoveEnemyToUnseenWizard()
 {
 	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
@@ -230,3 +239,4 @@ void AEnemy::StopEnemyMovement()
 		EnemyController->StopMovement();
 	}
 }
+#pragma endregion

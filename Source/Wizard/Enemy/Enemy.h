@@ -114,6 +114,12 @@ private:
 	/// <param name="TargetWizard">Target Wizard to move to</param>
 	void MoveToWizard(class AActor* TargetWizard);
 
+	/// <summary>
+	/// Timer to initiate when OnSeePawn is bound
+	/// to a callback
+	/// </summary>
+	FTimerHandle SensingTimer;
+
 #pragma region Callbacks
 	UFUNCTION()
 	void OnEnemyClicked(
