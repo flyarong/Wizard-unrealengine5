@@ -40,18 +40,13 @@ void UPointOfInterestComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UPointOfInterestComponent::SetupPOI(AActor* Owner)
-{
-	ServerSetupPOI(Owner);
-	UpdateMiniMap();
-}
-
 void UPointOfInterestComponent::ServerSetupPOI_Implementation(AActor* Owner)
 {
 	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this)) : WizardGameMode;
 	if (WizardGameMode) {
 		WizardGameMode->AddMiniMapActor(Owner);
 		MiniMapActors = WizardGameMode->GetMiniMapActors();
+		UpdateMiniMap();
 	}
 }
 

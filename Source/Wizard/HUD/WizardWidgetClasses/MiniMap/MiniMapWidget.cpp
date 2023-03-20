@@ -37,10 +37,13 @@ void UMiniMapWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	}
 
 	// Update Camera's location on MiniMap
-	FVector CameraLocation = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())->GetActorLocation();
-	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("X"), CameraLocation.X);
-	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Y"), CameraLocation.Y);
-	UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Zoom"), Zoom);
+	AActor* GameplayCamera = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass());
+	if (GameplayCamera) {
+		FVector CameraLocation = GameplayCamera->GetActorLocation();
+		UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("X"), CameraLocation.X);
+		UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Y"), CameraLocation.Y);
+		UKismetMaterialLibrary::SetScalarParameterValue(this, MiniMapParameterCollection, FName("Zoom"), Zoom);
+	}
 }
 
 void UMiniMapWidget::AddPlayerIcon()

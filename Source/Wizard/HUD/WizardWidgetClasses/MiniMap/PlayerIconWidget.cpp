@@ -11,6 +11,9 @@ void UPlayerIconWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTim
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
 	// Update Camera's rotation on MiniMap
-	FRotator CameraRotation = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())->GetActorRotation();
-	PlayerIcon->SetRenderTransformAngle(CameraRotation.Yaw);
+	AActor* GameplayCamera = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass());
+	if (GameplayCamera) {
+		FRotator CameraRotation = GameplayCamera->GetActorRotation();
+		PlayerIcon->SetRenderTransformAngle(CameraRotation.Yaw);
+	}
 }

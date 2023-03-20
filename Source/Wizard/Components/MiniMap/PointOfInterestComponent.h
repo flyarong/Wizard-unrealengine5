@@ -23,21 +23,15 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	/// <summary>
-	/// Function to setup the Point Of Interest on the MiniMap
-	/// Should be called from Owning Actor
-	/// </summary>
-	void SetupPOI(class AActor* Owner);
-
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-	/// <summary>
 	/// Server RPC to setup the POI
 	/// on the MiniMap
 	/// </summary>
 	UFUNCTION(Server, UnReliable)
 	void ServerSetupPOI(AActor* Owner);
+
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
 
 	/// <summary>
 	/// Function to update the MiniMap

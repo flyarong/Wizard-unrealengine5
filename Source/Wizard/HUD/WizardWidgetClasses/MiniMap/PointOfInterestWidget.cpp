@@ -56,7 +56,7 @@ void UPointOfInterestWidget::NativeTick(const FGeometry& MyGeometry, float InDel
 	}
 
 	// Delete if Owner is no longer valid
-	if (Owner->IsActorBeingDestroyed()) {
+	if (Owner && Owner->IsActorBeingDestroyed()) {
 		AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
 		if (PlayerController) {
 			PlayerController->ServerDestroyPOI(Owner);
@@ -84,14 +84,19 @@ void UPointOfInterestWidget::UpdateRelativeLocation()
 
 FVector2D UPointOfInterestWidget::GetDistanceVector()
 {
-	float Ratio = MiniMap->Zoom * (MiniMap->Dimensions / MiniMap->MiniMapSize);
-	FVector CameraLocation = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass())->GetActorLocation();
-	FVector OwnerLocation = Owner->GetActorLocation();
+	AActor* GameplayCamera = UGameplayStatics::GetActorOfClass(this, AGameplayCamera::StaticClass());
+	if (GameplayCamera) {
+		float Ratio = MiniMap->Zoom * (MiniMap->Dimensions / MiniMap->MiniMapSize);
+		FVector CameraLocation = GameplayCamera->GetActorLocation();
+		FVector OwnerLocation = Owner->GetActorLocation();
 
-	return FVector2D(
-		(CameraLocation.X - OwnerLocation.X) / Ratio,
-		(-1 * (CameraLocation.Y - OwnerLocation.Y)) / Ratio
-	);
+		return FVector2D(
+			(CameraLocation.X - OwnerLocation.X) / Ratio,
+			(-1 * (CameraLocation.Y - OwnerLocation.Y)) / Ratio
+		);
+	}
+
+	return FVector2D::ZeroVector;
 }
 
 float UPointOfInterestWidget::FindAngle(FVector2D CameraLocation, FVector2D ActorLocation)
