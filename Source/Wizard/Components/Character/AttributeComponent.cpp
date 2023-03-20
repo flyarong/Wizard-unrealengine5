@@ -133,6 +133,7 @@ void UAttributeComponent::SpendPower(float Cost, EAction ActionType)
 		default:
 			break;
 		}
+		if (Power <= 0.f) Character->InterruptMovement();
 		UpdateHUDPower();
 	}
 }
@@ -155,7 +156,6 @@ void UAttributeComponent::UpdateHUDPower()
 	Controller = (Controller == nullptr) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		if (Power <= 0.f) Controller->InterruptCharacterMovement();
 		Controller->SetHUDPower(Power, MaxPower);
 	}
 }
