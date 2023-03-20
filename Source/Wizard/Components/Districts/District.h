@@ -51,6 +51,10 @@ private:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* DistrictBox;
 
+	/// <summary>
+	/// Base Cost of Power to move
+	/// to this District
+	/// </summary>
 	UPROPERTY(EditAnywhere)
 	float PowerCost = 10.f;
 

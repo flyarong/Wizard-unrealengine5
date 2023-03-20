@@ -155,6 +155,7 @@ void UAttributeComponent::UpdateHUDPower()
 	Controller = (Controller == nullptr) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
+		if (Power <= 0.f) Controller->InterruptCharacterMovement();
 		Controller->SetHUDPower(Power, MaxPower);
 	}
 }
