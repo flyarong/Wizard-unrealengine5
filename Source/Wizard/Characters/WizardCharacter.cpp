@@ -159,8 +159,8 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		PlayerController->SetWizardCharacter(this);
 		PlayerController->SetupCamera();
 
-		// Init WizardOverlay
-		PlayerController->InitOverlay();
+		// Setup WizardOverlay
+		PlayerController->SetupOverlay();
 		PlayerController->SetShowMouseCursor(true);
 
 		// Setup Point of Interest on Minimap
@@ -218,7 +218,7 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 
 	Items.RemoveSingle(Item);
 	UpdateInventory();
-	InterruptMovement();
+	ServerInterruptMovement();
 	MulticastPlayInteractMontage(FName("Use"));
 }
 #pragma endregion
@@ -248,10 +248,15 @@ void AWizardCharacter::PlaySound(USoundCue* Sound)
 	}
 }
 
-void AWizardCharacter::InterruptMovement()
+void AWizardCharacter::ServerInterruptMovement_Implementation()
+{
+	MulticastInterruptMovement();
+}
+
+void AWizardCharacter::MulticastInterruptMovement_Implementation()
 {
 	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
 	if (PlayerController) {
-		PlayerController->InterruptCharacterMovement();
+		PlayerController->StopMovement();
 	}
 }

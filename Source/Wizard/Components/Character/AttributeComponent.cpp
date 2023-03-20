@@ -133,7 +133,7 @@ void UAttributeComponent::SpendPower(float Cost, EAction ActionType)
 		default:
 			break;
 		}
-		if (Power <= 0.f) Character->InterruptMovement();
+		if (Power <= 0.f) Character->ServerInterruptMovement();
 		UpdateHUDPower();
 	}
 }

@@ -81,7 +81,7 @@ void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		else {
 			WCharacter->AddNewItem(ItemRow);
 		}
-		WCharacter->InterruptMovement();
+		WCharacter->ServerInterruptMovement();
 		WCharacter->MulticastPlayInteractMontage(FName("PickUp"));
 	}
 

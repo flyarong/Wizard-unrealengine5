@@ -67,9 +67,10 @@ public:
 	void PlaySound(class USoundCue* Sound);
 
 	/// <summary>
-	/// Function to interrupt the Character's movement
+	/// Server RPC to interrupt the Character's movement
 	/// </summary>
-	void InterruptMovement();
+	UFUNCTION(Server, Reliable)
+	void ServerInterruptMovement();
 
 private:
 
@@ -176,6 +177,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Item Sounds")
 	USoundCue* UseSound;
 #pragma endregion
+
+	/// <summary>
+	/// Multicast RPC to broadcast Character Movement
+	/// </summary>
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastInterruptMovement();
 
 public:
 	FORCEINLINE UActionComponent* GetAction() const { return Action; }
