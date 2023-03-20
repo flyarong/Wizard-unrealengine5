@@ -154,7 +154,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	}
 
 	PlayerController = Cast<AWizardPlayerController>(Controller);
-	if (PlayerController) {
+	if (PlayerController && IsLocallyControlled()) {
 		// Setup Controller&Gameplay Camera
 		PlayerController->SetWizardCharacter(this);
 		PlayerController->SetupCamera();
@@ -164,7 +164,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		PlayerController->SetShowMouseCursor(true);
 
 		// Setup Point of Interest on Minimap
-		POI->SetupPOI(this);
+		POI->ServerSetupPOI(this);
 	}
 }
 
