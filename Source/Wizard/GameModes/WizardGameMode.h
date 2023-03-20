@@ -55,6 +55,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnMatchStateSet() override;
 
 private:
 
@@ -69,10 +70,17 @@ private:
 	TArray<class AWizardPlayerController*> WizardPlayers;
 
 	/// <summary>
+	/// Boolean for whether or not the Players have been
+	/// initialized
+	/// </summary>
+	UPROPERTY()
+	bool bPlayersInitialized = false;
+
+	/// <summary>
 	/// Function to initialize the joining player's character
 	/// </summary>
 	/// <param name="Controller">The player's controller</param>
-	void InitCharacter(APlayerController* Controller);
+	void InitCharacter(AWizardPlayerController* Controller);
 
 	/// <summary>
 	/// Array holding all the Actors that should be
@@ -80,6 +88,31 @@ private:
 	/// </summary>
 	UPROPERTY()
 	TArray<AActor*> MiniMapActors = TArray<AActor*>();
+
+	/// <summary>
+	/// Time since the Level has been started
+	/// </summary>
+	UPROPERTY()
+	float LevelStartingTime = 0.f;
+
+	/// <summary>
+	/// Time to wait until start
+	/// </summary>
+	UPROPERTY()
+	float WarmupTime = 5.f;
+
+	/// <summary>
+	/// Time of countdown
+	/// </summary>
+	UPROPERTY()
+	float CountdownTime = 0.f;
+
+	/// <summary>
+	/// Number of Players who ended
+	/// their turn
+	/// </summary>
+	UPROPERTY()
+	int32 PlayersFinished = 0;
 
 public:
 
@@ -95,6 +128,9 @@ public:
 	/// <param name="PlayerName">Player's name</param>
 	/// <returns>Character's name selected by the player</returns>
 	FName GetPlayerCharacter(FString PlayerName);
+
+	void IncrementPlayersFinished();
+	void DecrementPlayersFinished();
 };
 
 

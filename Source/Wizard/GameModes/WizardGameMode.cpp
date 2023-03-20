@@ -11,37 +11,75 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
+namespace MatchState
+{
+	const FName Enemy = FName("Enemy");
+	const FName Trial = FName("Trial");
+	const FName Prepare = FName("Prepare");
+}
+
 AWizardGameMode::AWizardGameMode()
 {
 	// use our custom PlayerController class
 	PlayerControllerClass = AWizardPlayerController::StaticClass();
+	bDelayedStart = true;
 }
 
 void AWizardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	LevelStartingTime = GetWorld()->GetTimeSeconds();
+}
+
+void AWizardGameMode::OnMatchStateSet()
+{
+	Super::OnMatchStateSet();
+
+	if (MatchState == MatchState::InProgress) {
+		if (WizardPlayers.Num() > 0 && !bPlayersInitialized) {
+			for (auto& WizardPlayer : WizardPlayers) {
+				InitCharacter(WizardPlayer);
+			}
+			bPlayersInitialized = true;
+		}
+
+	}
 }
 
 void AWizardGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (MatchState == MatchState::WaitingToStart)
+	{
+		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		if (CountdownTime <= 0.f)
+		{
+			StartMatch();
+		}
+	}
 }
 
 void AWizardGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	InitCharacter(NewPlayer);
+	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(NewPlayer);
+	if (PlayerController) {
+		PlayerController->ClientInitOverlay();
+		WizardPlayers.Add(PlayerController);
+	}
+
+	if (MatchState == MatchState::InProgress && PlayerController) InitCharacter(PlayerController);
 }
 
-void AWizardGameMode::InitCharacter(APlayerController* Controller)
+void AWizardGameMode::InitCharacter(AWizardPlayerController* Controller)
 {
-	AWizardPlayerController* PlayerController = Cast<AWizardPlayerController>(Controller);
 	AWizardPlayerState* WizardPlayerState = Controller->GetPlayerState<AWizardPlayerState>();
-	if (PlayerController && WizardPlayerState) {
+	if (WizardPlayerState) {
 		FName PlayerCharacter = GetPlayerCharacter(WizardPlayerState->GetPlayerName());
 		if (PlayerCharacter.IsValid()) {
-			WizardPlayers.Add(PlayerController);
 
 			// Set timer to wait for client Pawn to be valid
 			FTimerHandle CharacterInitTimer;
@@ -132,4 +170,17 @@ AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute At
 	}
 
 	return nullptr;
+}
+
+void AWizardGameMode::IncrementPlayersFinished()
+{
+	PlayersFinished++;
+	if (PlayersFinished >= WizardPlayers.Num()) {
+		SetMatchState(MatchState::Enemy);
+	}
+}
+
+void AWizardGameMode::DecrementPlayersFinished()
+{
+	PlayersFinished--;
 }

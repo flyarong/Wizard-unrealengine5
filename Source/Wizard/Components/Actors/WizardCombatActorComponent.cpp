@@ -56,13 +56,14 @@ void UWizardCombatActorComponent::OnActorBeginOverlap(UPrimitiveComponent* Overl
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction() && Owner) {
 		Character->GetAction()->SetCurrentWizardActor(Owner);
+		// TODO call Action Defend Combat in Enemy GameState & and set bCanInteract to false
 	}
 }
 
 void UWizardCombatActorComponent::OnActorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	if (Character && Character->GetAction()) {
+	if (Character && Character->GetAction()) { // TODO can't do this in Enemy GameState
 		Character->GetAction()->LeaveWizardActor();
 	}
 }
