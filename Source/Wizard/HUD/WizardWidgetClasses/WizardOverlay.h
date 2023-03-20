@@ -21,6 +21,12 @@ class WIZARD_API UWizardOverlay : public UUserWidget
 private:
 
 	/// <summary>
+	/// Widget class for the District Panel
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Districts")
+	TSubclassOf<class UUserWidget> DistrictPanelWidgetClass;
+
+	/// <summary>
 	/// Widget class for the Catalog
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Items")
@@ -75,6 +81,12 @@ private:
 	TSubclassOf<class UUserWidget> CombatScoreWidgetClass;
 
 	/// <summary>
+	/// Widget used on the Overlay to show the current District
+	/// </summary>
+	UPROPERTY()
+	class UDistrictPanelWidget* DistrictPanelWidget;
+
+	/// <summary>
 	/// Widget used on the Overlay to store the SpellMap
 	/// </summary>
 	UPROPERTY()
@@ -108,6 +120,9 @@ private:
 	UButton* SettingsButton;
 
 	UPROPERTY(meta = (BindWidget))
+	class UEndTurnButtonWidget* EndTurnButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* OffenseText;
 
 	UPROPERTY(meta = (BindWidget))
@@ -121,15 +136,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* AgilityText;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* CurrentDistrictText;
-
-	UPROPERTY(meta = (BindWidgetAnim), Transient)
-	class UWidgetAnimation* DistrictPanelFadeIn;
-
-	UPROPERTY(meta = (BindWidgetAnim), Transient)
-	UWidgetAnimation* DistrictPanelFadeOut;
 
 	UPROPERTY(meta = (BindWidget))
 	class UWizardProgressBarWidget* HealthBar;
@@ -153,6 +159,9 @@ private:
 	class UScaleBox* CenterBox;
 
 	UPROPERTY(meta = (BindWidget))
+	UScaleBox* TopCenterBox;
+
+	UPROPERTY(meta = (BindWidget))
 	UScaleBox* TopRightBox;
 
 	UPROPERTY(meta = (BindWidget))
@@ -171,9 +180,25 @@ private:
 	UVerticalBox* RightSideBox;
 
 	UPROPERTY(meta = (BindWidget))
+	class UGridPanel* RightBottomPanel;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* LeftSideBoxFadeOut;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* LeftSideBoxFadeIn;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* RightSideBoxFadeOut;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* RightSideBoxFadeIn;
+
+	UPROPERTY(meta = (BindWidget))
 	class UChatBoxWidget* ChatBox;
 
 public:
+	FORCEINLINE TSubclassOf<UUserWidget> GetDistrictPanelWidgetClass() const { return DistrictPanelWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetInventoryWidgetClass() const { return InventoryWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetLocalMessageWidgetClass() const { return LocalMessageWidgetClass; }
@@ -183,6 +208,8 @@ public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepWidgetClass() const { return CurrentStepWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepResultWidgetClass() const { return CurrentStepResultWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatScoreWidgetClass() const { return CombatScoreWidgetClass; }
+	FORCEINLINE UDistrictPanelWidget* GetDistrictPanelWidget() const { return DistrictPanelWidget; }
+	FORCEINLINE void SetDistrictPanelWidget(UDistrictPanelWidget* DistrictPanel) { DistrictPanelWidget = DistrictPanel; }
 	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }
 	FORCEINLINE void SetSpellMapWidget(USpellMapWidget* Map) { SpellMapWidget = Map; }
 	FORCEINLINE UCombatScoreWidget* GetCombatScoreWidget() const { return CombatScoreWidget; }
@@ -198,10 +225,6 @@ public:
 	FORCEINLINE UWizardProgressBarWidget* GetHealthBar() const { return HealthBar; }
 	FORCEINLINE void SetPowerBarPercentage(float Power, float MaxPower) { PowerBar->SetWizardBarPercent(Power, MaxPower); };
 	FORCEINLINE UWizardProgressBarWidget* GetPowerBar() const { return PowerBar; }
-	FORCEINLINE void SetCurrentDistrictText(FText District) { CurrentDistrictText->SetText(District); };
-	FORCEINLINE UTextBlock* GetCurrentDistrictText() const { return CurrentDistrictText; }
-	FORCEINLINE void PlayDistrictPanelFadeIn() { PlayAnimation(DistrictPanelFadeIn); }
-	FORCEINLINE void PlayDistrictPanelFadeOut() { PlayAnimation(DistrictPanelFadeOut); }
 	FORCEINLINE void SetXPText(FText XP) { XPText->SetText(XP); };
 	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
 	FORCEINLINE void SetGoodSpellText(FText GoodSpell) { GoodSpellText->SetText(GoodSpell); };
@@ -221,6 +244,8 @@ public:
 	FORCEINLINE void SetAgilityText(FText Agility) { AgilityText->SetText(Agility); };
 	FORCEINLINE UTextBlock* GetAgilityText() const { return AgilityText; }
 	FORCEINLINE UMiniMapWidget* GetMiniMap() const { return MiniMap; }
+	FORCEINLINE UEndTurnButtonWidget* GetEndTurnButton() const { return EndTurnButton; }
+	FORCEINLINE UScaleBox* GetTopCenterBox() const { return TopCenterBox; }
 	FORCEINLINE UScaleBox* GetCenterBox() const { return CenterBox; }
 	FORCEINLINE UScaleBox* GetTopRightBox() const { return TopRightBox; }
 	FORCEINLINE UScaleBox* GetBottomBox() const { return BottomBox; }
@@ -228,5 +253,10 @@ public:
 	FORCEINLINE UVerticalBox* GetPublicEventBox() const { return PublicEventBox; }
 	FORCEINLINE UVerticalBox* GetLeftSideBox() const { return LeftSideBox; }
 	FORCEINLINE UVerticalBox* GetRightSideBox() const { return RightSideBox; }
+	FORCEINLINE UGridPanel* GetRightBottomPanel() const { return RightBottomPanel; }
+	FORCEINLINE void PlayRightSideFadeInAnimation() { PlayAnimation(RightSideBoxFadeIn); }
+	FORCEINLINE void PlayRightSideFadeOutAnimation() { PlayAnimation(RightSideBoxFadeOut); }
+	FORCEINLINE void PlayLeftSideFadeInAnimation() { PlayAnimation(LeftSideBoxFadeIn); }
+	FORCEINLINE void PlayLeftSideFadeOutAnimation() { PlayAnimation(LeftSideBoxFadeOut); }
 	FORCEINLINE UChatBoxWidget* GetChatBox() const { return ChatBox; }
 };
