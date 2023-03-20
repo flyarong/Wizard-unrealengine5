@@ -66,7 +66,7 @@ void ASpell::BeginPlay()
 	ShowInteractWidget(false);
 
 	Combat->SetupComponent(this, AreaSphere);
-	POI->SetupPOI(this);
+	POI->ServerSetupPOI(this);
 }
 
 // Called every frame

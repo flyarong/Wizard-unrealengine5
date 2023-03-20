@@ -58,7 +58,7 @@ void AStore::BeginPlay()
 
 	ShowInteractWidget(false);
 
-	POI->SetupPOI(this);
+	POI->ServerSetupPOI(this);
 
 	// Setup Events
 	if (HasAuthority()) {
