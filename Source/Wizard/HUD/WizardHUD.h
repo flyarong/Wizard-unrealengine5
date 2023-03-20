@@ -45,10 +45,9 @@ public:
 	void ClearBottomBox();
 
 	/// <summary>
-	/// Function to hide the Current District
-	/// Panel from the Overlay
+	/// Function to hide the Top Center Box from the Overlay
 	/// </summary>
-	void HideCurrentDistrict();
+	void HideTopCenterBox();
 
 	/// <summary>
 	/// Function to show the Left Side Panel

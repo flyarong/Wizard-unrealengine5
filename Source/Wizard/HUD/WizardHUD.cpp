@@ -15,10 +15,13 @@
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CurrentStepWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/StepResultWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatScoreWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Districts/DistrictPanelWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/EndTurnButtonWidget.h"
 #include "Wizard/Interfaces/PublicMessageActor.h"
 #include "Wizard/WizardTypes/ActionTypes.h"
 #include "Components/ScaleBox.h"
 #include "Components/VerticalBox.h"
+#include "Components/GridPanel.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Button.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
@@ -41,32 +44,30 @@ bool AWizardHUD::CreateWizardOverlay()
 void AWizardHUD::ShowLeftPanel()
 {
 	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
-		if (Slot) Slot->SetAlignment(FVector2D(0, 0));
+		WizardOverlay->PlayLeftSideFadeInAnimation();
 	}
 }
 
 void AWizardHUD::HideLeftPanel()
 {
-	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetLeftSideBox());
-		if (Slot) Slot->SetAlignment(FVector2D(1, 0));
+	if (WizardOverlay) {
+		WizardOverlay->PlayLeftSideFadeOutAnimation();
 	}
 }
 
 void AWizardHUD::ShowRightPanel()
 {
-	if (WizardOverlay && WizardOverlay->GetRightSideBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetRightSideBox());
-		if (Slot) Slot->SetAlignment(FVector2D(1, 0));
+	if (WizardOverlay) {
+		if (WizardOverlay->GetEndTurnButton()) WizardOverlay->GetEndTurnButton()->SetIsButtonEnabled(true);
+		WizardOverlay->PlayRightSideFadeInAnimation();
 	}
 }
 
 void AWizardHUD::HideRightPanel()
 {
-	if (WizardOverlay && WizardOverlay->GetRightSideBox()) {
-		UCanvasPanelSlot* Slot = UWidgetLayoutLibrary::SlotAsCanvasSlot(WizardOverlay->GetRightSideBox());
-		if (Slot) Slot->SetAlignment(FVector2D(0, 0));
+	if (WizardOverlay) {
+		if (WizardOverlay->GetEndTurnButton()) WizardOverlay->GetEndTurnButton()->SetIsButtonEnabled(false);
+		WizardOverlay->PlayRightSideFadeOutAnimation();
 	}
 }
 
@@ -97,18 +98,32 @@ void AWizardHUD::ClearBottomBox()
 	}
 }
 
-void AWizardHUD::HideCurrentDistrict()
+void AWizardHUD::HideTopCenterBox()
 {
-	if (WizardOverlay) WizardOverlay->PlayDistrictPanelFadeOut();
+	if (WizardOverlay && WizardOverlay->GetTopCenterBox()) {
+		if (WizardOverlay->GetTopCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetTopCenterBox()->ClearChildren();
+		}
+	}
 }
 #pragma endregion
 
 #pragma region Player
 void AWizardHUD::SetCurrentDistrict(EDistrict District)
 {
-	if (WizardOverlay && WizardOverlay->GetCurrentDistrictText()) {
-		WizardOverlay->SetCurrentDistrictText(UEnum::GetDisplayValueAsText<EDistrict>(District));
-		WizardOverlay->PlayDistrictPanelFadeIn();
+	if (WizardOverlay) {
+		if (WizardOverlay->GetDistrictPanelWidget() == nullptr) {
+			UDistrictPanelWidget* DistrictPanel = CreateWidget<UDistrictPanelWidget>(
+				GetOwningPlayerController(), 
+				WizardOverlay->GetDistrictPanelWidgetClass()
+			);
+			if (DistrictPanel) WizardOverlay->SetDistrictPanelWidget(DistrictPanel);
+		}
+
+		if (WizardOverlay->GetDistrictPanelWidget() && WizardOverlay->GetTopCenterBox()) {
+			if (!WizardOverlay->GetTopCenterBox()->HasAnyChildren()) WizardOverlay->GetTopCenterBox()->AddChild(WizardOverlay->GetDistrictPanelWidget());
+			WizardOverlay->GetDistrictPanelWidget()->SetCurrentDistrictText(UEnum::GetDisplayValueAsText<EDistrict>(District));
+		}
 	}
 }
 
