@@ -78,24 +78,35 @@ void AWizardPlayerController::SetWizardCharacter(AWizardCharacter* WCharacter)
 	WizardCharacter = WCharacter;
 }
 
-void AWizardPlayerController::InitOverlay()
+void AWizardPlayerController::ClientInitOverlay_Implementation()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		bWizardOverlayInitialized = WizardHUD->CreateWizardOverlay();
-		if (bWizardOverlayInitialized && WizardCharacter && WizardCharacter->GetAttribute()) {
-			SetHUDCurrentDistrict(EDistrict::ED_None);
-			SetHUDHealth(WizardCharacter->GetAttribute()->GetHealth(), WizardCharacter->GetAttribute()->GetMaxHealth());
-			SetHUDPower(WizardCharacter->GetAttribute()->GetPower(), WizardCharacter->GetAttribute()->GetMaxPower());
-			SetHUDXP(WizardCharacter->GetAttribute()->GetXP());
-			SetHUDCharacterImage(WizardCharacter->GetPOI()->GetIconImage());
-			SetHUDCharacterName(WizardCharacter->GetAttribute()->GetName());
-			SetHUDOffense(WizardCharacter->GetAttribute()->GetOffense());
-			SetHUDDefense(WizardCharacter->GetAttribute()->GetDefense());
-			SetHUDWisdom(WizardCharacter->GetAttribute()->GetWisdom());
-			SetHUDIntelligence(WizardCharacter->GetAttribute()->GetIntelligence());
-			SetHUDAgility(WizardCharacter->GetAttribute()->GetAgility());
+		if (bWizardOverlayInitialized) {
+			WizardHUD->HideLeftPanel();
+			WizardHUD->HideRightPanel();
 		}
+	}
+}
+
+void AWizardPlayerController::SetupOverlay()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && bWizardOverlayInitialized && WizardCharacter && WizardCharacter->GetAttribute()) {
+		WizardHUD->HideTopCenterBox();
+		SetHUDHealth(WizardCharacter->GetAttribute()->GetHealth(), WizardCharacter->GetAttribute()->GetMaxHealth());
+		SetHUDPower(WizardCharacter->GetAttribute()->GetPower(), WizardCharacter->GetAttribute()->GetMaxPower());
+		SetHUDXP(WizardCharacter->GetAttribute()->GetXP());
+		SetHUDCharacterImage(WizardCharacter->GetPOI()->GetIconImage());
+		SetHUDCharacterName(WizardCharacter->GetAttribute()->GetName());
+		SetHUDOffense(WizardCharacter->GetAttribute()->GetOffense());
+		SetHUDDefense(WizardCharacter->GetAttribute()->GetDefense());
+		SetHUDWisdom(WizardCharacter->GetAttribute()->GetWisdom());
+		SetHUDIntelligence(WizardCharacter->GetAttribute()->GetIntelligence());
+		SetHUDAgility(WizardCharacter->GetAttribute()->GetAgility());
+		WizardHUD->ShowLeftPanel();
+		WizardHUD->ShowRightPanel();
 	}
 }
 #pragma endregion
@@ -173,11 +184,6 @@ void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 }
 
 #pragma region CharacterMovement
-void AWizardPlayerController::InterruptCharacterMovement()
-{
-	OnInputStarted();
-}
-
 void AWizardPlayerController::OnInputStarted()
 {
 	ServerStopMovement();
@@ -206,26 +212,31 @@ void AWizardPlayerController::OnSetDestinationTriggered()
 
 void AWizardPlayerController::OnSetDestinationReleased()
 {
-	// We move there and spawn some particles
-	ServerMoveToLocation(this, CachedDestination);
-	if (!HasAuthority()) {
-		// Move to location locally on client
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+	if (WizardCharacter && WizardCharacter->GetAttribute() && WizardCharacter->GetAttribute()->GetPower() > 0.f) {
+		// We move there and spawn some particles
+		ServerMoveToLocation(this, CachedDestination);
+		if (!HasAuthority()) {
+			// Move to location locally on client
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, CachedDestination);
+		}
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			FXCursor,
+			CachedDestination,
+			FRotator::ZeroRotator,
+			FVector(1.f, 1.f, 1.f),
+			true,
+			true,
+			ENCPoolMethod::None,
+			true
+		);
 	}
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-		this,
-		FXCursor,
-		CachedDestination,
-		FRotator::ZeroRotator,
-		FVector(1.f, 1.f, 1.f),
-		true,
-		true,
-		ENCPoolMethod::None,
-		true
-	);
+	else {
+		AddHUDLocalMessage(TEXT("You don't have enough "), EAttribute::EA_Power);
+	}
 }
 
-void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerController* Controller, FVector Dest) {
+void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerController* Controller, const FVector& Dest) {
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
 }
 #pragma endregion
@@ -506,8 +517,9 @@ void AWizardPlayerController::AddHUDCombatMenu()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->HideCurrentDistrict();
+		WizardHUD->HideTopCenterBox();
 		WizardHUD->HideLeftPanel();
+		WizardHUD->HideRightPanel();
 		WizardHUD->CreateCombatScore();
 		WizardHUD->AddCombatMenu();
 	}
@@ -522,6 +534,7 @@ void AWizardPlayerController::ResetHUD()
 		WizardHUD->ClearBottomBox();
 		WizardHUD->RemoveSpellMap();
 		WizardHUD->ShowLeftPanel();
+		WizardHUD->ShowRightPanel();
 	}
 }
 
@@ -557,3 +570,19 @@ void AWizardPlayerController::AddHUDCombatScore(int32 Score)
 	}
 }
 #pragma endregion
+
+void AWizardPlayerController::ServerEndTurn_Implementation()
+{
+	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;
+	if (WizardGameMode) {
+		WizardGameMode->IncrementPlayersFinished();
+	}
+}
+
+void AWizardPlayerController::ServerCancelEndTurn_Implementation()
+{
+	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;
+	if (WizardGameMode) {
+		WizardGameMode->DecrementPlayersFinished();
+	}
+}

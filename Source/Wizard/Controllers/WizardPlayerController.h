@@ -6,6 +6,7 @@
 #include "Templates/SubclassOf.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
+#include "Wizard/Items/Item.h"
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "Wizard/WizardTypes/AttributeTypes.h"
 #include "Wizard/WizardTypes/InputContextTypes.h"
@@ -31,9 +32,16 @@ public:
 	void SetupCamera();
 
 	/// <summary>
-	/// Function to initialize the Gameplay Overlay
+	/// Client RPC to initialize the Gameplay Overlay
 	/// </summary>
-	void InitOverlay();
+	UFUNCTION(Client, Reliable)
+	void ClientInitOverlay();
+
+	/// <summary>
+	/// Function to setup the Gameplay Overlay once
+	/// the Game has started
+	/// </summary>
+	void SetupOverlay();
 
 	/// <summary>
 	/// Function to set the focus of the Camera
@@ -62,9 +70,18 @@ public:
 	void SetInputContext(EInputContext ContextType);
 
 	/// <summary>
-	/// Function to interrupt the Character's movement
+	/// Server RPC to trigger when the Player
+	/// wants to end their turn
 	/// </summary>
-	void InterruptCharacterMovement();
+	UFUNCTION(Server, Reliable)
+	void ServerEndTurn();
+
+	/// <summary>
+	/// Server RPC to trigger when the Player
+	/// wants to cancel their turn ending
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerCancelEndTurn();
 
 #pragma region HUD/Player
 	/// <summary>
@@ -413,7 +430,7 @@ private:
 	/// <param name="Controller">Character's Controller</param>
 	/// <param name="Dest">Location to move the Character to</param>
 	UFUNCTION(Server, Reliable)
-	void ServerMoveToLocation(AWizardPlayerController* Controller, FVector Dest);
+	void ServerMoveToLocation(AWizardPlayerController* Controller, const FVector& Dest);
 
 	/// <summary>
 	/// Server RPC to stop Character movement
