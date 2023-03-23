@@ -65,6 +65,9 @@ void AEnemy::BeginPlay()
 	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	ShowInteractWidget(false);
+	Tags.Add(FName("Enemy"));
+	Tags.Add(FName("WizardActor"));
+	Tags.Add(FName("WizardCombatActor"));
 
 	Combat->SetupComponent(this, AreaSphere);
 	POI->ServerSetupPOI(this);
@@ -173,9 +176,19 @@ void AEnemy::MoveCombatActor()
 			SensingTimer,
 			this,
 			&AEnemy::MoveEnemyToUnseenWizard,
-			1.f
+			3.f
 		);
 	}
+}
+
+void AEnemy::SetupActorForDefense()
+{
+	if (Combat) Combat->SetupDefendEvents();
+}
+
+void AEnemy::SetupActorForAttack()
+{
+	if (Combat) Combat->SetupAttackEvents();
 }
 #pragma endregion
 
@@ -188,7 +201,7 @@ void AEnemy::OnEnemyClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() && Combat && Combat->GetCanInteract() && 
 			Character->GetAction()->GetOverlappedWizardActor() == this) {
-			Character->GetAction()->ServerInitCombat();
+			Character->GetAction()->ServerInitAttackCombat();
 		}
 	}
 }

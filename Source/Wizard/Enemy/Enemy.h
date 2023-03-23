@@ -29,6 +29,8 @@ public:
 	virtual void Kill() override;
 	virtual ECombat GetCombatType() override;
 	virtual void MoveCombatActor() override;
+	virtual void SetupActorForDefense() override;
+	virtual void SetupActorForAttack() override;
 
 protected:
 	virtual void BeginPlay() override;
