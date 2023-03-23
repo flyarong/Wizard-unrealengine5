@@ -16,3 +16,11 @@ float IWizardCombatActor::GetDamage(int32 CharacterScore)
 void IWizardCombatActor::MoveCombatActor()
 {
 }
+
+void IWizardCombatActor::SetupActorForAttack()
+{
+}
+
+void IWizardCombatActor::SetupActorForDefense()
+{
+}

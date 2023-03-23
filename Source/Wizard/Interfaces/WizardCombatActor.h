@@ -77,4 +77,18 @@ public:
 	/// on the Map
 	/// </summary>
 	virtual void MoveCombatActor();
+
+	/// <summary>
+	/// Function to setup Events&Callbacks
+	/// for Combat Actors to be able to attack
+	/// against WizardCharacters
+	/// </summary>
+	virtual void SetupActorForAttack();
+
+	/// <summary>
+	/// Function to setup Events&Callbacks
+	/// for Combat Actors to be able to defend
+	/// against WizardCharacters
+	/// </summary>
+	virtual void SetupActorForDefense();
 };
