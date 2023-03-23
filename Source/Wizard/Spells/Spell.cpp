@@ -64,6 +64,9 @@ void ASpell::BeginPlay()
 	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	ShowInteractWidget(false);
+	Tags.Add(FName("Spell"));
+	Tags.Add(FName("WizardActor"));
+	Tags.Add(FName("WizardCombatActor"));
 
 	Combat->SetupComponent(this, AreaSphere);
 	POI->ServerSetupPOI(this);
@@ -132,6 +135,14 @@ ECombat ASpell::GetCombatType()
 
 	return ECombat();
 }
+
+void ASpell::SetupActorForDefense()
+{
+	if (Combat &&
+		(!AreaSphere->OnComponentBeginOverlap.IsBound() || !AreaSphere->OnComponentEndOverlap.IsBound())) {
+		Combat->SetupDefendEvents();
+	}
+}
 #pragma endregion
 
 #pragma region Events
@@ -143,7 +154,7 @@ void ASpell::OnSpellClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
 		if (Character && Character->GetAction() && Combat && Combat->GetCanInteract() && 
 			Character->GetAction()->GetOverlappedWizardActor() == this) {
-			Character->GetAction()->ServerInitCombat();
+			Character->GetAction()->ServerInitAttackCombat();
 		}
 	}
 }

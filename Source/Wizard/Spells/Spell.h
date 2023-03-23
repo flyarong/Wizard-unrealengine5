@@ -30,6 +30,7 @@ public:
 	virtual int32 GetHealth() override;
 	virtual void Kill() override;
 	virtual ECombat GetCombatType() override;
+	virtual void SetupActorForDefense() override;
 
 protected:
 	// Called when the game starts or when spawned
