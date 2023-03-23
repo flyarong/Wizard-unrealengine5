@@ -5,6 +5,7 @@
 #include "Sound/SoundCue.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Wizard/WizardTypes/InputContextTypes.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 
 void UEndTurnButtonWidget::NativeConstruct()
@@ -25,11 +26,17 @@ void UEndTurnButtonWidget::OnEndTurnButtonClicked()
 	if (WController) {
 		if (ClickSound) PlaySound(ClickSound);
 		if (bPlayerEndedTurn) {
+			FInputModeGameAndUI InputMode;
+			WController->SetInputMode(InputMode);
+			WController->SetInputContext(EInputContext::EIC_Default);
 			WController->ServerCancelEndTurn();
 			if (EndTurnText) EndTurnText->SetText(FText::FromString(TEXT("End Turn")));
 			bPlayerEndedTurn = false;
 		}
 		else {
+			FInputModeUIOnly InputMode;
+			WController->SetInputMode(InputMode);
+			WController->SetInputContext(EInputContext::EIC_None);
 			WController->ServerEndTurn();
 			if (EndTurnText) EndTurnText->SetText(FText::FromString(TEXT("Cancel")));
 			bPlayerEndedTurn = true;
