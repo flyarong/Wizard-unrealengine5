@@ -19,6 +19,16 @@ void UCombatMenuWidget::BindEventsToButtons()
 		else { // Can't cancel defending
 			CancelButton->RemoveFromParent();
 		}
+
+		// TODO check number of spells at Character
+		if (WCharacter->GetCombat()->GetCombatTarget() && WCharacter->GetCombat()->GetCombatTarget()->ActorHasTag("Enemy")) {
+			DarkSpellButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnDarkSpellButtonClicked);
+			GoodSpellButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnGoodSpellButtonClicked);
+		}
+		else {
+			DarkSpellButton->RemoveFromParent();
+			GoodSpellButton->RemoveFromParent();
+		}
 	}
 }
 
@@ -40,4 +50,12 @@ void UCombatMenuWidget::OnCancelButtonClicked()
 		RemoveFromParent();
 		WCharacter->GetAction()->ServerCancelCombat();
 	}
+}
+
+void UCombatMenuWidget::OnDarkSpellButtonClicked()
+{
+}
+
+void UCombatMenuWidget::OnGoodSpellButtonClicked()
+{
 }

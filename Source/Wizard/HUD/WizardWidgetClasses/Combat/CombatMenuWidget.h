@@ -27,6 +27,12 @@ private:
 	class UButton* StartButton;
 
 	UPROPERTY(meta = (BindWidget))
+	UButton* DarkSpellButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* GoodSpellButton;
+
+	UPROPERTY(meta = (BindWidget))
 	UButton* CancelButton;
 
 	UFUNCTION()
@@ -34,6 +40,12 @@ private:
 
 	UFUNCTION()
 	void OnCancelButtonClicked();
+
+	UFUNCTION()
+	void OnDarkSpellButtonClicked();
+
+	UFUNCTION()
+	void OnGoodSpellButtonClicked();
 
 public:
 	FORCEINLINE UScaleBox* GetSpellMapBox() const { return SpellMapBox; }
