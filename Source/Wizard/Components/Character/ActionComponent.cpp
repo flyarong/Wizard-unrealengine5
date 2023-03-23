@@ -164,9 +164,10 @@ void UActionComponent::ClientAddLocalMessage_Implementation(const FString& Messa
 #pragma endregion
 
 #pragma region Combat
-void UActionComponent::ServerInitCombat_Implementation()
+void UActionComponent::ServerInitAttackCombat_Implementation()
 {
-	if (Character && Character->GetCombat() && OverlappedWizardActor) {
+	if (Character && Character->GetCombat() && OverlappedWizardActor && !bInCombat) {
+		bInCombat = true; // TODO can be used for checking this state when implementing item switching between Characters
 		AActor* CombatTargetActor = Cast<AActor>(OverlappedWizardActor.GetObject());
 		if (CombatTargetActor) {
 			OverlappedWizardActor->SetCanInteract(false);
@@ -176,9 +177,24 @@ void UActionComponent::ServerInitCombat_Implementation()
 	}
 }
 
+void UActionComponent::SetAttacker(AActor* NewAttacker)
+{
+	if (NewAttacker) Attackers.Insert(NewAttacker, 0);
+}
+
+void UActionComponent::InitDefenseCombat(AActor* Attacker)
+{
+	if (Character && Character->GetCombat() && Attacker && Attacker == Attackers.Last()) { // can't attack Character being attacked by other Enemy
+		MulticastAimCharacterToTarget(Attacker);
+		bInCombat = true;
+		Character->GetCombat()->InitCombat(Attacker, false);
+	}
+}
+
 void UActionComponent::ServerCancelCombat_Implementation()
 {
 	if (Character && Character->GetCombat()) {
+		bInCombat = false;
 		Character->GetCombat()->StopCombat();
 	}
 
@@ -200,13 +216,22 @@ void UActionComponent::ServerValidateCombatInput_Implementation(int32 Input)
 	}
 }
 
-void UActionComponent::EndCombat()
+void UActionComponent::EndAttack()
 {
-	if (Character && Character->GetCombat()) {
-		Character->GetCombat()->StopCombat();
-	}
+	bInCombat = false;
 
 	if (OverlappedWizardActor) OverlappedWizardActor->SetCanInteract(true);
+}
+
+void UActionComponent::EndDefense()
+{
+	if (Character && Character->GetCombat()) {
+		bInCombat = false;
+		Attackers.Pop();
+		if (Attackers.Num() > 0) { // if there are still Attackers waiting to attack
+			OnDefenseCombatEndedDelegate.Broadcast(Character, Attackers.Last());
+		}
+	}
 }
 
 void UActionComponent::MulticastAimCharacterToTarget_Implementation(AActor* Target)

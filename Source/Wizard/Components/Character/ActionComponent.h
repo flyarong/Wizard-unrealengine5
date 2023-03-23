@@ -8,6 +8,13 @@
 #include "Wizard/WizardTypes/AttributeTypes.h"
 #include "ActionComponent.generated.h"
 
+/// <summary>
+/// Delegate for broadcasting when the
+/// Defense Combat has ended for the Character
+/// </summary>
+/// <param name="AttackedCharacter">The Character</param>
+/// <param name="NewAttacker">Next opponent to defend against</param>
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDefenseCombatEndedDelegate, class AWizardCharacter*, AttackedCharacter, class AActor*, NewAttacker);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WIZARD_API UActionComponent : public UActorComponent
@@ -54,11 +61,25 @@ public:
 	void ServerBuyItem(const FItemDataTable& ItemRow);
 	
 	/// <summary>
-	/// Server RPC to initiate Combat against
+	/// Server RPC to initiate Attack Combat against
 	/// a WizardCombatActor
 	/// </summary>
 	UFUNCTION(Server, Reliable)
-	void ServerInitCombat();
+	void ServerInitAttackCombat();
+
+	/// <summary>
+	/// Function that adds a new Attacker
+	/// Combat Actor to the list of Attackers
+	/// </summary>
+	/// <param name="NewAttacker">New Attacker who wants to Attack the Character</param>
+	void SetAttacker(AActor* NewAttacker);
+
+	/// <summary>
+	/// Function to initialize Defense
+	/// Combat
+	/// </summary>
+	/// <param name="Attacker">Attacking Actor</param>
+	void InitDefenseCombat(AActor* Attacker);
 
 	/// <summary>
 	/// Server RPC to cancel the Combat
@@ -80,9 +101,20 @@ public:
 	void ServerValidateCombatInput(int32 Input);
 
 	/// <summary>
-	/// Function to end the Combat
+	/// Function to end the Attack Combat
 	/// </summary>
-	void EndCombat();
+	void EndAttack();
+
+	/// <summary>
+	/// Function to end the Defense Combat
+	/// </summary>
+	void EndDefense();
+
+	/// <summary>
+	/// Delegate to broadcast when the Character
+	/// has ended Defense Combat
+	/// </summary>
+	FOnDefenseCombatEndedDelegate OnDefenseCombatEndedDelegate;
 
 protected:
 	// Called when the game starts
@@ -178,7 +210,20 @@ private:
 	void ClientAddLocalMessage(const FString& Message, EAttribute AttributeType);
 #pragma endregion
 
-#pragma region Combat		
+#pragma region Combat	
+	/// <summary>
+	/// Boolean for whether or not the Character is in Combat
+	/// </summary>
+	UPROPERTY()
+	bool bInCombat = false;
+
+	/// <summary>
+	/// Array of Combat Actors currently overlapping
+	/// the Character to attack
+	/// </summary>
+	UPROPERTY()
+	TArray<AActor*> Attackers = TArray<AActor*>();
+
 	/// <summary>
 	/// Multicast RPC to make the Character
 	/// face the Target Combat Actor
@@ -192,4 +237,5 @@ public:
 	FORCEINLINE ADistrict* GetCurrentDistrict() const { return CurrentDistrict; }
 	void SetCurrentDistrict(ADistrict* District);
 	FORCEINLINE const TScriptInterface<IWizardActor>& GetOverlappedWizardActor() const { return OverlappedWizardActor; }
+	FORCEINLINE bool GetIsInCombat() const { return bInCombat; }
 };

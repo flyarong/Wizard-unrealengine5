@@ -404,4 +404,5 @@ private:
 
 public:
 	FORCEINLINE float GetIsAttacking() const { return bIsAttacking; }
+	FORCEINLINE AActor* GetCombatTarget() const { return Cast<AActor>(CombatTarget.GetObject()); }
 };

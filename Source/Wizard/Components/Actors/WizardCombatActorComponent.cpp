@@ -5,6 +5,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/SphereComponent.h"
 #include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Components/Character/ActionComponent.h"
 
 // Sets default values for this component's properties
 UWizardCombatActorComponent::UWizardCombatActorComponent()
@@ -20,13 +21,7 @@ UWizardCombatActorComponent::UWizardCombatActorComponent()
 void UWizardCombatActorComponent::SetupComponent(AActor* OwningActor, USphereComponent* Sphere)
 {
 	Owner = OwningActor;
-
-	// Setup Events
-	if (Owner && Owner->HasAuthority() && Sphere) {
-		Sphere->OnComponentBeginOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorBeginOverlap);
-		Sphere->OnComponentEndOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorEndOverlap);
-		Owner->OnDestroyed.AddDynamic(this, &UWizardCombatActorComponent::SpawnPickupItem);
-	}
+	AreaSphere = Sphere;
 }
 
 void UWizardCombatActorComponent::BeginPlay()
@@ -51,20 +46,71 @@ void UWizardCombatActorComponent::GetLifetimeReplicatedProps(TArray<FLifetimePro
 	DOREPLIFETIME(UWizardCombatActorComponent, bCanInteract);
 }
 
-void UWizardCombatActorComponent::OnActorBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UWizardCombatActorComponent::SetupAttackEvents()
+{
+	// Setup Attack Events
+	if (Owner && Owner->HasAuthority() && AreaSphere) {
+		if (AreaSphere->OnComponentBeginOverlap.IsBound())
+			AreaSphere->OnComponentBeginOverlap.RemoveDynamic(this, &UWizardCombatActorComponent::OnActorBeginDefenseOverlap);
+		if (AreaSphere->OnComponentEndOverlap.IsBound())
+			AreaSphere->OnComponentEndOverlap.RemoveDynamic(this, &UWizardCombatActorComponent::OnActorEndOverlap);
+
+		AttackedCharacter = nullptr;
+		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorBeginAttackOverlap);
+	}
+}
+
+void UWizardCombatActorComponent::SetupDefendEvents()
+{
+	// Setup Defense Events
+	if (Owner && Owner->HasAuthority() && AreaSphere) {
+		AttackedCharacter = nullptr;
+
+		if (AreaSphere->OnComponentBeginOverlap.IsBound())
+			AreaSphere->OnComponentBeginOverlap.RemoveDynamic(this, &UWizardCombatActorComponent::OnActorBeginAttackOverlap);
+
+		if (!AreaSphere->OnComponentBeginOverlap.IsBound())
+			AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorBeginDefenseOverlap);
+		if (!AreaSphere->OnComponentEndOverlap.IsBound())
+			AreaSphere->OnComponentEndOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorEndOverlap);
+		if (!Owner->OnDestroyed.IsBound())
+			Owner->OnDestroyed.AddDynamic(this, &UWizardCombatActorComponent::SpawnPickupItem);
+	}
+}
+
+void UWizardCombatActorComponent::OnActorBeginAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
+	if (Character && Character->GetAction() && Owner && AttackedCharacter == nullptr) { 
+		AttackedCharacter = Character;
+		if (AttackedCharacter && AttackedCharacter->GetAction()) { 
+			AttackedCharacter->GetAction()->OnDefenseCombatEndedDelegate.AddDynamic(this, &ThisClass::OnCharacterEndedDefense);
+			AttackedCharacter->GetAction()->SetAttacker(Owner);
+			AttackedCharacter->GetAction()->InitDefenseCombat(Owner);
+		}
+	}
+}
+
+void UWizardCombatActorComponent::OnActorBeginDefenseOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction() && Owner) {
 		Character->GetAction()->SetCurrentWizardActor(Owner);
-		// TODO call Action Defend Combat in Enemy GameState & and set bCanInteract to false
 	}
 }
 
 void UWizardCombatActorComponent::OnActorEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	if (Character && Character->GetAction()) { // TODO can't do this in Enemy GameState
+	if (Character && Character->GetAction()) {
 		Character->GetAction()->LeaveWizardActor();
+	}
+}
+
+void UWizardCombatActorComponent::OnCharacterEndedDefense(AWizardCharacter* CharacterAttacked, AActor* NewAttacker)
+{
+	if (Owner && Owner->HasAuthority() && CharacterAttacked == AttackedCharacter && NewAttacker == Owner) {
+		AttackedCharacter->GetAction()->InitDefenseCombat(Owner);
 	}
 }
 

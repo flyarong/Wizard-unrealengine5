@@ -155,6 +155,7 @@ void UCombatComponent::StopCombat()
 	if (Steps.Num() > 0) Steps = TArray<int32>();
 	if (SpellIndexes.Num() > 0) SpellIndexes = TArray<int32>();
 	CombatTarget = nullptr;
+	Successes = 0.f;
 	SuccessRate = 0.f;
 	
 	if (Character && Character->IsLocallyControlled()) Reset();
@@ -164,7 +165,6 @@ void UCombatComponent::Reset()
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
 	if (WController) {
-		WController->SetInputContext(EInputContext::EIC_Default);
 		WController->ResetHUD();
 	}
 }
@@ -205,12 +205,14 @@ void UCombatComponent::SetCurrentSpellStep()
 		if (bIsAttacking) {
 			Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
 			CalculateCombatAttackResult();
+			StopCombat();
+			Character->GetAction()->EndAttack();
 		}
 		else {
 			CalculateCombatDefendResult();
+			StopCombat();
+			Character->GetAction()->EndDefense();
 		}
-
-		Character->GetAction()->EndCombat();
 	}
 }
 
@@ -243,7 +245,7 @@ void UCombatComponent::CalculateCombatDefendResult()
 {
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (Result >= CombatTarget->GetBaseDamage()) { // Success
-		MulticastCombatSuccess(); // TODO change to defend
+		MulticastCombatSuccess();
 		
 		// TODO apply damage on enemy if Spell was used, instead of QTE
 	}
@@ -337,8 +339,10 @@ void UCombatComponent::ValidateInput(int32 Input)
 
 void UCombatComponent::OnRep_Successes()
 {
-	bSpellBarShouldUpdate = true;
-	bStepWasSuccessful = true;
+	if (Successes > 0.f) {
+		bSpellBarShouldUpdate = true;
+		bStepWasSuccessful = true;
+	}
 }
 
 void UCombatComponent::UpdateSpellBar(float DeltaTime)
@@ -364,7 +368,9 @@ void UCombatComponent::MulticastResetSpellBar_Implementation()
 void UCombatComponent::MulticastStartCombat_Implementation()
 {
 	Character->SetIsInCombat(true);
-	PlayCombatMontage(FName("Start"));
+	Character->SetIsAttacking(bIsAttacking);
+	FName MontageSection = bIsAttacking ? FName("AttackStart") : FName("DefendStart");
+	PlayCombatMontage(MontageSection);
 	Character->PlaySound(StartSound);
 	PlayNiagaraEffect(CastEffect);
 }
@@ -383,9 +389,10 @@ void UCombatComponent::MulticastCombatSuccess_Implementation()
 {
 	Character->PlaySound(SuccessSound);
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
-	PlayCombatMontage(FName("Success"));
-	Character->PlaySound(HitSound);
+	FName MontageSection = bIsAttacking ? FName("AttackSuccess") : FName("DefendSuccess");
+	PlayCombatMontage(MontageSection);
 	PlayNiagaraEffect(HitEffect);
+	Character->PlaySound(HitSound);
 	Character->SetIsInCombat(false);
 }
 
@@ -393,7 +400,8 @@ void UCombatComponent::MulticastCombatFail_Implementation()
 {
 	Character->PlaySound(FailSound);
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
-	PlayCombatMontage(FName("Fail"));
+	FName MontageSection = bIsAttacking ? FName("AttackFail") : FName("DefendFail");
+	PlayCombatMontage(MontageSection);
 	Character->SetIsInCombat(false);
 }
 

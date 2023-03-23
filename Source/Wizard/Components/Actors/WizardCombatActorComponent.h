@@ -27,6 +27,18 @@ public:
 	void SetupComponent(class AActor* OwningActor, class USphereComponent* Sphere);
 
 	/// <summary>
+	/// Function that sets up the Events and Callbacks for attacking
+	/// against WizardCharacters
+	/// </summary>
+	void SetupAttackEvents();
+
+	/// <summary>
+	/// Function that sets up the Events and Callbacks for defending
+	/// against WizardCharacters
+	/// </summary>
+	void SetupDefendEvents();
+
+	/// <summary>
 	/// Function to damage the Actor after Combat
 	/// </summary>
 	void ReceiveDamage(int32 Damage);
@@ -49,6 +61,19 @@ private:
 	/// </summary>
 	UPROPERTY()
 	AActor* Owner;
+
+	/// <summary>
+	/// Pointer to the Character the Owner
+	/// has attacked
+	/// </summary>
+	UPROPERTY()
+	class AWizardCharacter* AttackedCharacter;
+
+	/// <summary>
+	/// Owner's AreaSphere
+	/// </summary>
+	UPROPERTY()
+	class USphereComponent* AreaSphere;
 
 	/// <summary>
 	/// Item classes that can be spawned and picked up
@@ -105,7 +130,17 @@ private:
 	void SpawnPickupItem(AActor* DestroyedActor);
 
 	UFUNCTION()
-	void OnActorBeginOverlap(
+	void OnActorBeginAttackOverlap(
+		UPrimitiveComponent* OverlappedComponent,
+		AActor* OtherActor,
+		UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex,
+		bool bFromSweep,
+		const FHitResult& SweepResult
+	);
+
+	UFUNCTION()
+	void OnActorBeginDefenseOverlap(
 		UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
 		UPrimitiveComponent* OtherComp,
@@ -121,6 +156,15 @@ private:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex
 	);
+
+	/// <summary>
+	/// Callback function to when the AttackedCharacter
+	/// has ended their Defense Combat
+	/// </summary>
+	/// <param name="CharacterAttacked">Character attacked by Owner</param>
+	/// <param name="NewAttacker">The new Attacker in line</param>
+	UFUNCTION()
+	void OnCharacterEndedDefense(AWizardCharacter* CharacterAttacked, AActor* NewAttacker);
 #pragma endregion
 
 	// <summary>
