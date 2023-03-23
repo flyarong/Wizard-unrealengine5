@@ -151,6 +151,13 @@ private:
 	/// </summary>
 	UPROPERTY()
 	bool bIsInCombat = false;
+
+	/// <summary>
+	/// Boolean for whether or not the Character
+	/// is attacking in Combat
+	/// </summary>
+	UPROPERTY()
+	bool bIsAttacking = true;
 #pragma endregion
 
 #pragma region Items
@@ -193,6 +200,8 @@ public:
 	FORCEINLINE TArray<FItemDataTable> GetItems() const { return Items; }
 	FORCEINLINE bool GetIsInCombat() const { return bIsInCombat; }
 	FORCEINLINE void SetIsInCombat(bool bInCombat) { bIsInCombat = bInCombat; }
+	FORCEINLINE bool GetIsAttacking() const { return bIsAttacking; }
+	FORCEINLINE void SetIsAttacking(bool bAttacking) { bIsAttacking = bAttacking; }
 	FORCEINLINE void PlayUseSound() { PlaySound(UseSound); }
 	FORCEINLINE void PlayOpenInventorySound() { PlaySound(OpenInventorySound); }
 };

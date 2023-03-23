@@ -29,6 +29,7 @@ void UWizardAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	if (WizardCharacter) {
 		bIsInCombat = WizardCharacter->GetIsInCombat();
+		bIsAttacking = WizardCharacter->GetIsAttacking();
 	}
 
 	if (WizardCharacterMovement)
