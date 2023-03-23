@@ -39,10 +39,10 @@ protected:
 	virtual void UpdateMiniMap();
 
 	/// <summary>
-	/// Pointer to the game mode
+	/// Pointer to the GameState
 	/// </summary>
 	UPROPERTY()
-	class AWizardGameMode* WizardGameMode;
+	class AWizardGameState* WizardGameState;
 
 	/// <summary>
 	/// PlayerController pointer

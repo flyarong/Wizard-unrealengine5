@@ -3,7 +3,7 @@
 
 #include "PointOfInterestComponent.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
-#include "Wizard/GameModes/WizardGameMode.h"
+#include "Wizard/GameStates/WizardGameState.h"
 #include "Wizard/Stores/Store.h"
 #include "Net/UnrealNetwork.h"
 #include "Kismet/GameplayStatics.h"
@@ -42,10 +42,10 @@ void UPointOfInterestComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void UPointOfInterestComponent::ServerSetupPOI_Implementation(AActor* Owner)
 {
-	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this)) : WizardGameMode;
-	if (WizardGameMode) {
-		WizardGameMode->AddMiniMapActor(Owner);
-		MiniMapActors = WizardGameMode->GetMiniMapActors();
+	WizardGameState = WizardGameState == nullptr ? Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
+	if (WizardGameState) {
+		WizardGameState->AddMiniMapActor(Owner);
+		MiniMapActors = WizardGameState->GetMiniMapActors();
 		UpdateMiniMap();
 	}
 }
