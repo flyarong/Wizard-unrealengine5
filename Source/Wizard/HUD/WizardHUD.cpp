@@ -59,6 +59,9 @@ void AWizardHUD::ShowRightPanel()
 {
 	if (WizardOverlay) {
 		if (WizardOverlay->GetEndTurnButton()) WizardOverlay->GetEndTurnButton()->SetIsButtonEnabled(true);
+		if (WizardOverlay->GetProfileButton()) WizardOverlay->GetProfileButton()->SetIsEnabled(true);
+		if (WizardOverlay->GetInventoryButton()) WizardOverlay->GetInventoryButton()->SetIsEnabled(true);
+		if (WizardOverlay->GetSettingsButton()) WizardOverlay->GetSettingsButton()->SetIsEnabled(true);
 		WizardOverlay->PlayRightSideFadeInAnimation();
 	}
 }
@@ -67,6 +70,9 @@ void AWizardHUD::HideRightPanel()
 {
 	if (WizardOverlay) {
 		if (WizardOverlay->GetEndTurnButton()) WizardOverlay->GetEndTurnButton()->SetIsButtonEnabled(false);
+		if (WizardOverlay->GetProfileButton()) WizardOverlay->GetProfileButton()->SetIsEnabled(false);
+		if (WizardOverlay->GetInventoryButton()) WizardOverlay->GetInventoryButton()->SetIsEnabled(false);
+		if (WizardOverlay->GetSettingsButton()) WizardOverlay->GetSettingsButton()->SetIsEnabled(false);
 		WizardOverlay->PlayRightSideFadeOutAnimation();
 	}
 }
@@ -76,6 +82,15 @@ void AWizardHUD::ClearTopRightBox()
 	if (WizardOverlay && WizardOverlay->GetTopRightBox()) {
 		if (WizardOverlay->GetTopRightBox()->HasAnyChildren()) {
 			WizardOverlay->GetTopRightBox()->ClearChildren();
+		}
+	}
+}
+
+void AWizardHUD::ClearTopCenterBox()
+{
+	if (WizardOverlay && WizardOverlay->GetTopCenterBox()) {
+		if (WizardOverlay->GetTopCenterBox()->HasAnyChildren()) {
+			WizardOverlay->GetTopCenterBox()->ClearChildren();
 		}
 	}
 }
@@ -94,15 +109,6 @@ void AWizardHUD::ClearBottomBox()
 	if (WizardOverlay && WizardOverlay->GetBottomBox()) {
 		if (WizardOverlay->GetBottomBox()->HasAnyChildren()) {
 			WizardOverlay->GetBottomBox()->ClearChildren();
-		}
-	}
-}
-
-void AWizardHUD::HideTopCenterBox()
-{
-	if (WizardOverlay && WizardOverlay->GetTopCenterBox()) {
-		if (WizardOverlay->GetTopCenterBox()->HasAnyChildren()) {
-			WizardOverlay->GetTopCenterBox()->ClearChildren();
 		}
 	}
 }
@@ -387,6 +393,9 @@ void AWizardHUD::CreateCombatScore()
 		UCombatScoreWidget* CombatScoreWidget = CreateWidget<UCombatScoreWidget>(GetOwningPlayerController(), WizardOverlay->GetCombatScoreWidgetClass());
 		if (CombatScoreWidget && WizardOverlay->GetBottomBox()) {
 			WizardOverlay->SetCombatScoreWidget(CombatScoreWidget);
+			if (WizardOverlay->GetBottomBox()->HasAnyChildren()) {
+				WizardOverlay->GetBottomBox()->ClearChildren();
+			}
 			WizardOverlay->GetBottomBox()->AddChild(WizardOverlay->GetCombatScoreWidget());
 		}
 	}

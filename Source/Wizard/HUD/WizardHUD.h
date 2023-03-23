@@ -47,7 +47,7 @@ public:
 	/// <summary>
 	/// Function to hide the Top Center Box from the Overlay
 	/// </summary>
-	void HideTopCenterBox();
+	void ClearTopCenterBox();
 
 	/// <summary>
 	/// Function to show the Left Side Panel
@@ -244,7 +244,6 @@ public:
 	/// Function to create the Combat Score
 	/// on the Overlay
 	/// </summary>
-	/// <param name="Score">The Combat Score</param>
 	void CreateCombatScore();
 
 	/// <summary>
