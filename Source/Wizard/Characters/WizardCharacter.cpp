@@ -2,6 +2,7 @@
 
 #include "WizardCharacter.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
+#include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Wizard.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/DecalComponent.h"
@@ -162,6 +163,7 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 		// Setup WizardOverlay
 		PlayerController->SetupOverlay();
 		PlayerController->SetShowMouseCursor(true);
+		PlayerController->OnMatchStateSet(MatchState::InProgress);
 
 		// Setup Point of Interest on Minimap
 		POI->ServerSetupPOI(this);

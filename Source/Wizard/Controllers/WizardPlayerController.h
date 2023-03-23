@@ -83,6 +83,13 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerCancelEndTurn();
 
+	/// <summary>
+	/// Function which is called when
+	/// the MatchState changes in the GameMode
+	/// </summary>
+	/// <param name="NewMatchState">New MatchState</param>
+	void OnMatchStateSet(FName NewMatchState);
+
 #pragma region HUD/Player
 	/// <summary>
 	/// Function for setting the current district
@@ -291,6 +298,20 @@ public:
 	void AddHUDCombatScore(int32 Score);
 #pragma endregion
 
+#pragma region HUD/MatchStates
+	/// <summary>
+	/// Function that sets up the HUD
+	/// after the Turn has ended
+	/// </summary>
+	void SetupHUDPostTurn();
+
+	/// <summary>
+	/// Function that sets up the HUD
+	/// before the new Turn starts
+	/// </summary>
+	void SetupHUDPreTurn();
+#pragma endregion
+
 #pragma region InputPointers
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -391,6 +412,12 @@ private:
 	class AWizardGameMode* WizardGameMode;
 
 	/// <summary>
+	/// Pointer to the GameState
+	/// </summary>
+	UPROPERTY()
+	class AWizardGameState* WizardGameState;
+
+	/// <summary>
 	/// Pointer to the PlayerState
 	/// </summary>
 	UPROPERTY()
@@ -415,6 +442,15 @@ private:
 	/// </summary>
 	UPROPERTY()
 	bool bWizardOverlayInitialized = false;
+
+	/// <summary>
+	/// Variable storing the current MatchState
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_MatchState)
+	FName MatchState;
+
+	UFUNCTION()
+	void OnRep_MatchState();
 
 	/// <summary>
 	/// Boolean for whether or not the Player

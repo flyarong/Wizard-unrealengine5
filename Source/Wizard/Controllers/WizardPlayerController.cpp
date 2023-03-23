@@ -8,6 +8,8 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Wizard/Interfaces/WizardCombatActor.h"
+#include "Wizard/GameModes/WizardGameMode.h"
+#include "Wizard/GameStates/WizardGameState.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -15,7 +17,6 @@
 #include "Wizard/Pawns/GameplayCamera.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/HUD/WizardHUD.h"
-#include "Wizard/GameModes/WizardGameMode.h"
 #include "Engine/World.h"
 #include "Net/UnrealNetwork.h"
 #include "EnhancedInputComponent.h"
@@ -56,6 +57,7 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWizardPlayerController, CachedDestination);
+	DOREPLIFETIME(AWizardPlayerController, MatchState);
 	DOREPLIFETIME(AWizardPlayerController, bCanCastSpell);
 }
 
@@ -94,7 +96,6 @@ void AWizardPlayerController::SetupOverlay()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD && bWizardOverlayInitialized && WizardCharacter && WizardCharacter->GetAttribute()) {
-		WizardHUD->HideTopCenterBox();
 		SetHUDHealth(WizardCharacter->GetAttribute()->GetHealth(), WizardCharacter->GetAttribute()->GetMaxHealth());
 		SetHUDPower(WizardCharacter->GetAttribute()->GetPower(), WizardCharacter->GetAttribute()->GetMaxPower());
 		SetHUDXP(WizardCharacter->GetAttribute()->GetXP());
@@ -105,8 +106,6 @@ void AWizardPlayerController::SetupOverlay()
 		SetHUDWisdom(WizardCharacter->GetAttribute()->GetWisdom());
 		SetHUDIntelligence(WizardCharacter->GetAttribute()->GetIntelligence());
 		SetHUDAgility(WizardCharacter->GetAttribute()->GetAgility());
-		WizardHUD->ShowLeftPanel();
-		WizardHUD->ShowRightPanel();
 	}
 }
 #pragma endregion
@@ -436,9 +435,9 @@ void AWizardPlayerController::SetHUDPOIOnMiniMap(AActor* POIOwner)
 
 void AWizardPlayerController::ServerDestroyPOI_Implementation(AActor* POIOwner)
 {
-	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(UGameplayStatics::GetGameMode(this)) : WizardGameMode;
-	if (WizardGameMode && POIOwner) {
-		WizardGameMode->RemoveMiniMapActor(POIOwner);
+	WizardGameState = WizardGameState == nullptr ? Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
+	if (WizardGameState && POIOwner) {
+		WizardGameState->RemoveMiniMapActor(POIOwner);
 	}
 }
 #pragma endregion
@@ -517,9 +516,11 @@ void AWizardPlayerController::AddHUDCombatMenu()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		WizardHUD->HideTopCenterBox();
-		WizardHUD->HideLeftPanel();
-		WizardHUD->HideRightPanel();
+		WizardHUD->ClearTopCenterBox();
+		if (MatchState == MatchState::InProgress) {
+			WizardHUD->HideLeftPanel();
+			WizardHUD->HideRightPanel();
+		}
 		WizardHUD->CreateCombatScore();
 		WizardHUD->AddCombatMenu();
 	}
@@ -529,12 +530,18 @@ void AWizardPlayerController::ResetHUD()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
-		SetShowMouseCursor(true);
 		WizardHUD->ClearCenterBox();
 		WizardHUD->ClearBottomBox();
 		WizardHUD->RemoveSpellMap();
-		WizardHUD->ShowLeftPanel();
-		WizardHUD->ShowRightPanel();
+		if (MatchState == MatchState::InProgress) {
+			SetShowMouseCursor(true);
+			WizardHUD->ShowLeftPanel();
+			WizardHUD->ShowRightPanel();
+			SetInputContext(EInputContext::EIC_Default);
+		}
+		else {
+			SetInputContext(EInputContext::EIC_None);
+		}
 	}
 }
 
@@ -571,6 +578,37 @@ void AWizardPlayerController::AddHUDCombatScore(int32 Score)
 }
 #pragma endregion
 
+#pragma region HUD/MatchStates
+void AWizardPlayerController::SetupHUDPostTurn()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		FInputModeGameAndUI InputMode;
+		SetInputMode(InputMode);
+		WizardHUD->ClearTopRightBox();
+		WizardHUD->ClearCenterBox();
+		WizardHUD->ClearBottomBox();
+		WizardHUD->ClearTopCenterBox();
+		WizardHUD->HideLeftPanel();
+		WizardHUD->HideRightPanel();
+	}
+}
+
+void AWizardPlayerController::SetupHUDPreTurn()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		SetInputContext(EInputContext::EIC_Default);
+		WizardHUD->ClearTopRightBox();
+		WizardHUD->ClearCenterBox();
+		WizardHUD->ClearBottomBox();
+		WizardHUD->ClearTopCenterBox();
+		WizardHUD->ShowLeftPanel();
+		WizardHUD->ShowRightPanel();
+	}
+}
+#pragma endregion
+
 void AWizardPlayerController::ServerEndTurn_Implementation()
 {
 	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;
@@ -584,5 +622,27 @@ void AWizardPlayerController::ServerCancelEndTurn_Implementation()
 	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;
 	if (WizardGameMode) {
 		WizardGameMode->DecrementPlayersFinished();
+	}
+}
+
+void AWizardPlayerController::OnMatchStateSet(FName NewMatchState)
+{
+	MatchState = NewMatchState;
+
+	if (MatchState == MatchState::InProgress) {
+		SetupHUDPreTurn();
+	}
+	else if (MatchState == MatchState::Enemy) {
+		SetupHUDPostTurn();
+	}
+}
+
+void AWizardPlayerController::OnRep_MatchState()
+{
+	if (MatchState == MatchState::InProgress) {
+		SetupHUDPreTurn();
+	}
+	else if (MatchState == MatchState::Enemy) {
+		SetupHUDPostTurn();
 	}
 }
