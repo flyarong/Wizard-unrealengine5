@@ -57,6 +57,7 @@ void AStore::BeginPlay()
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 
 	ShowInteractWidget(false);
+	Tags.Add(FName("WizardActor"));
 
 	POI->ServerSetupPOI(this);
 
@@ -88,6 +89,7 @@ void AStore::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimePr
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AStore, Catalog);
+	DOREPLIFETIME(AStore, bCanInteract);
 }
 
 void AStore::ShowInteractWidget(bool bShowInteractWidget)
@@ -97,12 +99,24 @@ void AStore::ShowInteractWidget(bool bShowInteractWidget)
 	}
 }
 
+#pragma region Interface Overrides
 UTexture2D* AStore::GetIcon()
 {
 	if (POI) return POI->GetIconImage();
 
 	return nullptr;
 }
+
+bool AStore::GetCanInteract()
+{
+	return bCanInteract;
+}
+
+void AStore::SetCanInteract(bool bIsInteractable)
+{
+	bCanInteract = bIsInteractable;
+}
+#pragma endregion
 
 #pragma region Catalog
 void AStore::CreateCatalog()
@@ -222,7 +236,7 @@ void AStore::OnStoreClicked(UPrimitiveComponent* TouchedComp, FKey ButtonPressed
 	if (PlayerController) {
 		AWizardCharacter* Character = PlayerController->GetWizardCharacter() ? PlayerController->GetWizardCharacter() :
 			Cast<AWizardCharacter>(PlayerController->GetPawn());
-		if (Character && Character->GetAction() &&
+		if (Character && Character->GetAction() && bCanInteract &&
 			Character->GetAction()->GetOverlappedWizardActor() == this) {
 			Character->GetAction()->OpenCatalog();
 		}

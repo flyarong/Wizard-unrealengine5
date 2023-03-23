@@ -19,6 +19,8 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void ShowInteractWidget(bool bShowInteractWidget) override;
 	virtual class UTexture2D* GetIcon() override;
+	virtual bool GetCanInteract() override;
+	virtual void SetCanInteract(bool bIsInteractable) override;
 
 	/// <summary>
 	/// Function to add a new random
@@ -64,6 +66,13 @@ private:
 	/// </summary>
 	UPROPERTY()
 	TArray<FItemDataTable> Products;
+
+	/// <summary>
+	/// Whether or not Players can interact
+	/// with this Store
+	/// </summary>
+	UPROPERTY(Replicated)
+	bool bCanInteract = true;
 
 	/// <summary>
 	/// Function to create the Catalog
