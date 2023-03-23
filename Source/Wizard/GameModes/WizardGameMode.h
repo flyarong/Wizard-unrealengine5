@@ -7,6 +7,13 @@
 #include "Wizard/WizardTypes/AttributeTypes.h"
 #include "WizardGameMode.generated.h"
 
+namespace MatchState
+{
+	extern WIZARD_API const FName Enemy;
+	extern WIZARD_API const FName Trial;
+	extern WIZARD_API const FName Prepare;
+}
+
 UCLASS(minimalapi)
 class AWizardGameMode : public AGameMode
 {
@@ -16,20 +23,6 @@ public:
 	AWizardGameMode();
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
-
-	/// <summary>
-	/// Function to add a new Actor to the
-	/// MiniMapActors array
-	/// </summary>
-	/// <param name="MiniMapActor">New MiniMap Actor</param>
-	void AddMiniMapActor(class AActor* MiniMapActor);
-
-	/// <summary>
-	/// Function to remove an Actor from the
-	/// MiniMapActors array
-	/// </summary>
-	/// <param name="MiniMapActor">Actor to remove</param>
-	void RemoveMiniMapActor(AActor* MiniMapActor);
 
 	/// <summary>
 	/// Function to Broadcast the Chat Message
@@ -65,6 +58,11 @@ private:
 	class UWizardGameInstance* WizardGameInstance;
 
 	/// <summary>
+	/// Game State pointer
+	/// </summary>
+	class AWizardGameState* WizardGameState;
+
+	/// <summary>
 	/// Array of Game specific Player Controllers
 	/// </summary>
 	TArray<class AWizardPlayerController*> WizardPlayers;
@@ -81,13 +79,6 @@ private:
 	/// </summary>
 	/// <param name="Controller">The player's controller</param>
 	void InitCharacter(AWizardPlayerController* Controller);
-
-	/// <summary>
-	/// Array holding all the Actors that should be
-	/// displayed on the MiniMap
-	/// </summary>
-	UPROPERTY()
-	TArray<AActor*> MiniMapActors = TArray<AActor*>();
 
 	/// <summary>
 	/// Time since the Level has been started
@@ -115,12 +106,6 @@ private:
 	int32 PlayersFinished = 0;
 
 public:
-
-	/// <summary>
-	/// Get all the Actors present on the MiniMap
-	/// </summary>
-	/// <returns>Actors on MiniMap</returns>
-	TArray<AActor*> GetMiniMapActors() const { return MiniMapActors; }
 
 	/// <summary>
 	/// Public getter for the player's character name

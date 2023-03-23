@@ -3,6 +3,7 @@
 #include "WizardGameMode.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/GameInstance/WizardGameInstance.h"
+#include "Wizard/GameStates/WizardGameState.h"
 #include "Wizard/PlayerStates/WizardPlayerState.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -36,14 +37,31 @@ void AWizardGameMode::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
 
-	if (MatchState == MatchState::InProgress) {
-		if (WizardPlayers.Num() > 0 && !bPlayersInitialized) {
+	WizardGameState = WizardGameState == nullptr ?
+		Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
+
+	if (MatchState == MatchState::InProgress && WizardGameState) {
+		if (!bPlayersInitialized) {
 			for (auto& WizardPlayer : WizardPlayers) {
 				InitCharacter(WizardPlayer);
 			}
 			bPlayersInitialized = true;
 		}
+		else {
+			for (auto& WizardPlayer : WizardPlayers) {
+				WizardPlayer->OnMatchStateSet(MatchState);
+			}
+		}
+		
+		WizardGameState->EnableWizardActors();
+	}
+	else if (MatchState == MatchState::Enemy && WizardGameState) {
+		for (auto& WizardPlayer : WizardPlayers) {
+			WizardPlayer->OnMatchStateSet(MatchState);
+		}
 
+		WizardGameState->DisableWizardActors();
+		WizardGameState->MoveEnemies();
 	}
 }
 
@@ -106,18 +124,6 @@ FName AWizardGameMode::GetPlayerCharacter(FString PlayerName)
 	}
 
 	return FName("Lohion"); // NAME_None
-}
-
-void AWizardGameMode::AddMiniMapActor(AActor* MiniMapActor)
-{
-	if (MiniMapActor) MiniMapActors.AddUnique(MiniMapActor);
-}
-
-void AWizardGameMode::RemoveMiniMapActor(AActor* MiniMapActor)
-{
-	if (MiniMapActors.Contains(MiniMapActor)) {
-		MiniMapActors.Remove(MiniMapActor);
-	}
 }
 
 void AWizardGameMode::BroadcastChatMessage(const FText& Message)
