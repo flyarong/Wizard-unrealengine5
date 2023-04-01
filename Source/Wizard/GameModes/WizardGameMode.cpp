@@ -41,6 +41,8 @@ void AWizardGameMode::OnMatchStateSet()
 		Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
 
 	if (MatchState == MatchState::InProgress && WizardGameState) {
+		PlayersFinished = 0;
+
 		if (!bPlayersInitialized) {
 			for (auto& WizardPlayer : WizardPlayers) {
 				InitCharacter(WizardPlayer);
@@ -62,6 +64,19 @@ void AWizardGameMode::OnMatchStateSet()
 
 		WizardGameState->DisableWizardActors();
 		WizardGameState->MoveEnemies();
+	}
+	else if (MatchState == MatchState::Trial && WizardGameState) {
+		PlayersFinished = 0;
+
+		for (auto& WizardPlayer : WizardPlayers) {
+			WizardPlayer->OnMatchStateSet(MatchState);
+			WizardGameState->StartTrial(WizardPlayer->GetPawn());
+		}
+	}
+	else if (MatchState == MatchState::Prepare && WizardGameState) {
+		if (GEngine) {
+			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Prepare state")));
+		}
 	}
 }
 
@@ -152,7 +167,7 @@ AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute At
 {
 	if (WizardPlayers.Num() > 0 && WizardPlayers[0] && WizardPlayers[0]->GetWizardCharacter() && WizardPlayers[0]->GetWizardCharacter()->GetAttribute()) {
 		int32 LowestValue = WizardPlayers[0]->GetWizardCharacter()->GetAttribute()->GetAttributeValue(AttributeType);
-		int32 AttrValue = -1;
+		int32 AttrValue = WizardPlayers[0]->GetWizardCharacter()->GetAttribute()->GetAttributeValue(AttributeType);
 		TArray<AWizardCharacter*> WCs = TArray<AWizardCharacter*>();
 		WCs.Add(WizardPlayers[0]->GetWizardCharacter());
 		for (int32 i = 1; i < WizardPlayers.Num(); i++) {
@@ -178,15 +193,55 @@ AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute At
 	return nullptr;
 }
 
+AWizardCharacter* AWizardGameMode::GetClosestCharacter(AActor* Enemy)
+{
+	if (WizardPlayers.Num() > 0 && WizardPlayers[0] && WizardPlayers[0]->GetWizardCharacter() && Enemy) {
+		AWizardCharacter* ClosestCharacter = WizardPlayers[0]->GetWizardCharacter();
+		float ClosestDistance = (WizardPlayers[0]->GetWizardCharacter()->GetActorLocation() - Enemy->GetActorLocation()).Size();
+		float Distance = (WizardPlayers[0]->GetWizardCharacter()->GetActorLocation() - Enemy->GetActorLocation()).Size();
+		for (int32 i = 1; i < WizardPlayers.Num(); i++) {
+			if (WizardPlayers[i]) {
+				AWizardCharacter* WC = WizardPlayers[i]->GetWizardCharacter();
+				if (WC) {
+					Distance = (WC->GetActorLocation() - Enemy->GetActorLocation()).Size();
+					if (Distance < ClosestDistance) {
+						ClosestDistance = Distance;
+						ClosestCharacter = WC;
+					}
+				}
+			}
+		}
+
+		return ClosestCharacter;
+	}
+
+	return nullptr;
+}
+
 void AWizardGameMode::IncrementPlayersFinished()
 {
 	PlayersFinished++;
+
+	// Only used in InProgress and Trial MatchStates
 	if (PlayersFinished >= WizardPlayers.Num()) {
-		SetMatchState(MatchState::Enemy);
+		const FName NextState = MatchState == MatchState::InProgress ? MatchState::Enemy : MatchState::Prepare;
+		SetMatchState(NextState);
 	}
 }
 
 void AWizardGameMode::DecrementPlayersFinished()
 {
 	PlayersFinished--;
+}
+
+void AWizardGameMode::IncrementEnemiesFinished()
+{
+	WizardGameState = WizardGameState == nullptr ?
+		Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
+	if (WizardGameState) {
+		WizardGameState->IncrementEnemies();
+		if (WizardGameState->EnemiesFinishedTheirTurn()) {
+			SetMatchState(MatchState::Trial);
+		}
+	}
 }

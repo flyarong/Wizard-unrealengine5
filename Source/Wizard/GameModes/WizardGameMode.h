@@ -45,6 +45,14 @@ public:
 	/// <param name="AttributeType">Attribute the min search is based on</param>
 	/// <returns>Character with the lowest type of Attribute</returns>
 	AWizardCharacter* GetCharacterWithLowestAttribute(EAttribute AttributeType);
+	
+	/// <summary>
+	/// Function that gets the closest Wizard Character
+	/// to an Enemy
+	/// </summary>
+	/// <param name="Enemy">Enemy to check the closest Character to</param>
+	/// <returns>Character closest to the Enemy</returns>
+	AWizardCharacter* GetClosestCharacter(class AActor* Enemy);
 
 protected:
 	virtual void BeginPlay() override;
@@ -116,6 +124,7 @@ public:
 
 	void IncrementPlayersFinished();
 	void DecrementPlayersFinished();
+	void IncrementEnemiesFinished();
 };
 
 
