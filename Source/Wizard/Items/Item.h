@@ -127,8 +127,5 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class UNiagaraSystem* PickupEffect;
-	
-	UFUNCTION()
-	void BindOverlapTimerFinished();
 
 };
