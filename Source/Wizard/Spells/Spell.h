@@ -25,6 +25,7 @@ public:
 	virtual void ShowInteractWidget(bool bShowInteractWidget) override;
 	virtual void SetCanInteract(bool bIsInteractable) override;
 	virtual bool GetCanInteract() override;
+	virtual void MoveCombatActor() override;
 	virtual void ReceiveDamage(int32 Damage) override;
 	virtual float GetCost() override;
 	virtual int32 GetHealth() override;
@@ -57,13 +58,6 @@ private:
 	/// </summary>
 	UPROPERTY(VisibleAnywhere)
 	class USphereComponent* AreaSphere;
-
-	/// <summary>
-	/// Sphere which defines how close the Actor
-	/// can be approached
-	/// </summary>
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* BorderSphere;
 
 	/// <summary>
 	/// Interact widget component

@@ -10,6 +10,7 @@
 #include "Wizard/Components/Actors/InteractComponent.h"
 #include "Wizard/Components/MiniMap/PointOfInterestComponent.h"
 #include "Wizard/Components/Actors/WizardCombatActorComponent.h"
+#include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
@@ -36,12 +37,6 @@ ASpell::ASpell()
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
-	// Create BorderSphere
-	BorderSphere = CreateDefaultSubobject<USphereComponent>(TEXT("BorderSphere"));
-	BorderSphere->SetupAttachment(RootComponent);
-	BorderSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BorderSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
 	// Create Interact widget
 	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("InteractComponent"));
 	InteractComponent->SetupAttachment(RootComponent);
@@ -60,8 +55,6 @@ void ASpell::BeginPlay()
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	AreaSphere->OnClicked.AddDynamic(this, &ASpell::OnSpellClicked);
-
-	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	ShowInteractWidget(false);
 	Tags.Add(FName("Spell"));
@@ -103,6 +96,12 @@ bool ASpell::GetCanInteract()
 	if (Combat) return Combat->GetCanInteract();
 
 	return false;
+}
+
+void ASpell::MoveCombatActor()
+{
+	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
+	if (WGameMode) WGameMode->IncrementEnemiesFinished();
 }
 
 void ASpell::ReceiveDamage(int32 Damage)
