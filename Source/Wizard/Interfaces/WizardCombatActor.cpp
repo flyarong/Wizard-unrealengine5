@@ -3,6 +3,10 @@
 
 #include "WizardCombatActor.h"
 
+void IWizardCombatActor::ReceiveDamage(int32 Damage)
+{
+}
+
 int32 IWizardCombatActor::GetBaseDamage()
 {
 	return 0;

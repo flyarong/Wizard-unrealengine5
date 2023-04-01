@@ -22,5 +22,5 @@ class WIZARD_API IPublicMessageActor
 
 public:
 
-	virtual class UTexture2D* GetIcon() = 0;
+	virtual class UTexture2D* GetIcon();
 };

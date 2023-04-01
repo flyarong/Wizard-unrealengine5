@@ -3,6 +3,10 @@
 
 #include "WizardActor.h"
 
+void IWizardActor::ShowInteractWidget(bool bShowInteractWidget)
+{
+}
+
 void IWizardActor::SetCanInteract(bool bIsInteractable)
 {
 

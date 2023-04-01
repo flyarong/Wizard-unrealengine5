@@ -28,7 +28,7 @@ public:
 	/// <summary>
 	/// Function to damage the Actor after Combat
 	/// </summary>
-	virtual void ReceiveDamage(int32 Damage) = 0;
+	virtual void ReceiveDamage(int32 Damage);
 
 	/// <summary>
 	/// Function to get the Actor's

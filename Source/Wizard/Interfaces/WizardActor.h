@@ -29,7 +29,7 @@ public:
 	/// Function to show/hide the Actor's Interact Widget
 	/// </summary>
 	/// <param name="bShowInteractWidget">Whether to show or hide the widget</param>
-	virtual void ShowInteractWidget(bool bShowInteractWidget) = 0;
+	virtual void ShowInteractWidget(bool bShowInteractWidget);
 
 	/// <summary>
 	/// Function to set whether or not the

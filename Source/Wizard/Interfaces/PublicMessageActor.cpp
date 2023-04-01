@@ -3,3 +3,7 @@
 
 #include "PublicMessageActor.h"
 
+UTexture2D* IPublicMessageActor::GetIcon()
+{
+    return nullptr;
+}
