@@ -108,7 +108,7 @@ void UAttributeComponent::OnRep_Health()
 
 void UAttributeComponent::UpdateHUDHealth()
 {
-	Controller = (Controller == nullptr) ?
+	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDHealth(Health, MaxHealth);
@@ -153,7 +153,7 @@ void UAttributeComponent::OnRep_Power()
 
 void UAttributeComponent::UpdateHUDPower()
 {
-	Controller = (Controller == nullptr) ?
+	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDPower(Power, MaxPower);
@@ -185,7 +185,7 @@ void UAttributeComponent::OnRep_XP()
 
 void UAttributeComponent::UpdateHUDXP()
 {
-	Controller = (Controller == nullptr) ?
+	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDXP(XP);
@@ -194,6 +194,14 @@ void UAttributeComponent::UpdateHUDXP()
 #pragma endregion
 
 #pragma region Spells
+void UAttributeComponent::SpendGoodSpell(int32 Cost)
+{
+	if (Character && Character->HasAuthority()) {
+		GoodSpells = FMath::Clamp(GoodSpells - Cost, 0, GoodSpells);
+		UpdateHUDGoodSpells();
+	}
+}
+
 void UAttributeComponent::AddGoodSpell(int32 GoodSpellAmount)
 {
 	if (Character && Character->HasAuthority()) {
@@ -209,10 +217,20 @@ void UAttributeComponent::OnRep_GoodSpells()
 
 void UAttributeComponent::UpdateHUDGoodSpells()
 {
-	Controller = (Controller == nullptr) ?
+	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDSpells(GoodSpells);
+	}
+}
+
+void UAttributeComponent::SpendDarkSpell(int32 Cost)
+{
+	if (Character && Character->HasAuthority()) {
+		DarkSpells = FMath::Clamp(DarkSpells - Cost, 0, DarkSpells);
+		float DarkSpellCost = Intelligence > 1 ? MaxHealth / 2 / Intelligence : MaxHealth / 2;
+		ReceiveDamage(DarkSpellCost);
+		UpdateHUDDarkSpells();
 	}
 }
 
@@ -231,7 +249,7 @@ void UAttributeComponent::OnRep_DarkSpells()
 
 void UAttributeComponent::UpdateHUDDarkSpells()
 {
-	Controller = (Controller == nullptr) ?
+	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDSpells(DarkSpells, false);

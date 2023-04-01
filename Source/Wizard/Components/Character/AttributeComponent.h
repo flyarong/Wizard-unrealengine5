@@ -61,10 +61,22 @@ public:
 	void AddXP(int32 AmountToAdd);
 
 	/// <summary>
+	/// Function to handle GoodSpell expenditure
+	/// </summary>
+	/// <param name="Cost">The number of GoodSpells to be spent</param>
+	void SpendGoodSpell(int32 Cost);
+
+	/// <summary>
 	/// Function to add more GoodSpell
 	/// </summary>
 	/// <param name="GoodSpellAmount">Amount to add</param>
 	void AddGoodSpell(int32 GoodSpellAmount);
+
+	/// <summary>
+	/// Function to handle DarkSpell expenditure
+	/// </summary>
+	/// <param name="Cost">The number of DarkSpells to be spent</param>
+	void SpendDarkSpell(int32 Cost);
 
 	/// <summary>
 	/// Function to add more DarkSpell
@@ -198,6 +210,8 @@ public:
 	FORCEINLINE FString GetName() const { return Name; }
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	FORCEINLINE int32 GetGoodSpells() const { return GoodSpells; }
+	FORCEINLINE int32 GetDarkSpells() const { return DarkSpells; }
 	FORCEINLINE void SetDefense(int32 DefenseToSet) { Defense = DefenseToSet; }
 	FORCEINLINE int32 GetDefense() const { return Defense; }
 	FORCEINLINE void SetWisdom(int32 WisdomToSet) { Wisdom = WisdomToSet; }
