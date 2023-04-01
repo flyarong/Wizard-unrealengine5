@@ -40,6 +40,18 @@ public:
 	void StartCombat();
 
 	/// <summary>
+	/// Function to start the Combat
+	/// using a Dark Spell
+	/// </summary>
+	void StartDarkSpellCombat();
+
+	/// <summary>
+	/// Function to start the Combat
+	/// using a Good Spell
+	/// </summary>
+	void StartGoodSpellCombat();
+
+	/// <summary>
 	/// Function to start the Next Spell Step
 	/// </summary>
 	void StartNextStep();
@@ -145,7 +157,8 @@ private:
 	/// Function to play Niagara effects during combat
 	/// </summary>
 	/// <param name="Effect">Niagara System to spawn</param>
-	void PlayNiagaraEffect(UNiagaraSystem* Effect);
+	/// <param name="Target">Target to spawn the System at</param>
+	void PlayNiagaraEffect(UNiagaraSystem* Effect, AActor* Target);
 #pragma endregion
 
 	/// <summary>
@@ -378,22 +391,24 @@ private:
 	/// Multicast RPC to replicate some functionality
 	/// on all machines when Spell Step is successful
 	/// </summary>
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, UnReliable)
 	void MulticastStepSuccess();
 
 	/// <summary>
 	/// Multicast RPC to replicate some functionality
 	/// on all machines when Spell Step fails
 	/// </summary>
-	UFUNCTION(NetMulticast, Reliable)
+	UFUNCTION(NetMulticast, UnReliable)
 	void MulticastStepFail();
 
 	/// <summary>
 	/// Multicast RPC to replicate some functionality
-	/// on all machines when Combat is successful
+	/// on all machines when applying Hit on Target in Combat
 	/// </summary>
+	/// <param name="HitResult">Combat Result</param>
+	/// <param name="bCombatWasSuccessful">Whether the Combat was successful or not</param>
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastCombatSuccess();
+	void MulticastCombatHit();
 
 	/// <summary>
 	/// Multicast RPC to replicate some functionality

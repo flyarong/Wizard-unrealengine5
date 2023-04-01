@@ -38,7 +38,6 @@ void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
 }
 
 // Called every frame
@@ -131,6 +130,9 @@ void UCombatComponent::SetSuccessRate()
 		if (CombatTarget->GetCombatType() <= ECombat::EC_DarkSpell) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetWisdom()) / NumberOfSteps;
 		}
+		else if (CombatTarget->GetCombatType() == ECombat::EC_Trial) {
+			SuccessRate = static_cast<float>(Character->GetAttribute()->GetIntelligence()) / NumberOfSteps;
+		}
 		else if (bIsAttacking) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetOffense()) / NumberOfSteps;
 		}
@@ -157,7 +159,7 @@ void UCombatComponent::StopCombat()
 	CombatTarget = nullptr;
 	Successes = 0.f;
 	SuccessRate = 0.f;
-	
+
 	if (Character && Character->IsLocallyControlled()) Reset();
 }
 
@@ -183,6 +185,34 @@ void UCombatComponent::StartCombat()
 	}
 }
 
+void UCombatComponent::StartDarkSpellCombat()
+{
+	if (!Character || !CombatTarget) return;
+
+	Successes = (CombatTarget->GetHealth() / 2) + 2.f;
+
+	if (bIsAttacking) {
+		CalculateCombatAttackResult();
+	}
+	else {
+		CalculateCombatDefendResult();
+	}
+}
+
+void UCombatComponent::StartGoodSpellCombat()
+{
+	if (!Character || !CombatTarget) return;
+
+	Successes = (CombatTarget->GetHealth() / 2) + 4.f;
+
+	if (bIsAttacking) {
+		CalculateCombatAttackResult();
+	}
+	else {
+		CalculateCombatDefendResult();
+	}
+}
+
 void UCombatComponent::SetCurrentSpellStep()
 {
 	if (!Character || !CombatTarget) return;
@@ -203,24 +233,22 @@ void UCombatComponent::SetCurrentSpellStep()
 		MulticastResetSpellBar();
 
 		if (bIsAttacking) {
-			Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
 			CalculateCombatAttackResult();
-			StopCombat();
-			Character->GetAction()->EndAttack();
 		}
 		else {
 			CalculateCombatDefendResult();
-			StopCombat();
-			Character->GetAction()->EndDefense();
 		}
 	}
 }
 
 void UCombatComponent::CalculateCombatAttackResult()
 {
+	Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (Result >= CombatTarget->GetHealth()) { // Success
-		MulticastCombatSuccess();
+		Character->PlaySound(SuccessSound);
+		MulticastCombatHit();
+
 		if (CombatTarget->GetCombatType() == ECombat::EC_GoodSpell) {
 			Character->GetAttribute()->AddGoodSpell(1);
 		}
@@ -229,31 +257,39 @@ void UCombatComponent::CalculateCombatAttackResult()
 		}
 
 		WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
-		if (WGameMode) {
+		if (WGameMode && CombatTarget->GetCombatType() != ECombat::EC_Trial) {
 			WGameMode->BroadcastVictory(Character, CombatTarget);
 		}
 
 		CombatTarget->Kill();
 	}
-	else { // Failure
+	else if (Result > 0) { // Failure with Hit
+		CombatTarget->ReceiveDamage(Result);
+		MulticastCombatHit();
+	}
+	else { // Failure without Hit
 		CombatTarget->ReceiveDamage(Result);
 		MulticastCombatFail();
 	}
+
+	StopCombat();
+	Character->GetAction()->EndAttack();
 }
 
 void UCombatComponent::CalculateCombatDefendResult()
 {
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (Result >= CombatTarget->GetBaseDamage()) { // Success
-		MulticastCombatSuccess();
-		
-		// TODO apply damage on enemy if Spell was used, instead of QTE
+		MulticastCombatHit();
 	}
 	else { // Failure
 		float EnemyDamage = CombatTarget->GetDamage(Result);
 		Character->GetAttribute()->ReceiveDamage(EnemyDamage);
 		MulticastCombatFail();
 	}
+
+	StopCombat();
+	Character->GetAction()->EndDefense();
 }
 
 void UCombatComponent::OnRep_StepIndex()
@@ -319,12 +355,10 @@ void UCombatComponent::StopCurrentTimer()
 void UCombatComponent::ValidateInput(int32 Input)
 {
 	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
-	if (WController) {
-		WController->SetCanCastSpell(false);
-	}
 
 	// Check if user input Symbol Index equals to current Step Symbol Index
-	if (SpellIndexes[Input] == Steps[StepIndex]) {
+	if (WController && SpellIndexes[Input] == Steps[StepIndex]) {
+		WController->SetCanCastSpell(false);
 		MulticastStepSuccess();
 		Successes += SuccessRate;
 		bSpellBarShouldUpdate = true;
@@ -369,10 +403,11 @@ void UCombatComponent::MulticastStartCombat_Implementation()
 {
 	Character->SetIsInCombat(true);
 	Character->SetIsAttacking(bIsAttacking);
+
+	Character->PlaySound(StartSound);
 	FName MontageSection = bIsAttacking ? FName("AttackStart") : FName("DefendStart");
 	PlayCombatMontage(MontageSection);
-	Character->PlaySound(StartSound);
-	PlayNiagaraEffect(CastEffect);
+	PlayNiagaraEffect(CastEffect, Character);
 }
 
 void UCombatComponent::MulticastStepSuccess_Implementation()
@@ -385,23 +420,28 @@ void UCombatComponent::MulticastStepFail_Implementation()
 	Character->PlaySound(CastFailSound);
 }
 
-void UCombatComponent::MulticastCombatSuccess_Implementation()
+void UCombatComponent::MulticastCombatHit_Implementation()
 {
-	Character->PlaySound(SuccessSound);
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
-	FName MontageSection = bIsAttacking ? FName("AttackSuccess") : FName("DefendSuccess");
-	PlayCombatMontage(MontageSection);
-	PlayNiagaraEffect(HitEffect);
+
 	Character->PlaySound(HitSound);
+	FName MontageSection = bIsAttacking ? FName("AttackHit") : FName("DefendSuccess");
+	PlayCombatMontage(MontageSection);
+
+	AActor* TargetActor = Cast<AActor>(CombatTarget.GetObject());
+	PlayNiagaraEffect(HitEffect, TargetActor);
+
 	Character->SetIsInCombat(false);
 }
 
 void UCombatComponent::MulticastCombatFail_Implementation()
 {
-	Character->PlaySound(FailSound);
 	if (CombatEffectComponent) CombatEffectComponent->Deactivate();
+
+	Character->PlaySound(FailSound);
 	FName MontageSection = bIsAttacking ? FName("AttackFail") : FName("DefendFail");
 	PlayCombatMontage(MontageSection);
+
 	Character->SetIsInCombat(false);
 }
 
@@ -410,14 +450,14 @@ void UCombatComponent::PlayCombatMontage(FName Section)
 	Character->PlayMontage(CombatMontage, Section);
 }
 
-void UCombatComponent::PlayNiagaraEffect(UNiagaraSystem* Effect)
+void UCombatComponent::PlayNiagaraEffect(UNiagaraSystem* Effect, AActor* Target)
 {
-	if (Effect) {
+	if (Effect && Target) {
 		CombatEffectComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,
 			Effect,
-			Character->GetActorLocation(),
-			Character->GetActorRotation()
+			Target->GetActorLocation(),
+			Target->GetActorRotation()
 		);
 	}
 }
