@@ -6,28 +6,36 @@
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
+#include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/Character/CombatComponent.h"
 
 void UCombatMenuWidget::BindEventsToButtons()
 {
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
-	if (WCharacter && WCharacter->GetCombat()) {
+	if (WCharacter && WCharacter->GetCombat() && WCharacter->GetAttribute()) {
 		StartButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnStartButtonClicked);
-		if (WCharacter->GetCombat()->GetIsAttacking()) {
+		if (WCharacter->GetCombat()->GetIsAttacking() && WCharacter->GetCombat()->GetCombatTarget() &&
+			!WCharacter->GetCombat()->GetCombatTarget()->ActorHasTag(FName("Trial"))) {
 			CancelButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnCancelButtonClicked);
 		}
-		else { // Can't cancel defending
+		else { // Can't cancel defending & trial
 			CancelButton->RemoveFromParent();
 		}
 
-		// TODO check number of spells at Character
-		if (WCharacter->GetCombat()->GetCombatTarget() && WCharacter->GetCombat()->GetCombatTarget()->ActorHasTag("Enemy")) {
-			DarkSpellButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnDarkSpellButtonClicked);
+		if (WCharacter->GetCombat()->GetCombatTarget() && WCharacter->GetCombat()->GetCombatTarget()->ActorHasTag(FName("Enemy")) &&
+			WCharacter->GetAttribute()->GetGoodSpells() > 0) {
 			GoodSpellButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnGoodSpellButtonClicked);
 		}
 		else {
-			DarkSpellButton->RemoveFromParent();
 			GoodSpellButton->RemoveFromParent();
+		}
+
+		if (WCharacter->GetCombat()->GetCombatTarget() && WCharacter->GetCombat()->GetCombatTarget()->ActorHasTag(FName("Enemy")) &&
+			WCharacter->GetAttribute()->GetDarkSpells() > 0) {
+			DarkSpellButton->OnClicked.AddDynamic(this, &UCombatMenuWidget::OnDarkSpellButtonClicked);
+		}
+		else {
+			DarkSpellButton->RemoveFromParent();
 		}
 	}
 }
@@ -54,8 +62,22 @@ void UCombatMenuWidget::OnCancelButtonClicked()
 
 void UCombatMenuWidget::OnDarkSpellButtonClicked()
 {
+	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
+	if (WCharacter && WCharacter->GetAction()) {
+		AWizardPlayerController* WController = WCharacter->GetWizardController();
+		if (WController) WController->SetShowMouseCursor(false);
+		RemoveFromParent();
+		WCharacter->GetAction()->ServerStartDarkSpellCombat();
+	}
 }
 
 void UCombatMenuWidget::OnGoodSpellButtonClicked()
 {
+	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(GetOwningPlayerPawn());
+	if (WCharacter && WCharacter->GetAction()) {
+		AWizardPlayerController* WController = WCharacter->GetWizardController();
+		if (WController) WController->SetShowMouseCursor(false);
+		RemoveFromParent();
+		WCharacter->GetAction()->ServerStartGoodSpellCombat();
+	}
 }
