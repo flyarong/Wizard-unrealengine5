@@ -3,6 +3,8 @@
 
 #include "WizardGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Wizard/Trials/Trial.h"
+#include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Interfaces/WizardActor.h"
 #include "Wizard/Interfaces/WizardCombatActor.h"
 
@@ -17,6 +19,18 @@ void AWizardGameState::MoveEnemies()
 {
 	for (auto& CombatActor : WizardCombatActors) {
 		if (CombatActor) CombatActor->MoveCombatActor();
+	}
+}
+
+void AWizardGameState::StartTrial(APawn* Character)
+{
+	if (Character && TrialClass) {
+		ATrial* SpawnedTrial = GetWorld()->SpawnActor<ATrial>(
+			TrialClass,
+			Character->GetActorLocation(),
+			Character->GetActorRotation()
+		);
+		if (SpawnedTrial) SpawnedTrial->SetupTrial(Character);
 	}
 }
 
@@ -37,6 +51,7 @@ void AWizardGameState::EnableWizardActors()
 
 void AWizardGameState::DisableWizardActors()
 {
+	EnemiesFinished = 0;
 	for (auto& WizardActor : WizardActors) {
 		if (WizardActor) {
 			WizardActor->SetCanInteract(false);

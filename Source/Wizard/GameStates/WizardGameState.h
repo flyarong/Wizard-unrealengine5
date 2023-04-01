@@ -24,6 +24,13 @@ public:
 	void MoveEnemies();
 
 	/// <summary>
+	/// Function to start the Trial
+	/// for a Character
+	/// </summary>
+	/// <param name="Character">The Character who is about to face Trial</param>
+	void StartTrial(class APawn* Character);
+
+	/// <summary>
 	/// Function to make WizardActors
 	/// interactable before Turn starts
 	/// </summary>
@@ -60,6 +67,13 @@ private:
 	/// present in the Game
 	/// </summary>
 	TArray<class IWizardActor*> WizardActors = TArray<IWizardActor*>();
+
+	/// <summary>
+	/// Number of Enemies who ended
+	/// their turn
+	/// </summary>
+	UPROPERTY()
+	int32 EnemiesFinished = 0;
 
 	/// <summary>
 	/// Function to add a WizardActor
@@ -103,6 +117,12 @@ private:
 	UPROPERTY()
 	TArray<AActor*> MiniMapActors = TArray<AActor*>();
 
+	/// <summary>
+	/// Class to spawn a Trial Actor from
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Trials")
+	TSubclassOf<class ATrial> TrialClass;
+
 public:
 
 	/// <summary>
@@ -110,4 +130,6 @@ public:
 	/// </summary>
 	/// <returns>Actors on MiniMap</returns>
 	FORCEINLINE TArray<AActor*> GetMiniMapActors() const { return MiniMapActors; }
+	FORCEINLINE void IncrementEnemies() { EnemiesFinished++; }
+	FORCEINLINE bool EnemiesFinishedTheirTurn() const { return EnemiesFinished >= WizardCombatActors.Num(); }
 };
