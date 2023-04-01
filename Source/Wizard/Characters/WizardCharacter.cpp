@@ -157,7 +157,6 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	PlayerController = Cast<AWizardPlayerController>(Controller);
 	if (PlayerController && IsLocallyControlled()) {
 		// Setup Controller&Gameplay Camera
-		PlayerController->SetWizardCharacter(this);
 		PlayerController->SetupCamera();
 
 		// Setup WizardOverlay

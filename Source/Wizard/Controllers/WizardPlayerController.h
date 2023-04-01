@@ -483,7 +483,6 @@ private:
 #pragma endregion
 
 public:
-	void SetWizardCharacter(AWizardCharacter* WCharacter);
 	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
 	FORCEINLINE AGameplayCamera* GetGameplayCamera() const { return GameplayCamera; }
 	FORCEINLINE bool GetCanCastSpell() const { return bCanCastSpell; }

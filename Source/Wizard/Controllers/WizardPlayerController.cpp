@@ -65,6 +65,7 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 void AWizardPlayerController::SetupCamera()
 {
 	UWorld* World = GetWorld();
+	WizardCharacter = Cast<AWizardCharacter>(GetPawn());
 	if (World && WizardCharacter) {
 		GameplayCamera = World->SpawnActor<AGameplayCamera>(WizardCharacter->GetActorLocation(), WizardCharacter->GetActorRotation());
 		if (GameplayCamera && IsLocalController()) {
@@ -73,11 +74,6 @@ void AWizardPlayerController::SetupCamera()
 			SetCameraFocusOnWizard();
 		}
 	}
-}
-
-void AWizardPlayerController::SetWizardCharacter(AWizardCharacter* WCharacter)
-{
-	WizardCharacter = WCharacter;
 }
 
 void AWizardPlayerController::ClientInitOverlay_Implementation()
