@@ -77,13 +77,6 @@ private:
 	class USphereComponent* AreaSphere;
 
 	/// <summary>
-	/// Sphere which defines how close the Actor
-	/// can be approached
-	/// </summary>
-	UPROPERTY(VisibleAnywhere)
-	USphereComponent* BorderSphere;
-
-	/// <summary>
 	/// Interact widget component
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -95,6 +88,12 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class UPawnSensingComponent* PawnSensing;
 #pragma endregion
+
+	/// <summary>
+	/// Target of Combat
+	/// </summary>
+	UPROPERTY()
+	class APawn* TargetCharacter;
 
 	/// <summary>
 	/// Number of seconds the Enemy can move
@@ -116,11 +115,30 @@ private:
 	/// <param name="TargetWizard">Target Wizard to move to</param>
 	void MoveToWizard(class AActor* TargetWizard);
 
+	UPROPERTY(EditAnywhere, Category = "Enemy Movement")
+	float CombatRadius = 400.f;
+
+	/// <summary>
+	/// Function determining whether or not
+	/// a CombatTarget for this Enemy is in
+	/// Range or not
+	/// </summary>
+	/// <param name="Target">Combat Target</param>
+	/// <param name="Radius">Combat Radius</param>
+	/// <returns>Whether the Target is in Range or not</returns>
+	bool InTargetRange(AActor* Target, float Radius);
+
 	/// <summary>
 	/// Timer to initiate when OnSeePawn is bound
 	/// to a callback
 	/// </summary>
 	FTimerHandle SensingTimer;
+
+	/// <summary>
+	/// Timer to initiate when moving towards
+	/// an unseen Character
+	/// </summary>
+	FTimerHandle MovementTimer;
 
 #pragma region Callbacks
 	UFUNCTION()

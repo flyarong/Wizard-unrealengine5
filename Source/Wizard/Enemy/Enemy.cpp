@@ -3,6 +3,7 @@
 
 #include "Enemy.h"
 #include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Wizard/Components/Actors/InteractComponent.h"
 #include "Wizard/Components/MiniMap/PointOfInterestComponent.h"
 #include "Wizard/Components/Actors/WizardCombatActorComponent.h"
@@ -32,20 +33,14 @@ AEnemy::AEnemy()
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
-	// Create BorderSphere
-	BorderSphere = CreateDefaultSubobject<USphereComponent>(TEXT("BorderSphere"));
-	BorderSphere->SetupAttachment(RootComponent);
-	BorderSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	BorderSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-
 	// Create Interact widget
 	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("InteractComponent"));
 	InteractComponent->SetupAttachment(RootComponent);
 
 	// Create Pawn Sensing
 	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
-	PawnSensing->SightRadius = 500.f;
-	PawnSensing->SetPeripheralVisionAngle(45.f);
+	PawnSensing->SightRadius = 1250.f;
+	PawnSensing->SetPeripheralVisionAngle(50.f);
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationPitch = false;
@@ -61,8 +56,6 @@ void AEnemy::BeginPlay()
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	AreaSphere->OnClicked.AddDynamic(this, &AEnemy::OnEnemyClicked);
-
-	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
 
 	ShowInteractWidget(false);
 	Tags.Add(FName("Enemy"));
@@ -81,6 +74,9 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (Combat && TargetCharacter && InTargetRange(TargetCharacter, CombatRadius)) {
+		Combat->AttackCharacter(TargetCharacter);
+	}
 }
 
 EAttribute AEnemy::GetChosenAttribute()
@@ -210,7 +206,8 @@ void AEnemy::OnSeeWizard(APawn* Pawn)
 {
 	if (Pawn->ActorHasTag(FName("WizardCharacter"))) {
 		GetWorld()->GetTimerManager().ClearTimer(SensingTimer);
-		MoveToWizard(Pawn);
+		TargetCharacter = Pawn;
+		MoveToWizard(TargetCharacter);
 	}
 }
 #pragma endregion
@@ -218,12 +215,15 @@ void AEnemy::OnSeeWizard(APawn* Pawn)
 #pragma region Movement
 void AEnemy::MoveEnemyToUnseenWizard()
 {
+	if (PawnSensing && PawnSensing->OnSeePawn.IsBound()) PawnSensing->OnSeePawn.RemoveDynamic(this, &AEnemy::OnSeeWizard);
+
 	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
 	if (WGameMode) {
-		AWizardCharacter* TargetCharacter = WGameMode->GetCharacterWithLowestAttribute(ChosenAttributeToChase);
+		AWizardCharacter* CharacterWithLowestAttribute = WGameMode->GetCharacterWithLowestAttribute(ChosenAttributeToChase);
+		AWizardCharacter* ClosestCharacter = WGameMode->GetClosestCharacter(this);
+		TargetCharacter = CharacterWithLowestAttribute == ClosestCharacter ? CharacterWithLowestAttribute : ClosestCharacter;
 		if (TargetCharacter) {
 			MoveToWizard(TargetCharacter);
-			FTimerHandle MovementTimer;
 			GetWorld()->GetTimerManager().SetTimer(
 				MovementTimer,
 				this,
@@ -240,16 +240,26 @@ void AEnemy::MoveToWizard(AActor* TargetWizard)
 	if (EnemyController && TargetWizard && TargetWizard->ActorHasTag(FName("WizardCharacter"))) {
 		FAIMoveRequest MoveRequest;
 		MoveRequest.SetGoalActor(TargetWizard);
-		MoveRequest.SetAcceptanceRadius(BorderSphere->GetUnscaledSphereRadius());
+		MoveRequest.SetAcceptanceRadius(175.f);
 		EnemyController->MoveTo(MoveRequest);
 	}
+}
+
+bool AEnemy::InTargetRange(AActor* Target, float Radius)
+{
+	if (Target == nullptr) return false;
+	
+	const float DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
+	return DistanceToTarget <= CombatRadius;
 }
 
 void AEnemy::StopEnemyMovement()
 {
 	EnemyController = EnemyController == nullptr ? Cast<AAIController>(Controller) : EnemyController;
+	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
 	if (EnemyController) {
 		EnemyController->StopMovement();
+		if (TargetCharacter && WGameMode && !InTargetRange(TargetCharacter, CombatRadius)) WGameMode->IncrementEnemiesFinished();
 	}
 }
 #pragma endregion
