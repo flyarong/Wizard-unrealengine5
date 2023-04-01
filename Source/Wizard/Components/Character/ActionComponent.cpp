@@ -7,6 +7,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Wizard/Stores/Store.h"
+#include "Wizard/Trials/Trial.h"
+#include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/Character/CombatComponent.h"
@@ -35,7 +37,6 @@ void UActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
 }
 
 void UActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -184,10 +185,22 @@ void UActionComponent::SetAttacker(AActor* NewAttacker)
 
 void UActionComponent::InitDefenseCombat(AActor* Attacker)
 {
+	OverlappedWizardActor = nullptr;
+
 	if (Character && Character->GetCombat() && Attacker && Attacker == Attackers.Last()) { // can't attack Character being attacked by other Enemy
 		MulticastAimCharacterToTarget(Attacker);
 		bInCombat = true;
 		Character->GetCombat()->InitCombat(Attacker, false);
+	}
+}
+
+void UActionComponent::InitTrialCombat(ATrial* Trial)
+{
+	OverlappedWizardActor = nullptr;
+
+	if (Character && Character->GetCombat() && Trial) {
+		bInCombat = true;
+		Character->GetCombat()->InitCombat(Trial);
 	}
 }
 
@@ -208,6 +221,24 @@ void UActionComponent::ServerStartCombat_Implementation()
 	}
 }
 
+void UActionComponent::ServerStartDarkSpellCombat_Implementation()
+{
+	if (Character && Character->GetCombat() && 
+		Character->GetAttribute() && Character->GetAttribute()->GetDarkSpells() > 0) {
+		Character->GetAttribute()->SpendDarkSpell(1);
+		Character->GetCombat()->StartDarkSpellCombat();
+	}
+}
+
+void UActionComponent::ServerStartGoodSpellCombat_Implementation()
+{
+	if (Character && Character->GetCombat() && 
+		Character->GetAttribute() && Character->GetAttribute()->GetGoodSpells() > 0) {
+		Character->GetAttribute()->SpendGoodSpell(1);
+		Character->GetCombat()->StartGoodSpellCombat();
+	}
+}
+
 void UActionComponent::ServerValidateCombatInput_Implementation(int32 Input)
 {
 	if (Character && Character->GetCombat()) {
@@ -225,12 +256,14 @@ void UActionComponent::EndAttack()
 
 void UActionComponent::EndDefense()
 {
-	if (Character && Character->GetCombat()) {
+	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
+	if (WGameMode && Character && Character->GetCombat()) {
 		bInCombat = false;
 		Attackers.Pop();
 		if (Attackers.Num() > 0) { // if there are still Attackers waiting to attack
 			OnDefenseCombatEndedDelegate.Broadcast(Character, Attackers.Last());
 		}
+		WGameMode->IncrementEnemiesFinished();
 	}
 }
 

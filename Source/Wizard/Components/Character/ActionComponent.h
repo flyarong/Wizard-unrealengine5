@@ -14,7 +14,7 @@
 /// </summary>
 /// <param name="AttackedCharacter">The Character</param>
 /// <param name="NewAttacker">Next opponent to defend against</param>
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnDefenseCombatEndedDelegate, class AWizardCharacter*, AttackedCharacter, class AActor*, NewAttacker);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnDefenseCombatEndedDelegate, class AWizardCharacter*, class AActor*);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class WIZARD_API UActionComponent : public UActorComponent
@@ -82,6 +82,13 @@ public:
 	void InitDefenseCombat(AActor* Attacker);
 
 	/// <summary>
+	/// Function to initialize a Trial
+	/// Combat
+	/// </summary>
+	/// <param name="Trial">Trial to face</param>
+	void InitTrialCombat(class ATrial* Trial);
+
+	/// <summary>
 	/// Server RPC to cancel the Combat
 	/// </summary>
 	UFUNCTION(Server, Reliable)
@@ -92,6 +99,20 @@ public:
 	/// </summary>
 	UFUNCTION(Server, Reliable)
 	void ServerStartCombat();
+
+	/// <summary>
+	/// Server RPC to start the Combat
+	/// using a Dark Spell
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerStartDarkSpellCombat();
+
+	/// <summary>
+	/// Server RPC to start the Combat
+	/// using a Good Spell
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerStartGoodSpellCombat();
 
 	/// <summary>
 	/// Server RPC to validate the Combat Input
