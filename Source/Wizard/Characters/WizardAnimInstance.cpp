@@ -13,6 +13,7 @@ void UWizardAnimInstance::NativeInitializeAnimation()
 	WizardCharacter = Cast<AWizardCharacter>(TryGetPawnOwner());
 	if (WizardCharacter) {
 		WizardCharacterMovement = WizardCharacter->GetCharacterMovement();
+		OnPlayMontageNotifyBegin.AddDynamic(WizardCharacter, &AWizardCharacter::OnMontageNotifyBegin);
 	}
 }
 

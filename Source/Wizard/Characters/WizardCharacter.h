@@ -61,6 +61,14 @@ public:
 	void PlayMontage(UAnimMontage* Montage, FName Section);
 
 	/// <summary>
+	/// Callback function to when an Animation Montage
+	/// Notify begins
+	/// </summary>
+	/// <param name="NotifyName">Name of the AnimNotify</param>
+	UFUNCTION()
+	void OnMontageNotifyBegin(FName NotifyName, const struct FBranchingPointNotifyPayload& BranchingPointPayload);
+
+	/// <summary>
 	/// Function to play a SoundCue
 	/// </summary>
 	/// <param name="Sound">Sound to play</param>
@@ -71,6 +79,9 @@ public:
 	/// </summary>
 	UFUNCTION(Server, Reliable)
 	void ServerInterruptMovement();
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 

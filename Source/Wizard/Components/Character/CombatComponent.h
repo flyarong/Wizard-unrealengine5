@@ -40,6 +40,11 @@ public:
 	void StartCombat();
 
 	/// <summary>
+	/// Function to end the Combat
+	/// </summary>
+	void EndCombat();
+
+	/// <summary>
 	/// Function to start the Combat
 	/// using a Dark Spell
 	/// </summary>

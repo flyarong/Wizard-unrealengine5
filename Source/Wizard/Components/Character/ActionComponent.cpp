@@ -271,5 +271,7 @@ void UActionComponent::MulticastAimCharacterToTarget_Implementation(AActor* Targ
 {
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(Character->GetActorLocation(), Target->GetActorLocation());
 	Character->K2_SetActorRotation(FRotator(Character->GetActorRotation().Pitch, LookAtRotation.Yaw, Character->GetActorRotation().Roll), false);
+	if (Target->ActorHasTag("Enemy")) // Rotate Enemy to face Character during Combat
+		Target->K2_SetActorRotation(FRotator(Target->GetActorRotation().Pitch, LookAtRotation.Yaw + 180.f, Target->GetActorRotation().Roll), false);
 }
 #pragma endregion

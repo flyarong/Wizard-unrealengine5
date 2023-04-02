@@ -247,7 +247,6 @@ void UCombatComponent::CalculateCombatAttackResult()
 	int32 Result = FMath::FloorToInt32<float>(Successes);
 	if (Result >= CombatTarget->GetHealth()) { // Success
 		Character->PlaySound(SuccessSound);
-		MulticastCombatHit();
 
 		if (CombatTarget->GetCombatType() == ECombat::EC_GoodSpell) {
 			Character->GetAttribute()->AddGoodSpell(1);
@@ -261,6 +260,7 @@ void UCombatComponent::CalculateCombatAttackResult()
 			WGameMode->BroadcastVictory(Character, CombatTarget);
 		}
 
+		MulticastCombatHit();
 		CombatTarget->Kill();
 	}
 	else if (Result > 0) { // Failure with Hit
@@ -271,9 +271,6 @@ void UCombatComponent::CalculateCombatAttackResult()
 		CombatTarget->ReceiveDamage(Result);
 		MulticastCombatFail();
 	}
-
-	StopCombat();
-	Character->GetAction()->EndAttack();
 }
 
 void UCombatComponent::CalculateCombatDefendResult()
@@ -287,9 +284,17 @@ void UCombatComponent::CalculateCombatDefendResult()
 		Character->GetAttribute()->ReceiveDamage(EnemyDamage);
 		MulticastCombatFail();
 	}
+}
 
+void UCombatComponent::EndCombat()
+{
 	StopCombat();
-	Character->GetAction()->EndDefense();
+	if (bIsAttacking) {
+		Character->GetAction()->EndAttack();
+	}
+	else {
+		Character->GetAction()->EndDefense();
+	}
 }
 
 void UCombatComponent::OnRep_StepIndex()

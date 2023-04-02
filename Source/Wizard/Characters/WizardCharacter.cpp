@@ -82,6 +82,12 @@ AWizardCharacter::AWizardCharacter()
 	PrimaryActorTick.bStartWithTickEnabled = true;
 }
 
+void AWizardCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
 void AWizardCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
@@ -235,6 +241,13 @@ void AWizardCharacter::PlayMontage(UAnimMontage* Montage, FName Section)
 	if (AnimInstance) {
 		AnimInstance->Montage_Play(Montage);
 		AnimInstance->Montage_JumpToSection(Section);
+	}
+}
+
+void AWizardCharacter::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (HasAuthority() && Combat && NotifyName.IsEqual(FName("EndCombat"))) {
+		Combat->EndCombat();
 	}
 }
 
