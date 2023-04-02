@@ -69,6 +69,13 @@ private:
 	class USoundCue* SpellSound;
 
 	/// <summary>
+	/// Sphere which defines how close the Actor
+	/// can be approached
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	USphereComponent* BorderSphere;
+
+	/// <summary>
 	/// Niagara system component for showing
 	/// the Spell
 	/// </summary>

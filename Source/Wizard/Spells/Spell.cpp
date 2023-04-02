@@ -41,9 +41,15 @@ ASpell::ASpell()
 	InteractComponent = CreateDefaultSubobject<UInteractComponent>(TEXT("InteractComponent"));
 	InteractComponent->SetupAttachment(RootComponent);
 
+	// Create BorderSphere
+	BorderSphere = CreateDefaultSubobject<USphereComponent>(TEXT("BorderSphere"));
+	BorderSphere->SetupAttachment(RootComponent);
+	BorderSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	BorderSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+
 	// Setup Niagara Component
 	SpellEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("SpellEffectComponent"));
-	SpellEffectComponent->SetupAttachment(RootComponent);
+	SpellEffectComponent->SetupAttachment(BorderSphere);
 }
 
 // Called when the game starts or when spawned
@@ -52,9 +58,10 @@ void ASpell::BeginPlay()
 	Super::BeginPlay();
 	
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	AreaSphere->OnClicked.AddDynamic(this, &ASpell::OnSpellClicked);
+	BorderSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	BorderSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	BorderSphere->OnClicked.AddDynamic(this, &ASpell::OnSpellClicked);
 
 	ShowInteractWidget(false);
 	Tags.Add(FName("Spell"));
