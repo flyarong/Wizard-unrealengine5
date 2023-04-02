@@ -5,6 +5,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Components/SphereComponent.h"
 #include "Wizard/Characters/WizardCharacter.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 
 // Sets default values for this component's properties
@@ -36,7 +37,10 @@ void UWizardCombatActorComponent::TickComponent(float DeltaTime, ELevelTick Tick
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Check Approach Radius
+	if (Attacker && Owner && Owner->HasAuthority() && IsCharacterClose()) {
+		Attacker->ServerInterruptMovement();
+	}
 }
 
 void UWizardCombatActorComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -56,7 +60,7 @@ void UWizardCombatActorComponent::SetupAttackEvents()
 			AreaSphere->OnComponentEndOverlap.RemoveDynamic(this, &UWizardCombatActorComponent::OnActorEndOverlap);
 
 		AttackedCharacter = nullptr;
-		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorBeginAttackOverlap);
+		Attacker = nullptr;
 	}
 }
 
@@ -65,9 +69,7 @@ void UWizardCombatActorComponent::SetupDefendEvents()
 	// Setup Defense Events
 	if (Owner && Owner->HasAuthority() && AreaSphere) {
 		AttackedCharacter = nullptr;
-
-		if (AreaSphere->OnComponentBeginOverlap.IsBound())
-			AreaSphere->OnComponentBeginOverlap.RemoveDynamic(this, &UWizardCombatActorComponent::OnActorBeginAttackOverlap);
+		Attacker = nullptr;
 
 		if (!AreaSphere->OnComponentBeginOverlap.IsBound())
 			AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorBeginDefenseOverlap);
@@ -78,13 +80,13 @@ void UWizardCombatActorComponent::SetupDefendEvents()
 	}
 }
 
-void UWizardCombatActorComponent::OnActorBeginAttackOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UWizardCombatActorComponent::AttackCharacter(AActor* WCharacter)
 {
-	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
-	if (Character && Character->GetAction() && Owner && AttackedCharacter == nullptr) { 
+	AWizardCharacter* Character = Cast<AWizardCharacter>(WCharacter);
+	if (Character && Character->GetAction() && Owner && Owner->HasAuthority() && AttackedCharacter == nullptr) {
 		AttackedCharacter = Character;
-		if (AttackedCharacter && AttackedCharacter->GetAction()) { 
-			AttackedCharacter->GetAction()->OnDefenseCombatEndedDelegate.AddDynamic(this, &ThisClass::OnCharacterEndedDefense);
+		if (AttackedCharacter && AttackedCharacter->GetAction()) {
+			AttackedCharacter->GetAction()->OnDefenseCombatEndedDelegate.AddUObject(this, &ThisClass::OnCharacterEndedDefense);
 			AttackedCharacter->GetAction()->SetAttacker(Owner);
 			AttackedCharacter->GetAction()->InitDefenseCombat(Owner);
 		}
@@ -96,6 +98,7 @@ void UWizardCombatActorComponent::OnActorBeginDefenseOverlap(UPrimitiveComponent
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction() && Owner) {
 		Character->GetAction()->SetCurrentWizardActor(Owner);
+		Attacker = Character;
 	}
 }
 
@@ -104,6 +107,7 @@ void UWizardCombatActorComponent::OnActorEndOverlap(UPrimitiveComponent* Overlap
 	AWizardCharacter* Character = Cast<AWizardCharacter>(OtherActor);
 	if (Character && Character->GetAction()) {
 		Character->GetAction()->LeaveWizardActor();
+		Attacker = nullptr;
 	}
 }
 
@@ -138,4 +142,12 @@ void UWizardCombatActorComponent::ReceiveDamage(int32 Damage)
 float UWizardCombatActorComponent::GetDamage(int32 CharacterScore)
 {
 	return (BaseDamage - CharacterScore) * DamageAmount;
+}
+
+bool UWizardCombatActorComponent::IsCharacterClose()
+{
+	if (Attacker == nullptr || Attacker->GetWizardController() == nullptr || Owner == nullptr) return false;
+
+	return (Owner->GetActorLocation() - Attacker->GetActorLocation()).Size() <= ApproachRadius &&
+		(Owner->GetActorLocation() - Attacker->GetWizardController()->GetCachedDestination()).Size() <= ApproachRadius;
 }

@@ -232,6 +232,7 @@ void AWizardPlayerController::OnSetDestinationReleased()
 }
 
 void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerController* Controller, const FVector& Dest) {
+	CachedDestination = Dest;
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
 }
 #pragma endregion

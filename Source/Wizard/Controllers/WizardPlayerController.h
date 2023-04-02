@@ -487,6 +487,7 @@ public:
 	FORCEINLINE AGameplayCamera* GetGameplayCamera() const { return GameplayCamera; }
 	FORCEINLINE bool GetCanCastSpell() const { return bCanCastSpell; }
 	FORCEINLINE void SetCanCastSpell(bool bIsInCombat) { bCanCastSpell = bIsInCombat; }
+	FORCEINLINE FVector GetCachedDestination() const { return CachedDestination; }
 };
 
 

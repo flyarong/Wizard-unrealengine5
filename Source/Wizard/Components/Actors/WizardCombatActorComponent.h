@@ -39,6 +39,13 @@ public:
 	void SetupDefendEvents();
 
 	/// <summary>
+	/// Function to handle attacking a Wizard
+	/// Character
+	/// </summary>
+	/// <param name="WCharacter">Attacked Character</param>
+	void AttackCharacter(AActor* WCharacter);
+
+	/// <summary>
 	/// Function to damage the Actor after Combat
 	/// </summary>
 	void ReceiveDamage(int32 Damage);
@@ -50,6 +57,13 @@ public:
 	/// <param name="CharacterScore">Character's Combat Score</param>
 	/// <returns>Damage Amount to apply on the Character</returns>
 	float GetDamage(int32 CharacterScore);
+
+	/// <summary>
+	/// Callback function to spawn Item(s)
+	/// after this Actor is destroyed
+	/// </summary>
+	UFUNCTION()
+	void SpawnPickupItem(AActor* DestroyedActor);
 
 protected:
 	virtual void BeginPlay() override;
@@ -68,6 +82,13 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class AWizardCharacter* AttackedCharacter;
+
+	/// <summary>
+	/// Pointer to the Character attacking
+	/// the Owner
+	/// </summary>
+	UPROPERTY()
+	AWizardCharacter* Attacker;
 
 	/// <summary>
 	/// Owner's AreaSphere
@@ -121,24 +142,21 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	ECombat CombatType;
 
-#pragma region Callbacks
 	/// <summary>
-	/// Callback function to spawn Item(s)
-	/// after this Actor is destroyed
+	/// Radius of how close the Owner
+	/// can be approached by the Attacker
 	/// </summary>
-	UFUNCTION()
-	void SpawnPickupItem(AActor* DestroyedActor);
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float ApproachRadius = 175.f;
 
-	UFUNCTION()
-	void OnActorBeginAttackOverlap(
-		UPrimitiveComponent* OverlappedComponent,
-		AActor* OtherActor,
-		UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex,
-		bool bFromSweep,
-		const FHitResult& SweepResult
-	);
+	/// <summary>
+	/// Function for determining whether or not the Character
+	/// is close enough to the Owner
+	/// </summary>
+	/// <returns>Whether or not the Character is close enough</returns>
+	bool IsCharacterClose();
 
+#pragma region Callbacks
 	UFUNCTION()
 	void OnActorBeginDefenseOverlap(
 		UPrimitiveComponent* OverlappedComponent,
