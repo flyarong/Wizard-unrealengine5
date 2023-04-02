@@ -53,9 +53,9 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 	
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	AreaSphere->OnClicked.AddDynamic(this, &AEnemy::OnEnemyClicked);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+	GetCapsuleComponent()->OnClicked.AddDynamic(this, &AEnemy::OnEnemyClicked);
 
 	ShowInteractWidget(false);
 	Tags.Add(FName("Enemy"));
