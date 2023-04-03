@@ -9,7 +9,6 @@
 #include "NiagaraFunctionLibrary.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
-#include "Wizard/Components/Character/ActionComponent.h"
 
 bool FItemDataTable::operator==(const FItemDataTable& Rhs) const
 {
@@ -62,7 +61,7 @@ void AItem::Tick(float DeltaTime)
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AWizardCharacter* WCharacter = Cast<AWizardCharacter>(OtherActor);
-	if (WCharacter && WCharacter->GetAction() && !WCharacter->GetAction()->GetIsInCombat() && !ItemRow.ItemName.IsEmpty()) {
+	if (WCharacter && !ItemRow.ItemName.IsEmpty()) {
 		if (ItemRow.BoostType == EBoost::EB_XP) {
 			if (WCharacter->GetAttribute()) WCharacter->GetAttribute()->AddXP(ItemRow.BoostAmount);
 		}

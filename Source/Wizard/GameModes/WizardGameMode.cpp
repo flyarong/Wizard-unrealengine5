@@ -84,6 +84,7 @@ void AWizardGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// TODO change this to prologue text on screen and add button to increment playersfinished
 	if (MatchState == MatchState::WaitingToStart)
 	{
 		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
@@ -165,14 +166,13 @@ void AWizardGameMode::BroadcastVictory(AWizardCharacter* WCharacter, const TScri
 
 AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute AttributeType)
 {
-	if (WizardPlayers.Num() > 0 && WizardPlayers[0] && WizardPlayers[0]->GetWizardCharacter() && WizardPlayers[0]->GetWizardCharacter()->GetAttribute()) {
-		int32 LowestValue = WizardPlayers[0]->GetWizardCharacter()->GetAttribute()->GetAttributeValue(AttributeType);
-		int32 AttrValue = WizardPlayers[0]->GetWizardCharacter()->GetAttribute()->GetAttributeValue(AttributeType);
+	if (WizardPlayers.Num() > 0) {
+		int32 LowestValue = 99;
+		int32 AttrValue = -1;
 		TArray<AWizardCharacter*> WCs = TArray<AWizardCharacter*>();
-		WCs.Add(WizardPlayers[0]->GetWizardCharacter());
-		for (int32 i = 1; i < WizardPlayers.Num(); i++) {
+		for (int32 i = 0; i < WizardPlayers.Num(); i++) {
 			if (WizardPlayers[i]) {
-				AWizardCharacter* WC = WizardPlayers[i]->GetWizardCharacter();
+				AWizardCharacter* WC = Cast<AWizardCharacter>(WizardPlayers[i]->GetPawn());
 				if (WC && WC->GetAttribute()) {
 					AttrValue = WC->GetAttribute()->GetAttributeValue(AttributeType);
 					if (AttrValue <= LowestValue) {
@@ -195,13 +195,13 @@ AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute At
 
 AWizardCharacter* AWizardGameMode::GetClosestCharacter(AActor* Enemy)
 {
-	if (WizardPlayers.Num() > 0 && WizardPlayers[0] && WizardPlayers[0]->GetWizardCharacter() && Enemy) {
-		AWizardCharacter* ClosestCharacter = WizardPlayers[0]->GetWizardCharacter();
-		float ClosestDistance = (WizardPlayers[0]->GetWizardCharacter()->GetActorLocation() - Enemy->GetActorLocation()).Size();
-		float Distance = (WizardPlayers[0]->GetWizardCharacter()->GetActorLocation() - Enemy->GetActorLocation()).Size();
-		for (int32 i = 1; i < WizardPlayers.Num(); i++) {
+	AWizardCharacter* ClosestCharacter = nullptr;
+	float ClosestDistance = 10000.f;
+	float Distance = -1.f;
+	if (WizardPlayers.Num() > 0 && Enemy) {
+		for (int32 i = 0; i < WizardPlayers.Num(); i++) {
 			if (WizardPlayers[i]) {
-				AWizardCharacter* WC = WizardPlayers[i]->GetWizardCharacter();
+				AWizardCharacter* WC = Cast<AWizardCharacter>(WizardPlayers[i]->GetPawn());
 				if (WC) {
 					Distance = (WC->GetActorLocation() - Enemy->GetActorLocation()).Size();
 					if (Distance < ClosestDistance) {
@@ -211,20 +211,19 @@ AWizardCharacter* AWizardGameMode::GetClosestCharacter(AActor* Enemy)
 				}
 			}
 		}
-
-		return ClosestCharacter;
 	}
-
-	return nullptr;
+	
+	return ClosestCharacter;
 }
 
 void AWizardGameMode::IncrementPlayersFinished()
 {
 	PlayersFinished++;
 
-	// Only used in InProgress and Trial MatchStates
 	if (PlayersFinished >= WizardPlayers.Num()) {
-		const FName NextState = MatchState == MatchState::InProgress ? MatchState::Enemy : MatchState::Prepare;
+		FName NextState = MatchState::InProgress;
+		if (MatchState == MatchState::InProgress) NextState = MatchState::Enemy;
+		else if (MatchState == MatchState::Trial) NextState = MatchState::Prepare;
 		SetMatchState(NextState);
 	}
 }

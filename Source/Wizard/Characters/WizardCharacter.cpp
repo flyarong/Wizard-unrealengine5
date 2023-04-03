@@ -249,6 +249,9 @@ void AWizardCharacter::OnMontageNotifyBegin(FName NotifyName, const FBranchingPo
 	if (HasAuthority() && Combat && NotifyName.IsEqual(FName("EndCombat"))) {
 		Combat->EndCombat();
 	}
+	else if (HasAuthority() && Combat && Action && Action->GetIsInCombat() && NotifyName.IsEqual(FName("EndPickup"))) {
+		Combat->EndCombat();
+	}
 }
 
 void AWizardCharacter::PlaySound(USoundCue* Sound)

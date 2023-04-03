@@ -75,7 +75,9 @@ void UCombatComponent::InitCombat(const TScriptInterface<IWizardCombatActor>& Ta
 		SetSpellSteps();
 		CombatTarget = Target;
 		bIsAttacking = bCharacterAttacking;
+		Successes = 0.f;
 		SetSuccessRate();
+		MulticastResetSpellBar();
 
 		if (Character->HasAuthority() && Character->IsLocallyControlled()) SetupCombat();
 	}
