@@ -310,6 +310,18 @@ public:
 	/// before the new Turn starts
 	/// </summary>
 	void SetupHUDPreTurn();
+
+	/// <summary>
+	/// Function to set the HUD based
+	/// on the MatchState
+	/// </summary>
+	void SetHUDMatchState();
+
+	/// <summary>
+	/// Function to add the current MatchState
+	/// to the HUD
+	/// </summary>
+	void AddHUDMatchState();
 #pragma endregion
 
 #pragma region InputPointers

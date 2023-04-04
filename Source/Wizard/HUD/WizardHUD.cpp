@@ -17,6 +17,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/Combat/CombatScoreWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Districts/DistrictPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/EndTurnButtonWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/MatchState/MatchStateWidget.h"
 #include "Wizard/Interfaces/PublicMessageActor.h"
 #include "Wizard/WizardTypes/ActionTypes.h"
 #include "Components/ScaleBox.h"
@@ -405,6 +406,24 @@ void AWizardHUD::AddCombatScore(int32 Score)
 {
 	if (WizardOverlay && WizardOverlay->GetCombatScoreWidget()) {
 		WizardOverlay->GetCombatScoreWidget()->SetCombatScore(FText::FromString(FString::Printf(TEXT("%d"), Score)));
+	}
+}
+#pragma endregion
+
+#pragma region MatchState
+void AWizardHUD::AddMatchState(const FName& CurrentMatchState)
+{
+	ClearTopCenterBox();
+
+	if (WizardOverlay && WizardOverlay->GetTopCenterBox() && WizardOverlay->GetMatchStateWidgetClass()) {
+		UMatchStateWidget* MatchStateWidget = CreateWidget<UMatchStateWidget>(
+			GetOwningPlayerController(),
+			WizardOverlay->GetMatchStateWidgetClass()
+		);
+		if (MatchStateWidget) {
+			WizardOverlay->GetTopCenterBox()->AddChild(MatchStateWidget);
+			MatchStateWidget->SetMatchState(CurrentMatchState);
+		}
 	}
 }
 #pragma endregion

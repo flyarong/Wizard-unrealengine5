@@ -81,6 +81,12 @@ private:
 	TSubclassOf<class UUserWidget> CombatScoreWidgetClass;
 
 	/// <summary>
+	/// Widget class for the MatchState
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Match State")
+	TSubclassOf<class UUserWidget> MatchStateWidgetClass;
+
+	/// <summary>
 	/// Widget used on the Overlay to show the current District
 	/// </summary>
 	UPROPERTY()
@@ -208,6 +214,7 @@ public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepWidgetClass() const { return CurrentStepWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepResultWidgetClass() const { return CurrentStepResultWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatScoreWidgetClass() const { return CombatScoreWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetMatchStateWidgetClass() const { return MatchStateWidgetClass; }
 	FORCEINLINE UDistrictPanelWidget* GetDistrictPanelWidget() const { return DistrictPanelWidget; }
 	FORCEINLINE void SetDistrictPanelWidget(UDistrictPanelWidget* DistrictPanel) { DistrictPanelWidget = DistrictPanel; }
 	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }

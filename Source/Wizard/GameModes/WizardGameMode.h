@@ -115,6 +115,8 @@ private:
 
 public:
 
+	FORCEINLINE TArray<class AWizardPlayerController*> GetWizardPlayers() const { return WizardPlayers; }
+
 	/// <summary>
 	/// Public getter for the player's character name
 	/// </summary>

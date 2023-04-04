@@ -254,6 +254,15 @@ public:
 	void AddCombatScore(int32 Score);
 #pragma endregion
 
+#pragma region MatchState
+	/// <summary>
+	/// Function to add the current MatchState
+	/// to the Overlay
+	/// </summary>
+	/// <param name="CurrentMatchState">The current MatchState</param>
+	void AddMatchState(const FName& CurrentMatchState);
+#pragma endregion
+
 private:
 
 	/// <summary>

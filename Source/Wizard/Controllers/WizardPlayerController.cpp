@@ -604,6 +604,31 @@ void AWizardPlayerController::SetupHUDPreTurn()
 		WizardHUD->ShowRightPanel();
 	}
 }
+
+void AWizardPlayerController::SetHUDMatchState()
+{
+	if (MatchState == MatchState::InProgress) {
+		SetupHUDPreTurn();
+	}
+	else if (MatchState == MatchState::Enemy) {
+		SetupHUDPostTurn();
+		AddHUDMatchState();
+	}
+	else if (MatchState == MatchState::Trial) {
+		AddHUDMatchState();
+	}
+	else if (MatchState == MatchState::Prepare) {
+		AddHUDMatchState();
+	}
+}
+
+void AWizardPlayerController::AddHUDMatchState()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->AddMatchState(MatchState);
+	}
+}
 #pragma endregion
 
 void AWizardPlayerController::ServerEndTurn_Implementation()
@@ -626,20 +651,10 @@ void AWizardPlayerController::OnMatchStateSet(FName NewMatchState)
 {
 	MatchState = NewMatchState;
 
-	if (MatchState == MatchState::InProgress) {
-		SetupHUDPreTurn();
-	}
-	else if (MatchState == MatchState::Enemy) {
-		SetupHUDPostTurn();
-	}
+	SetHUDMatchState();
 }
 
 void AWizardPlayerController::OnRep_MatchState()
 {
-	if (MatchState == MatchState::InProgress) {
-		SetupHUDPreTurn();
-	}
-	else if (MatchState == MatchState::Enemy) {
-		SetupHUDPostTurn();
-	}
+	SetHUDMatchState();
 }

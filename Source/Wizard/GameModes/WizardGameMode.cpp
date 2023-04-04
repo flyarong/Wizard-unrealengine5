@@ -37,46 +37,25 @@ void AWizardGameMode::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
 
+	PlayersFinished = 0;
+	if (bPlayersInitialized) {
+		for (auto& WizardPlayer : WizardPlayers) {
+			WizardPlayer->OnMatchStateSet(MatchState);
+		}
+	}
+
 	WizardGameState = WizardGameState == nullptr ?
 		Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
 
 	if (MatchState == MatchState::InProgress && WizardGameState) {
-		PlayersFinished = 0;
-
 		if (!bPlayersInitialized) {
 			for (auto& WizardPlayer : WizardPlayers) {
 				InitCharacter(WizardPlayer);
 			}
 			bPlayersInitialized = true;
 		}
-		else {
-			for (auto& WizardPlayer : WizardPlayers) {
-				WizardPlayer->OnMatchStateSet(MatchState);
-			}
-		}
 		
 		WizardGameState->EnableWizardActors();
-	}
-	else if (MatchState == MatchState::Enemy && WizardGameState) {
-		for (auto& WizardPlayer : WizardPlayers) {
-			WizardPlayer->OnMatchStateSet(MatchState);
-		}
-
-		WizardGameState->DisableWizardActors();
-		WizardGameState->MoveEnemies();
-	}
-	else if (MatchState == MatchState::Trial && WizardGameState) {
-		PlayersFinished = 0;
-
-		for (auto& WizardPlayer : WizardPlayers) {
-			WizardPlayer->OnMatchStateSet(MatchState);
-			WizardGameState->StartTrial(WizardPlayer->GetPawn());
-		}
-	}
-	else if (MatchState == MatchState::Prepare && WizardGameState) {
-		if (GEngine) {
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Prepare state")));
-		}
 	}
 }
 

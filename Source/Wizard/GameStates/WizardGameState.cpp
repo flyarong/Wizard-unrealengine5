@@ -4,6 +4,8 @@
 #include "WizardGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Wizard/Trials/Trial.h"
+#include "Wizard/GameModes/WizardGameMode.h"
+#include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Interfaces/WizardActor.h"
 #include "Wizard/Interfaces/WizardCombatActor.h"
@@ -22,15 +24,27 @@ void AWizardGameState::MoveEnemies()
 	}
 }
 
-void AWizardGameState::StartTrial(APawn* Character)
+void AWizardGameState::StartTrial()
 {
-	if (Character && TrialClass) {
-		ATrial* SpawnedTrial = GetWorld()->SpawnActor<ATrial>(
-			TrialClass,
-			Character->GetActorLocation(),
-			Character->GetActorRotation()
-		);
-		if (SpawnedTrial) SpawnedTrial->SetupTrial(Character);
+	WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
+	if (WGameMode) {
+		for (auto& WizardPlayer : WGameMode->GetWizardPlayers()) {
+			if (WizardPlayer && WizardPlayer->GetPawn() && TrialClass) {
+				ATrial* SpawnedTrial = GetWorld()->SpawnActor<ATrial>(
+					TrialClass,
+					WizardPlayer->GetPawn()->GetActorLocation(),
+					WizardPlayer->GetPawn()->GetActorRotation()
+					);
+				if (SpawnedTrial) SpawnedTrial->SetupTrial(WizardPlayer->GetPawn());
+			}
+		}
+	}
+}
+
+void AWizardGameState::PrepareTurn()
+{
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Prepare state")));
 	}
 }
 

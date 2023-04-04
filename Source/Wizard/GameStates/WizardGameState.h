@@ -25,10 +25,15 @@ public:
 
 	/// <summary>
 	/// Function to start the Trial
-	/// for a Character
+	/// for the Characters
 	/// </summary>
-	/// <param name="Character">The Character who is about to face Trial</param>
-	void StartTrial(class APawn* Character);
+	void StartTrial();
+
+	/// <summary>
+	/// Function to handle the preparation state
+	/// of the turn
+	/// </summary>
+	void PrepareTurn();
 
 	/// <summary>
 	/// Function to make WizardActors
@@ -62,6 +67,12 @@ protected:
 private:
 
 #pragma region WizardActors
+	
+	/// <summary>
+	/// GameMode pointer
+	/// </summary>
+	class AWizardGameMode* WGameMode;
+	
 	/// <summary>
 	/// Array containing all the WizardActors
 	/// present in the Game
