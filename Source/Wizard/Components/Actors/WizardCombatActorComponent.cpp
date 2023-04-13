@@ -4,6 +4,7 @@
 #include "WizardCombatActorComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Components/SphereComponent.h"
+#include "Wizard/Enemy/Enemy.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Components/Character/ActionComponent.h"
@@ -68,15 +69,15 @@ void UWizardCombatActorComponent::SetupDefendEvents()
 {
 	// Setup Defense Events
 	if (Owner && Owner->HasAuthority() && AreaSphere) {
-		AttackedCharacter = nullptr;
-		Attacker = nullptr;
-
 		if (!AreaSphere->OnComponentBeginOverlap.IsBound())
 			AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorBeginDefenseOverlap);
 		if (!AreaSphere->OnComponentEndOverlap.IsBound())
 			AreaSphere->OnComponentEndOverlap.AddDynamic(this, &UWizardCombatActorComponent::OnActorEndOverlap);
 		if (!Owner->OnDestroyed.IsBound())
 			Owner->OnDestroyed.AddDynamic(this, &UWizardCombatActorComponent::SpawnPickupItem);
+
+		AttackedCharacter = nullptr;
+		Attacker = nullptr;
 	}
 }
 
@@ -86,6 +87,10 @@ void UWizardCombatActorComponent::AttackCharacter(AActor* WCharacter)
 	if (Character && Character->GetAction() && Owner && Owner->HasAuthority() && AttackedCharacter == nullptr) {
 		AttackedCharacter = Character;
 		if (AttackedCharacter && AttackedCharacter->GetAction()) {
+			AEnemy* OwningEnemy = Cast<AEnemy>(Owner);
+			if (OwningEnemy)
+				AttackedCharacter->GetAction()->OnEnemyAttackEndedDelegate.AddUObject(OwningEnemy, &AEnemy::OnAttackEnded);
+			
 			AttackedCharacter->GetAction()->OnDefenseCombatEndedDelegate.AddUObject(this, &ThisClass::OnCharacterEndedDefense);
 			AttackedCharacter->GetAction()->SetAttacker(Owner);
 			AttackedCharacter->GetAction()->InitDefenseCombat(Owner);

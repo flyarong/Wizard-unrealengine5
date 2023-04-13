@@ -4,6 +4,9 @@
 #include "WizardGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Wizard/Trials/Trial.h"
+#include "Wizard/Enemy/EnemySpawner.h"
+#include "Wizard/Enemy/Enemy.h"
+#include "Wizard/Spells/Spell.h"
 #include "Wizard/GameModes/WizardGameMode.h"
 #include "Wizard/Controllers/WizardPlayerController.h"
 #include "Wizard/Characters/WizardCharacter.h"
@@ -14,6 +17,21 @@ void AWizardGameState::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (HasAuthority()) {
+		Horde.Add(FName("Spell"));
+		Horde.Add(FName("Spell"));
+		Horde.Add(FName("Spell"));
+		Horde.Add(FName("Spell"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("Enemy"));
+		CachedHorde = Horde;
+	}
 }
 
 #pragma region WizardActors
@@ -26,6 +44,7 @@ void AWizardGameState::MoveEnemies()
 
 void AWizardGameState::StartTrial()
 {
+	EnemiesFinished = 0;
 	WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
 	if (WGameMode) {
 		for (auto& WizardPlayer : WGameMode->GetWizardPlayers()) {
@@ -38,13 +57,6 @@ void AWizardGameState::StartTrial()
 				if (SpawnedTrial) SpawnedTrial->SetupTrial(WizardPlayer->GetPawn());
 			}
 		}
-	}
-}
-
-void AWizardGameState::PrepareTurn()
-{
-	if (GEngine) {
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Prepare state")));
 	}
 }
 
@@ -121,5 +133,93 @@ void AWizardGameState::RemoveMiniMapActor(AActor* MiniMapActor)
 		if (MiniMapActor->ActorHasTag(FName("WizardActor"))) RemoveWizardActor(MiniMapActor);
 		if (MiniMapActor->ActorHasTag(FName("WizardCombatActor"))) RemoveCombatActor(MiniMapActor);
 	}
+}
+#pragma endregion
+
+#pragma region Enemy Spawning
+void AWizardGameState::PrepareTurn()
+{
+	// Reset Spawnable Actors
+	SpawnableEnemies = TArray<TSubclassOf<AEnemy>>();
+	SpawnableSpells = TArray<TSubclassOf<ASpell>>();
+
+	// Set Spawnable Actor classes & spawn Actors
+	SetSpawnActorClasses();
+	SpawnActors();
+
+	OnPrepareFinishedDelegate.ExecuteIfBound();
+}
+
+void AWizardGameState::SpawnActors()
+{
+	// Spawn Spells
+	if (SpawnableSpells.Num() > 0) {
+		for (auto& SpellClass : SpawnableSpells) {
+			FVector SpawnLocation = GetSpawnLocation();
+			if (SpellClass && !SpawnLocation.IsZero()) {
+				GetWorld()->SpawnActor<ASpell>(
+					SpellClass,
+					SpawnLocation,
+					FRotator()
+				);
+			}
+		}
+	}
+
+	// Spawn Enemies
+	if (SpawnableEnemies.Num() > 0) {
+		for (auto& EnemyClass : SpawnableEnemies) {
+			FVector SpawnLocation = GetSpawnLocation();
+			if (EnemyClass && !SpawnLocation.IsZero()) {
+				GetWorld()->SpawnActor<APawn>(
+					EnemyClass,
+					SpawnLocation,
+					FRotator()
+				);
+			}
+		}
+	}
+}
+
+void AWizardGameState::SetSpawnActorClasses()
+{
+	WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
+	if (WGameMode && WGameMode->GetWizardPlayers().Num() > 0) {
+		for (auto& WizardPlayer : WGameMode->GetWizardPlayers()) {
+			for (int32 i = 0; i < NumOfActorsToSpawn; i++) {
+				int32 Selection = FMath::RandRange(0, CachedHorde.Num() - 1);
+				FName SpawnTag = CachedHorde[Selection];
+				AddSpawnActorClass(SpawnTag);
+				CachedHorde.RemoveSingle(SpawnTag);
+
+				if (CachedHorde.Num() == 0) CachedHorde = Horde; // Refill if array empties
+			}
+		}
+	}
+}
+
+void AWizardGameState::AddSpawnActorClass(FName Tag)
+{
+	if (Tag == FName("Spell")) {
+		int32 Selection = FMath::RandRange(0, SpellClasses.Num() - 1);
+
+		SpawnableSpells.Add(SpellClasses[Selection]);
+	}
+	else if (Tag == FName("Enemy")) {
+		int32 Selection = FMath::RandRange(0, EnemyClasses.Num() - 1);
+
+		SpawnableEnemies.Add(EnemyClasses[Selection]);
+	}
+}
+
+FVector AWizardGameState::GetSpawnLocation()
+{
+	if (EnemySpawnPoints.Num() > 0) {
+		int32 Selection = FMath::RandRange(0, EnemySpawnPoints.Num() - 1);
+
+		return EnemySpawnPoints[Selection]->GetActorLocation();
+	}
+
+	return FVector::ZeroVector;
 }
 #pragma endregion

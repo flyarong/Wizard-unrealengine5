@@ -120,8 +120,10 @@ bool AEnemy::GetCanInteract()
 
 void AEnemy::ReceiveDamage(int32 Damage)
 {
-	if (Combat) Combat->ReceiveDamage(Damage);
-	// TODO hit animation & sound
+	if (Combat && Damage > 0) {
+		Combat->ReceiveDamage(Damage);
+		// TODO hit animation & sound
+	}
 }
 
 int32 AEnemy::GetBaseDamage()
@@ -259,7 +261,23 @@ void AEnemy::StopEnemyMovement()
 	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
 	if (EnemyController) {
 		EnemyController->StopMovement();
-		if (TargetCharacter && WGameMode && !InTargetRange(TargetCharacter, CombatRadius)) WGameMode->IncrementEnemiesFinished();
+		if (TargetCharacter && WGameMode && !InTargetRange(TargetCharacter, CombatRadius)) {
+			EndAttack();
+			WGameMode->IncrementEnemiesFinished();
+		}
 	}
+}
+
+void AEnemy::OnAttackEnded(AActor* EnemyActor)
+{
+	if (EnemyActor == this) {
+		EndAttack();
+	}
+}
+
+void AEnemy::EndAttack()
+{
+	if (PawnSensing && PawnSensing->OnSeePawn.IsBound()) PawnSensing->OnSeePawn.RemoveDynamic(this, &AEnemy::OnSeeWizard);
+	TargetCharacter = nullptr;
 }
 #pragma endregion

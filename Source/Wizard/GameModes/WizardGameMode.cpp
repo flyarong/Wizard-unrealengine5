@@ -30,6 +30,11 @@ void AWizardGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	WizardGameState = GetGameState<AWizardGameState>();
+	if (WizardGameState && !WizardGameState->OnPrepareFinishedDelegate.IsBound()) {
+		WizardGameState->OnPrepareFinishedDelegate.BindUObject(this, &AWizardGameMode::OnPrepareStateFinished);
+	}
+
 	LevelStartingTime = GetWorld()->GetTimeSeconds();
 }
 
@@ -44,8 +49,7 @@ void AWizardGameMode::OnMatchStateSet()
 		}
 	}
 
-	WizardGameState = WizardGameState == nullptr ?
-		Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
+	WizardGameState = WizardGameState == nullptr ? GetGameState<AWizardGameState>() : WizardGameState;
 
 	if (MatchState == MatchState::InProgress && WizardGameState) {
 		if (!bPlayersInitialized) {
@@ -214,12 +218,17 @@ void AWizardGameMode::DecrementPlayersFinished()
 
 void AWizardGameMode::IncrementEnemiesFinished()
 {
-	WizardGameState = WizardGameState == nullptr ?
-		Cast<AWizardGameState>(UGameplayStatics::GetGameState(this)) : WizardGameState;
+	WizardGameState = WizardGameState == nullptr ? GetGameState<AWizardGameState>() : WizardGameState;
+
 	if (WizardGameState) {
 		WizardGameState->IncrementEnemies();
 		if (WizardGameState->EnemiesFinishedTheirTurn()) {
 			SetMatchState(MatchState::Trial);
 		}
 	}
+}
+
+void AWizardGameMode::OnPrepareStateFinished()
+{
+	SetMatchState(MatchState::InProgress);
 }

@@ -37,9 +37,9 @@ private:
 	void OnEndTurnButtonClicked();
 
 	/// <summary>
-	/// Boolean for whether or not the Player has
-	/// ended their turn
+	/// Boolean for whether or not the Player is
+	/// in their turn
 	/// </summary>
 	UPROPERTY()
-	bool bPlayerEndedTurn = false;
+	bool bPlayerInTurn = false;
 };

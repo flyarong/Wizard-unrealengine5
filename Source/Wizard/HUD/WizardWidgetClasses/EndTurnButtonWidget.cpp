@@ -25,13 +25,13 @@ void UEndTurnButtonWidget::OnEndTurnButtonClicked()
 	AWizardPlayerController* WController = Cast<AWizardPlayerController>(GetWorld()->GetFirstPlayerController());
 	if (WController) {
 		if (ClickSound) PlaySound(ClickSound);
-		if (bPlayerEndedTurn) {
+		if (bPlayerInTurn) {
 			FInputModeGameAndUI InputMode;
 			WController->SetInputMode(InputMode);
 			WController->SetInputContext(EInputContext::EIC_Default);
 			WController->ServerCancelEndTurn();
 			if (EndTurnText) EndTurnText->SetText(FText::FromString(TEXT("End Turn")));
-			bPlayerEndedTurn = false;
+			bPlayerInTurn = false;
 		}
 		else {
 			FInputModeUIOnly InputMode;
@@ -39,7 +39,7 @@ void UEndTurnButtonWidget::OnEndTurnButtonClicked()
 			WController->SetInputContext(EInputContext::EIC_None);
 			WController->ServerEndTurn();
 			if (EndTurnText) EndTurnText->SetText(FText::FromString(TEXT("Cancel")));
-			bPlayerEndedTurn = true;
+			bPlayerInTurn = true;
 		}
 	}
 }

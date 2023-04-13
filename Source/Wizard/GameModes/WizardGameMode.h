@@ -113,6 +113,13 @@ private:
 	UPROPERTY()
 	int32 PlayersFinished = 0;
 
+	/// <summary>
+	/// Function to call when
+	/// the Prepare state has finished
+	/// </summary>
+	UFUNCTION()
+	void OnPrepareStateFinished();
+
 public:
 
 	FORCEINLINE TArray<class AWizardPlayerController*> GetWizardPlayers() const { return WizardPlayers; }

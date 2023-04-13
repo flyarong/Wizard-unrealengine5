@@ -32,6 +32,12 @@ public:
 	virtual void SetupActorForDefense() override;
 	virtual void SetupActorForAttack() override;
 
+	/// <summary>
+	/// Callback function to end attacking
+	/// </summary>
+	UFUNCTION()
+	void OnAttackEnded(class AActor* EnemyActor);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -94,6 +100,11 @@ private:
 	/// </summary>
 	UPROPERTY()
 	class APawn* TargetCharacter;
+
+	/// <summary>
+	/// Function to call when attack has ended
+	/// </summary>
+	void EndAttack();
 
 	/// <summary>
 	/// Number of seconds the Enemy can move

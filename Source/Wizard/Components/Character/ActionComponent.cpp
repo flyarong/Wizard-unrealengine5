@@ -180,7 +180,7 @@ void UActionComponent::ServerInitAttackCombat_Implementation()
 
 void UActionComponent::SetAttacker(AActor* NewAttacker)
 {
-	if (NewAttacker) Attackers.Insert(NewAttacker, 0);
+	if (NewAttacker && !Attackers.Contains(NewAttacker)) Attackers.Insert(NewAttacker, 0);
 }
 
 void UActionComponent::InitDefenseCombat(AActor* Attacker)
@@ -259,6 +259,7 @@ void UActionComponent::EndDefense()
 	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
 	if (WGameMode && Character && Character->GetCombat()) {
 		bInCombat = false;
+		OnEnemyAttackEndedDelegate.Broadcast(Attackers.Last());
 		Attackers.Pop();
 		if (Attackers.Num() > 0) { // if there are still Attackers waiting to attack
 			OnDefenseCombatEndedDelegate.Broadcast(Character, Attackers.Last());

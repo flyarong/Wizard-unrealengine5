@@ -9,6 +9,13 @@
 #include "ActionComponent.generated.h"
 
 /// <summary>
+/// Delegate for broadcasting when an Enemy
+/// has finished their attack
+/// </summary>
+/// <param name="">Enemy who attacked</param>
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnEnemyAttackEndedDelegate, class AActor*);
+
+/// <summary>
 /// Delegate for broadcasting when the
 /// Defense Combat has ended for the Character
 /// </summary>
@@ -130,6 +137,12 @@ public:
 	/// Function to end the Defense Combat
 	/// </summary>
 	void EndDefense();
+
+	/// <summary>
+	/// Delegate to broadcast when an Enemy has
+	/// finished their attack
+	/// </summary>
+	FOnEnemyAttackEndedDelegate OnEnemyAttackEndedDelegate;
 
 	/// <summary>
 	/// Delegate to broadcast when the Character
