@@ -122,7 +122,7 @@ void AEnemy::ReceiveDamage(int32 Damage)
 {
 	if (Combat && Damage > 0) {
 		Combat->ReceiveDamage(Damage);
-		// TODO hit animation & sound
+		MulticastPlayAnimation(FName("Damage"));
 	}
 }
 
@@ -135,7 +135,10 @@ int32 AEnemy::GetBaseDamage()
 
 float AEnemy::GetDamage(int32 CharacterScore)
 {
-	if (Combat) return Combat->GetDamage(CharacterScore);
+	if (Combat) {
+		MulticastPlayAnimation(FName("Hit"));
+		return Combat->GetDamage(CharacterScore);
+	}
 
 	return 0.0f;
 }
@@ -155,7 +158,7 @@ int32 AEnemy::GetHealth()
 
 void AEnemy::Kill()
 {
-	// TODO play death montage and sound etc.
+	MulticastPlayAnimation(FName("Elim"));
 	Destroy();
 }
 
@@ -279,5 +282,21 @@ void AEnemy::EndAttack()
 {
 	if (PawnSensing && PawnSensing->OnSeePawn.IsBound()) PawnSensing->OnSeePawn.RemoveDynamic(this, &AEnemy::OnSeeWizard);
 	TargetCharacter = nullptr;
+}
+#pragma endregion
+
+#pragma region Animation&Sound
+void AEnemy::MulticastPlayAnimation_Implementation(const FName& Section)
+{
+	PlayCombatMontage(Section);
+}
+
+void AEnemy::PlayCombatMontage(const FName& Section)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance) {
+		AnimInstance->Montage_Play(CombatMontage);
+		AnimInstance->Montage_JumpToSection(Section);
+	}
 }
 #pragma endregion

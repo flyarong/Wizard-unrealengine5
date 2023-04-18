@@ -95,6 +95,24 @@ private:
 	class UPawnSensingComponent* PawnSensing;
 #pragma endregion
 
+#pragma region Animation
+	/// <summary>
+	/// Animation montage for Enemy Combat
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Animation Montages")
+	class UAnimMontage* CombatMontage;
+
+	/// <summary>
+	/// Function to play a section of
+	/// the Combat Montage
+	/// </summary>
+	/// <param name="Section">Section to jump to</param>
+	void PlayCombatMontage(const FName& Section);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPlayAnimation(const FName& Section);
+#pragma endregion
+
 	/// <summary>
 	/// Target of Combat
 	/// </summary>
