@@ -40,6 +40,14 @@ public:
 	void BroadcastVictory(class AWizardCharacter* WCharacter, const TScriptInterface<class IWizardCombatActor>& CombatTarget);
 
 	/// <summary>
+	/// Function to broadcast the update of
+	/// story points to all players
+	/// </summary>
+	/// <param name="NumOfPoints">Updated number of Story points</param>
+	/// <param name="bIsPositivePoints">Whether or not it is an update in Positive Story points or not</param>
+	void BroadcastStoryPointUpdate(const int32& NumOfPoints, bool bIsPositivePoints = true);
+
+	/// <summary>
 	/// Gets the Character with the lowest Attribute
 	/// </summary>
 	/// <param name="AttributeType">Attribute the min search is based on</param>
@@ -119,6 +127,13 @@ private:
 	/// </summary>
 	UFUNCTION()
 	void OnPrepareStateFinished();
+
+	/// <summary>
+	/// Callback function to when a
+	/// threshold is reached with negative outcomes
+	/// </summary>
+	UFUNCTION()
+	void OnThresholdReached();
 
 public:
 

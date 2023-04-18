@@ -261,6 +261,20 @@ public:
 	/// </summary>
 	/// <param name="CurrentMatchState">The current MatchState</param>
 	void AddMatchState(const FName& CurrentMatchState);
+
+	/// <summary>
+	/// Function to set the updated number of
+	/// Positive Story points on the Overlay
+	/// </summary>
+	/// <param name="NumOfPoints">Updated number of points</param>
+	void SetPositiveStoryPoints(const float& NumOfPoints);
+
+	/// <summary>
+	/// Function to set the updated number of
+	/// Negative Story points on the Overlay
+	/// </summary>
+	/// <param name="NumOfPoints">Updated number of points</param>
+	void SetNegativeStoryPoints(const float& NumOfPoints);
 #pragma endregion
 
 private:

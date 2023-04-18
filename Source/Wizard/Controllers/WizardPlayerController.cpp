@@ -595,6 +595,7 @@ void AWizardPlayerController::SetupHUDPreTurn()
 {
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
+		bShowMouseCursor = true;
 		SetInputContext(EInputContext::EIC_Default);
 		WizardHUD->ClearTopRightBox();
 		WizardHUD->ClearCenterBox();
@@ -627,6 +628,19 @@ void AWizardPlayerController::AddHUDMatchState()
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		WizardHUD->AddMatchState(MatchState);
+	}
+}
+
+void AWizardPlayerController::ClientSetHUDStoryPoints_Implementation(const float& NumOfPoints, bool bIsPositiveStoryPoints)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		if (bIsPositiveStoryPoints) {
+			WizardHUD->SetPositiveStoryPoints(NumOfPoints);
+		}
+		else {
+			WizardHUD->SetNegativeStoryPoints(NumOfPoints);
+		}
 	}
 }
 #pragma endregion

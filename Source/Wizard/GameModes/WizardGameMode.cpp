@@ -31,8 +31,9 @@ void AWizardGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	WizardGameState = GetGameState<AWizardGameState>();
-	if (WizardGameState && !WizardGameState->OnPrepareFinishedDelegate.IsBound()) {
+	if (WizardGameState) {
 		WizardGameState->OnPrepareFinishedDelegate.BindUObject(this, &AWizardGameMode::OnPrepareStateFinished);
+		WizardGameState->OnThresholdReached.BindUObject(this, &AWizardGameMode::OnThresholdReached);
 	}
 
 	LevelStartingTime = GetWorld()->GetTimeSeconds();
@@ -147,6 +148,17 @@ void AWizardGameMode::BroadcastVictory(AWizardCharacter* WCharacter, const TScri
 	}
 }
 
+void AWizardGameMode::BroadcastStoryPointUpdate(const int32& NumOfPoints, bool bIsPositivePoints)
+{
+	for (auto& WizardPlayer : WizardPlayers)
+	{
+		if (WizardPlayer)
+		{
+			WizardPlayer->ClientSetHUDStoryPoints(NumOfPoints, bIsPositivePoints);
+		}
+	}
+}
+
 AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute AttributeType)
 {
 	if (WizardPlayers.Num() > 0) {
@@ -231,4 +243,16 @@ void AWizardGameMode::IncrementEnemiesFinished()
 void AWizardGameMode::OnPrepareStateFinished()
 {
 	SetMatchState(MatchState::InProgress);
+}
+
+void AWizardGameMode::OnThresholdReached()
+{
+	for (auto& WizardPlayer : WizardPlayers)
+	{
+		if (WizardPlayer)
+		{
+			// TODO client rpc to show notification
+			//WizardPlayer->ClientAddHUDVictoryPublicMessage(WCharacter, CombatTarget);
+		}
+	}
 }

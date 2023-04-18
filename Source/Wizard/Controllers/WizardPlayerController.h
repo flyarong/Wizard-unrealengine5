@@ -322,6 +322,15 @@ public:
 	/// to the HUD
 	/// </summary>
 	void AddHUDMatchState();
+
+	/// <summary>
+	/// Client RPC to update the number of
+	/// Story Points on the HUD
+	/// </summary>
+	/// <param name="NumOfPoints">Updated number of points</param>
+	/// <param name="bIsPositiveStoryPoints">Whether or not the updated Story Points refer to Positive Story points or not</param>
+	UFUNCTION(Client, Reliable)
+	void ClientSetHUDStoryPoints(const float& NumOfPoints, bool bIsPositiveStoryPoints);
 #pragma endregion
 
 #pragma region InputPointers

@@ -150,6 +150,12 @@ private:
 	UWizardProgressBarWidget* PowerBar;
 
 	UPROPERTY(meta = (BindWidget))
+	UWizardProgressBarWidget* GoodProgressBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UWizardProgressBarWidget* BadProgressBar;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* XPText;
 
 	UPROPERTY(meta = (BindWidget))
@@ -232,6 +238,10 @@ public:
 	FORCEINLINE UWizardProgressBarWidget* GetHealthBar() const { return HealthBar; }
 	FORCEINLINE void SetPowerBarPercentage(float Power, float MaxPower) { PowerBar->SetWizardBarPercent(Power, MaxPower); };
 	FORCEINLINE UWizardProgressBarWidget* GetPowerBar() const { return PowerBar; }
+	FORCEINLINE void SetGoodProgressBarPercentage(float GoodSpells) { GoodProgressBar->SetWizardBarPercent(GoodSpells, 100.f); };
+	FORCEINLINE UWizardProgressBarWidget* GetGoodProgressBar() const { return GoodProgressBar; }
+	FORCEINLINE void SetBadProgressBarPercentage(float DarkSpells) { BadProgressBar->SetWizardBarPercent(DarkSpells, 100.f); };
+	FORCEINLINE UWizardProgressBarWidget* GetBadProgressBar() const { return BadProgressBar; }
 	FORCEINLINE void SetXPText(FText XP) { XPText->SetText(XP); };
 	FORCEINLINE UTextBlock* GetXPText() const { return XPText; }
 	FORCEINLINE void SetGoodSpellText(FText GoodSpell) { GoodSpellText->SetText(GoodSpell); };

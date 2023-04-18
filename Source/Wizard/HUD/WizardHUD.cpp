@@ -426,4 +426,18 @@ void AWizardHUD::AddMatchState(const FName& CurrentMatchState)
 		}
 	}
 }
+
+void AWizardHUD::SetPositiveStoryPoints(const float& NumOfPoints)
+{
+	if (WizardOverlay && WizardOverlay->GetGoodProgressBar()) {
+		WizardOverlay->SetGoodProgressBarPercentage(NumOfPoints);
+	}
+}
+
+void AWizardHUD::SetNegativeStoryPoints(const float& NumOfPoints)
+{
+	if (WizardOverlay && WizardOverlay->GetBadProgressBar()) {
+		WizardOverlay->SetBadProgressBarPercentage(NumOfPoints);
+	}
+}
 #pragma endregion
