@@ -123,6 +123,7 @@ void AWizardGameState::AddMiniMapActor(AActor* MiniMapActor)
 		MiniMapActors.AddUnique(MiniMapActor);
 		if (MiniMapActor->ActorHasTag(FName("WizardActor"))) AddWizardActor(MiniMapActor);
 		if (MiniMapActor->ActorHasTag(FName("WizardCombatActor"))) AddCombatActor(MiniMapActor);
+		if (MiniMapActor->ActorHasTag(FName("GoodSpell"))) GoodSpells++;
 	}
 }
 
@@ -132,6 +133,7 @@ void AWizardGameState::RemoveMiniMapActor(AActor* MiniMapActor)
 		MiniMapActors.Remove(MiniMapActor);
 		if (MiniMapActor->ActorHasTag(FName("WizardActor"))) RemoveWizardActor(MiniMapActor);
 		if (MiniMapActor->ActorHasTag(FName("WizardCombatActor"))) RemoveCombatActor(MiniMapActor);
+		if (MiniMapActor->ActorHasTag(FName("GoodSpell")) && GoodSpells > 0) GoodSpells--;
 	}
 }
 #pragma endregion
@@ -146,6 +148,9 @@ void AWizardGameState::PrepareTurn()
 	// Set Spawnable Actor classes & spawn Actors
 	SetSpawnActorClasses();
 	SpawnActors();
+
+	// Check number of DarkSpells in each District
+	OnDarkSpellsSpawnedDelegate.Broadcast();
 
 	OnPrepareFinishedDelegate.ExecuteIfBound();
 }
@@ -169,15 +174,20 @@ void AWizardGameState::SpawnActors()
 	// Spawn Enemies
 	if (SpawnableEnemies.Num() > 0) {
 		for (auto& EnemyClass : SpawnableEnemies) {
-			FVector SpawnLocation = GetSpawnLocation();
-			if (EnemyClass && !SpawnLocation.IsZero()) {
-				GetWorld()->SpawnActor<APawn>(
-					EnemyClass,
-					SpawnLocation,
-					FRotator()
-				);
-			}
+			SpawnEnemy(EnemyClass);
 		}
+	}
+}
+
+void AWizardGameState::SpawnEnemy(TSubclassOf<AEnemy> EnemyClass)
+{
+	FVector SpawnLocation = GetSpawnLocation();
+	if (EnemyClass && !SpawnLocation.IsZero()) {
+		GetWorld()->SpawnActor<APawn>(
+			EnemyClass,
+			SpawnLocation,
+			FRotator()
+		);
 	}
 }
 
@@ -201,7 +211,7 @@ void AWizardGameState::SetSpawnActorClasses()
 void AWizardGameState::AddSpawnActorClass(FName Tag)
 {
 	if (Tag == FName("Spell")) {
-		int32 Selection = FMath::RandRange(0, SpellClasses.Num() - 1);
+		int32 Selection = GoodSpells > 0 ? 0 : FMath::RandRange(0, SpellClasses.Num() - 1);
 
 		SpawnableSpells.Add(SpellClasses[Selection]);
 	}
@@ -221,5 +231,60 @@ FVector AWizardGameState::GetSpawnLocation()
 	}
 
 	return FVector::ZeroVector;
+}
+#pragma endregion
+
+#pragma region StoryPoints
+void AWizardGameState::PositiveOutcome()
+{
+	PositiveStoryPoints++;
+	WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
+	if (WGameMode) {
+		WGameMode->BroadcastStoryPointUpdate(PositiveStoryPoints);
+	}
+	// TODO check if storypoints reach threshold - can only happen after trial
+}
+
+void AWizardGameState::NegativeOutcome()
+{
+	NegativeStoryPoints++;
+	
+	WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
+	if (WGameMode) {
+		WGameMode->BroadcastStoryPointUpdate(NegativeStoryPoints, false);
+		CheckThreshold();
+	}
+}
+
+void AWizardGameState::CheckThreshold()
+{
+	if (NegativeStoryPoints == ((NumOfThresholdsReached + 1) * ThresholdMeter)) {
+		NumOfThresholdsReached++;
+		OnThresholdReached.ExecuteIfBound();
+
+		if (NumOfThresholdsReached == 1) {
+			for (int32 i = 0; i < WGameMode->GetWizardPlayers().Num(); i++) {
+				int32 Selection = FMath::RandRange(0, EnemyClasses.Num() - 1);
+				SpawnEnemy(EnemyClasses[Selection]);
+			}
+		}
+		else if (NumOfThresholdsReached == 2) {
+			int32 Length = 2;
+			if (WGameMode->GetWizardPlayers().Num() > 2) Length = 3;
+			else if (WGameMode->GetWizardPlayers().Num() > 4) Length = 4;
+			for (int32 i = 0; i < Length; i++) {
+				int32 Selection = FMath::RandRange(0, EliteEnemyClasses.Num() - 1);
+				SpawnEnemy(EliteEnemyClasses[Selection]);
+			}
+		}
+		else if (NumOfThresholdsReached == 3) {
+			SpawnEnemy(BossClass);
+		}
+		else if (NumOfThresholdsReached >= 4) {
+			// TODO game lost
+		}
+	}
+
+	// TODO check if storypoints reach threshold - can only happen after prepare, so this needs to be checked in gamemode OnPrepareStateFinished
 }
 #pragma endregion

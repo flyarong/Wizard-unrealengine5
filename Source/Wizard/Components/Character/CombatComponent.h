@@ -410,8 +410,6 @@ private:
 	/// Multicast RPC to replicate some functionality
 	/// on all machines when applying Hit on Target in Combat
 	/// </summary>
-	/// <param name="HitResult">Combat Result</param>
-	/// <param name="bCombatWasSuccessful">Whether the Combat was successful or not</param>
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastCombatHit();
 

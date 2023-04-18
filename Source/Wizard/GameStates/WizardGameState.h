@@ -12,6 +12,18 @@
 /// </summary>
 DECLARE_DELEGATE(FOnPrepareFinished);
 
+/// <summary>
+/// Delegate type to broadcast when a
+/// threshold is reached with negative outcomes
+/// </summary>
+DECLARE_DELEGATE(FOnThresholdReached);
+
+/// <summary>
+/// Delegate type to broadcast once DarkSpells
+/// have been spawned in Prepare state
+/// </summary>
+DECLARE_MULTICAST_DELEGATE(FOnDarkSpellsSpawned);
+
 /**
  * GameState class to keep track of the
  * State of the Game
@@ -28,6 +40,18 @@ public:
 	/// has finished
 	/// </summary>
 	FOnPrepareFinished OnPrepareFinishedDelegate;
+
+	/// <summary>
+	/// Delegate for broadcasting when a threshold
+	/// is reached with negative outcomes
+	/// </summary>
+	FOnThresholdReached OnThresholdReached;
+
+	/// <summary>
+	/// Delegate to broadcast after DarkSpells have been
+	/// spawned during Prepare state
+	/// </summary>
+	FOnDarkSpellsSpawned OnDarkSpellsSpawnedDelegate;
 
 	/// <summary>
 	/// Function that moves all Enemies when
@@ -73,6 +97,16 @@ public:
 	/// <param name="MiniMapActor">Actor to remove</param>
 	void RemoveMiniMapActor(AActor* MiniMapActor);
 
+	/// <summary>
+	/// Function for handling a positive outcome
+	/// </summary>
+	void PositiveOutcome();
+
+	/// <summary>
+	/// Function for handling a negative outcome
+	/// </summary>
+	void NegativeOutcome();
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -92,11 +126,25 @@ private:
 	TArray<class IWizardActor*> WizardActors = TArray<IWizardActor*>();
 
 	/// <summary>
+	/// Array holding all the Actors that should be
+	/// displayed on the MiniMap
+	/// </summary>
+	UPROPERTY()
+	TArray<AActor*> MiniMapActors = TArray<AActor*>();
+
+	/// <summary>
 	/// Number of Enemies who ended
 	/// their turn
 	/// </summary>
 	UPROPERTY()
 	int32 EnemiesFinished = 0;
+
+	/// <summary>
+	/// Number of Good Spells present
+	/// on the map
+	/// </summary>
+	UPROPERTY()
+	int32 GoodSpells = 0;
 
 	/// <summary>
 	/// Function to add a WizardActor
@@ -133,12 +181,40 @@ private:
 	void RemoveCombatActor(AActor* CombatActor);
 #pragma endregion
 
+#pragma region StoryPoints
 	/// <summary>
-	/// Array holding all the Actors that should be
-	/// displayed on the MiniMap
+	/// Number of story points received
+	/// for positive outcomes
 	/// </summary>
 	UPROPERTY()
-	TArray<AActor*> MiniMapActors = TArray<AActor*>();
+	int32 PositiveStoryPoints = 0;
+
+	/// <summary>
+	/// Number of story points received
+	/// for negative outcomes
+	/// </summary>
+	UPROPERTY()
+	int32 NegativeStoryPoints = 0;
+
+	/// <summary>
+	/// Number of negative story points until
+	/// the next Threshold
+	/// </summary>
+	UPROPERTY()
+	int32 ThresholdMeter = 0;
+
+	/// <summary>
+	/// Number of thresholds reached
+	/// </summary>
+	UPROPERTY()
+	int32 NumOfThresholdsReached = 0;
+
+	/// <summary>
+	/// Function to check the current
+	/// threshold and act accordingly
+	/// </summary>
+	void CheckThreshold();
+#pragma endregion
 
 #pragma region Enemy Spawning
 	/// <summary>
@@ -193,10 +269,28 @@ private:
 	TArray<TSubclassOf<AEnemy>> EnemyClasses;
 
 	/// <summary>
+	/// Elite Enemy classes that can be spawned
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Spawnable Enemies")
+	TArray<TSubclassOf<AEnemy>> EliteEnemyClasses;
+
+	/// <summary>
+	/// Boss Enemy class of this Map
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Spawnable Enemies")
+	TSubclassOf<AEnemy> BossClass;
+
+	/// <summary>
 	/// Function that spawns the selected Enemies
 	/// and Spells
 	/// </summary>
 	void SpawnActors();
+
+	/// <summary>
+	/// Function to spawn an Enemy
+	/// </summary>
+	/// <param name="PawnClass">Class of the Enemy to spawn an instance of</param>
+	void SpawnEnemy(TSubclassOf<AEnemy> EnemyClass);
 
 	/// <summary>
 	/// Function that sets all the Actors

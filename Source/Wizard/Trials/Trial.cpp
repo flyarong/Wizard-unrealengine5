@@ -8,6 +8,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SphereComponent.h"
 #include "Wizard/GameModes/WizardGameMode.h"
+#include "Wizard/GameStates/WizardGameState.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
 #include "Wizard/Components/Character/ActionComponent.h"
@@ -112,9 +113,12 @@ int32 ATrial::GetHealth()
 void ATrial::Kill()
 {
 	// Handle Trial Success
-	if (TrialCharacter && TrialCharacter->GetAttribute() && bCharacterHasGoodSpell) {
-		TrialCharacter->GetAttribute()->SpendGoodSpell(1);
-		// TODO increment GoodSpells in GameState
+	if (bCharacterHasGoodSpell) {
+		AWizardGameState* WGameState = Cast<AWizardGameState>(UGameplayStatics::GetGameState(this));
+		if (WGameState && TrialCharacter && TrialCharacter->GetAttribute()) {
+			TrialCharacter->GetAttribute()->SpendGoodSpell(1);
+			WGameState->PositiveOutcome();
+		}
 	}
 
 	Destroy();
