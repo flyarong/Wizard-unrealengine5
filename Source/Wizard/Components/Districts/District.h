@@ -48,21 +48,64 @@ protected:
 	);
 
 private:
+
+	/// <summary>
+	/// GameState pointer
+	/// </summary>
+	class AWizardGameState* WGameState;
+
+	/// <summary>
+	/// Trigger box component for setting up
+	/// the District
+	/// </summary>
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* DistrictBox;
+
+	/// <summary>
+	/// Niagara system component for anomalies
+	/// </summary>
+	UPROPERTY(VisibleAnywhere)
+	class UNiagaraComponent* AnomalyComponent;
+
+	/// <summary>
+	/// Niagara System effect for Anomaly
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Anomaly Effects")
+	class UNiagaraSystem* AnomalyEffect;
 
 	/// <summary>
 	/// Base Cost of Power to move
 	/// to this District
 	/// </summary>
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "District Properties")
 	float PowerCost = 10.f;
+
+	/// <summary>
+	/// Maximum number of DarkSpells allowed
+	/// in the District without a negative consequence
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "District Properties")
+	int32 DarkSpellsAllowed = 3;
 
 	/// <summary>
 	/// Name of the district
 	/// </summary>
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "District Properties")
 	EDistrict DistrictName;
+
+	/// <summary>
+	/// Callback function to check the
+	/// number of DarkSpells present in the
+	/// District after Prepare state
+	/// </summary>
+	UFUNCTION()
+	void CheckDarkSpellsInDistrict();
+
+	/// <summary>
+	/// Function to spawn an Anomaly
+	/// in the District
+	/// </summary>
+	void SpawnAnomaly();
 
 public:
 	FORCEINLINE EDistrict GetDistrictName() const { return DistrictName; }

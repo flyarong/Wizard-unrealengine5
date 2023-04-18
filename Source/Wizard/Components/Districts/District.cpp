@@ -3,6 +3,10 @@
 
 #include "District.h"
 #include "Components/BoxComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Wizard/GameStates/WizardGameState.h"
 #include "Wizard/Characters/WizardCharacter.h"
 #include "Wizard/Components/Character/ActionComponent.h"
 #include "Wizard/Components/Character/AttributeComponent.h"
@@ -22,6 +26,9 @@ ADistrict::ADistrict()
 	DistrictBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	DistrictBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 
+	// Setup Niagara Component
+	AnomalyComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("AnomalyComponent"));
+	AnomalyComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -35,6 +42,19 @@ void ADistrict::BeginPlay()
 		DistrictBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 		DistrictBox->OnComponentBeginOverlap.AddDynamic(this, &ADistrict::OnBoxBeginOverlap);
 		DistrictBox->OnComponentEndOverlap.AddDynamic(this, &ADistrict::OnBoxEndOverlap);
+	}
+}
+
+// Called every frame
+void ADistrict::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (WGameState == nullptr && HasAuthority()) {
+		WGameState = Cast<AWizardGameState>(UGameplayStatics::GetGameState(this));
+		if (WGameState) {
+			WGameState->OnDarkSpellsSpawnedDelegate.AddUObject(this, &ThisClass::CheckDarkSpellsInDistrict);
+		}
 	}
 }
 
@@ -55,10 +75,32 @@ void ADistrict::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	}
 }
 
-// Called every frame
-void ADistrict::Tick(float DeltaTime)
+void ADistrict::CheckDarkSpellsInDistrict()
 {
-	Super::Tick(DeltaTime);
+	TArray<AActor*> OverlappingActors = TArray<AActor*>();
+	GetOverlappingActors(OverlappingActors);
+	if (OverlappingActors.Num() > 0) {
+		int32 DarkSpells = 0;
+		for (auto& OverlappingActor : OverlappingActors) {
+			if (OverlappingActor->ActorHasTag(FName("DarkSpell"))) DarkSpells++;
+			if (DarkSpells > DarkSpellsAllowed && WGameState) {
+				WGameState->NegativeOutcome();
+				SpawnAnomaly();
+			}
+		}
 
+		if (DarkSpells <= DarkSpellsAllowed && AnomalyComponent) AnomalyComponent->Deactivate();
+	}
 }
 
+void ADistrict::SpawnAnomaly()
+{
+	if (AnomalyEffect && AnomalyComponent) {
+		AnomalyComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			AnomalyEffect,
+			AnomalyComponent->GetComponentLocation(),
+			AnomalyComponent->GetComponentRotation()
+		);
+	}
+}
