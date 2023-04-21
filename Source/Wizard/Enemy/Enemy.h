@@ -60,7 +60,6 @@ protected:
 	/// <returns>Character Attribute to focus on</returns>
 	virtual EAttribute GetChosenAttribute();
 
-private:
 #pragma region Components
 	/// <summary>
 	/// Actor's Point of Interest component:

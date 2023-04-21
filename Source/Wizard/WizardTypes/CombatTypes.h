@@ -7,6 +7,7 @@ enum class ECombat : uint8
 	EC_DarkSpell UMETA(DisplayName = "Dark Spell"),
 	EC_Trial UMETA(DisplayName = "Trial"),
 	EC_Enemy UMETA(DisplayName = "Enemy"),
+	EC_EliteEnemy UMETA(DisplayName = "Elite Enemy"),
 
 	EC_MAX UMETA(DisplayName = "DefaultMAX")
 };

@@ -198,6 +198,8 @@ public:
 	FORCEINLINE bool GetCanInteract() const { return bCanInteract; }
 	FORCEINLINE float GetCost() const { return Cost; }
 	FORCEINLINE int32 GetHealth() const { return Health; }
+	FORCEINLINE void AddHealth(int32 HealthToAdd) { Health += HealthToAdd; }
 	FORCEINLINE ECombat GetCombatType() const { return CombatType; }
 	FORCEINLINE int32 GetBaseDamage() const { return BaseDamage; }
+	FORCEINLINE void AddBaseDamage(int32 DamageToAdd) { BaseDamage += DamageToAdd; }
 };
