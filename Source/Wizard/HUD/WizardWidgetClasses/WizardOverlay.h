@@ -87,6 +87,18 @@ private:
 	TSubclassOf<class UUserWidget> MatchStateWidgetClass;
 
 	/// <summary>
+	/// Widget class for the In Game Menu
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Menu")
+	TSubclassOf<class UUserWidget> MenuWidgetClass;
+
+	/// <summary>
+	/// Widget class for the End Game screen
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Menu")
+	TSubclassOf<class UUserWidget> EndGameWidgetClass;
+
+	/// <summary>
 	/// Widget used on the Overlay to show the current District
 	/// </summary>
 	UPROPERTY()
@@ -221,6 +233,8 @@ public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetCurrentStepResultWidgetClass() const { return CurrentStepResultWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCombatScoreWidgetClass() const { return CombatScoreWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetMatchStateWidgetClass() const { return MatchStateWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetMenuWidgetClass() const { return MenuWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetEndGameWidgetClass() const { return EndGameWidgetClass; }
 	FORCEINLINE UDistrictPanelWidget* GetDistrictPanelWidget() const { return DistrictPanelWidget; }
 	FORCEINLINE void SetDistrictPanelWidget(UDistrictPanelWidget* DistrictPanel) { DistrictPanelWidget = DistrictPanel; }
 	FORCEINLINE USpellMapWidget* GetSpellMapWidget() const { return SpellMapWidget; }

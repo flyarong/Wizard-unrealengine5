@@ -175,6 +175,20 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	}
 }
 
+void AWizardCharacter::LeaveGame()
+{
+	ServerLeaveGame();
+	if (IsLocallyControlled()) OnLeftGameDelegate.Broadcast();
+}
+
+void AWizardCharacter::ServerLeaveGame_Implementation()
+{
+	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
+	if (WGameMode && PlayerController) {
+		WGameMode->PlayerLeavingGame(PlayerController);
+	}
+}
+
 #pragma region Items
 void AWizardCharacter::AddNewItem(const FItemDataTable& ItemRow)
 {

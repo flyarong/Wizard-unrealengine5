@@ -90,6 +90,12 @@ public:
 	/// <param name="NewMatchState">New MatchState</param>
 	void OnMatchStateSet(FName NewMatchState);
 
+	/// <summary>
+	/// Function to call when the current game has ended
+	/// </summary>
+	/// <param name="bIsGameWon">Whether the game has been won or not</param>
+	void OnGameEnded(bool bIsGameWon);
+
 #pragma region HUD/Player
 	/// <summary>
 	/// Function for setting the current district
@@ -164,6 +170,13 @@ public:
 	/// <param name="NewSpell">Amount to set</param>
 	/// <param name="IsGoodSpell">Whether the Spell is a GoodSpell or DarkSpell</param>
 	void SetHUDSpells(int32 NewSpell, bool bIsGoodSpell = true);
+
+	/// <summary>
+	/// Function to toggle the in-game menu
+	/// on the HUD
+	/// </summary>
+	UFUNCTION()
+	void ToggleHUDInGameMenu();
 #pragma endregion
 
 #pragma region HUD/Items
@@ -331,6 +344,12 @@ public:
 	/// <param name="bIsPositiveStoryPoints">Whether or not the updated Story Points refer to Positive Story points or not</param>
 	UFUNCTION(Client, Reliable)
 	void ClientSetHUDStoryPoints(const float& NumOfPoints, bool bIsPositiveStoryPoints);
+
+	/// <summary>
+	/// Function to add the End Game screen
+	/// to the HUD
+	/// </summary>
+	void AddHUDEndGame();
 #pragma endregion
 
 #pragma region InputPointers
@@ -361,6 +380,10 @@ public:
 	/** Camera Rotation Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* CameraRotateAction;
+
+	/** In-game Menu Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* InGameMenuAction;
 
 	/** Combat MappingContext */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -415,6 +438,19 @@ protected:
 	/// </summary>
 	UPROPERTY()
 	bool bCanCameraMove = true;
+
+	/// <summary>
+	/// Function to when the Player releases
+	/// the Escape Button
+	/// </summary>
+	void OnEscapeButtonReleased();
+
+	/// <summary>
+	/// Boolean for whether or not to show the
+	/// In Game menu once the Escape button is pressed
+	/// </summary>
+	UPROPERTY()
+	bool bShowInGameMenu = false;
 #pragma endregion
 
 private:
@@ -479,6 +515,15 @@ private:
 	/// </summary>
 	UPROPERTY(Replicated)
 	bool bCanCastSpell = false;
+
+	/// <summary>
+	/// Variable storing the result of the current Game
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_bGameWon)
+	bool bGameWon;
+
+	UFUNCTION()
+	void OnRep_bGameWon();
 
 #pragma region Movement
 	/// <summary>

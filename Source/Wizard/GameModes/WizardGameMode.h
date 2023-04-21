@@ -48,6 +48,19 @@ public:
 	void BroadcastStoryPointUpdate(const int32& NumOfPoints, bool bIsPositivePoints = true);
 
 	/// <summary>
+	/// Function to end the current game
+	/// </summary>
+	/// <param name="bIsGameWon">Whether the game has been won or not</param>
+	void EndGame(bool bIsGameWon);
+
+	/// <summary>
+	/// Function to when a player is leaving
+	/// the game
+	/// </summary>
+	/// <param name="WController">Player's Controller</param>
+	void PlayerLeavingGame(class AWizardPlayerController* WController);
+
+	/// <summary>
 	/// Gets the Character with the lowest Attribute
 	/// </summary>
 	/// <param name="AttributeType">Attribute the min search is based on</param>

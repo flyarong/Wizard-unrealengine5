@@ -28,6 +28,20 @@ public:
 
 #pragma region General
 	/// <summary>
+	/// Function to show the in-game menu
+	/// on the Overlay
+	/// </summary>
+	/// <param name="bShowInGameMenu">Whether or not to show the Menu</param>
+	void ShowInGameMenu(bool bShowInGameMenu);
+
+	/// <summary>
+	/// Function to show the end game menu
+	/// on the Overlay
+	/// </summary>
+	/// <param name="bShowInGameMenu">Whether or not the game has been won</param>
+	void ShowEndGameMenu(bool bIsGameWon);
+
+	/// <summary>
 	/// Function to clear the Top Right Box
 	/// in the Overlay
 	/// </summary>

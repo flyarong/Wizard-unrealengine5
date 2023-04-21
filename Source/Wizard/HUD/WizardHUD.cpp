@@ -18,6 +18,8 @@
 #include "Wizard/HUD/WizardWidgetClasses/Districts/DistrictPanelWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/EndTurnButtonWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/MatchState/MatchStateWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Menu/MenuWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Menu/EndGameWidget.h"
 #include "Wizard/Interfaces/PublicMessageActor.h"
 #include "Wizard/WizardTypes/ActionTypes.h"
 #include "Components/ScaleBox.h"
@@ -42,6 +44,31 @@ bool AWizardHUD::CreateWizardOverlay()
 }
 
 #pragma region General
+void AWizardHUD::ShowInGameMenu(bool bShowInGameMenu)
+{
+	ClearCenterBox();
+	if (bShowInGameMenu && WizardOverlay && WizardOverlay->GetMenuWidgetClass() && WizardOverlay->GetCenterBox()) {
+		UMenuWidget* InGameMenu = CreateWidget<UMenuWidget>(GetOwningPlayerController(), WizardOverlay->GetMenuWidgetClass());
+		if (InGameMenu) {
+			InGameMenu->SetMenu();
+			WizardOverlay->GetCenterBox()->AddChild(InGameMenu);
+		}
+	}
+}
+
+void AWizardHUD::ShowEndGameMenu(bool bIsGameWon)
+{
+	ClearCenterBox();
+	if (WizardOverlay && WizardOverlay->GetMenuWidgetClass() && WizardOverlay->GetEndGameWidgetClass() && WizardOverlay->GetCenterBox()) {
+		UMenuWidget* InGameMenu = CreateWidget<UMenuWidget>(GetOwningPlayerController(), WizardOverlay->GetMenuWidgetClass());
+		UEndGameWidget* EndGameMenu = CreateWidget<UEndGameWidget>(GetOwningPlayerController(), WizardOverlay->GetEndGameWidgetClass());
+		if (EndGameMenu && InGameMenu) {
+			EndGameMenu->SetEndGameScreen(bIsGameWon, InGameMenu);
+			WizardOverlay->GetCenterBox()->AddChild(EndGameMenu);
+		}
+	}
+}
+
 void AWizardHUD::ShowLeftPanel()
 {
 	if (WizardOverlay && WizardOverlay->GetLeftSideBox()) {
@@ -151,10 +178,12 @@ void AWizardHUD::SetPower(float Power, float MaxPower)
 void AWizardHUD::SetCharacterImage(UTexture2D* CharacterImage)
 {
 	AWizardPlayerController* WController = Cast<AWizardPlayerController>(GetOwningPlayerController());
-	if (WController && WizardOverlay && WizardOverlay->GetProfileImage() && WizardOverlay->GetProfileButton()) {
+	if (WController && WizardOverlay && WizardOverlay->GetProfileImage() && WizardOverlay->GetProfileButton() &&
+		WizardOverlay->GetSettingsButton()) {
 		WizardOverlay->SetProfileImage(CharacterImage);
 		WizardOverlay->GetProfileButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::SetCameraFocusOnWizard);
 		WizardOverlay->GetInventoryButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::OpenHUDInventory);
+		WizardOverlay->GetSettingsButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::ToggleHUDInGameMenu);
 	}
 }
 

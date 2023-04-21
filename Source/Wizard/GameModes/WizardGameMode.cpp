@@ -159,6 +159,22 @@ void AWizardGameMode::BroadcastStoryPointUpdate(const int32& NumOfPoints, bool b
 	}
 }
 
+void AWizardGameMode::EndGame(bool bIsGameWon)
+{
+	SetMatchState(MatchState::WaitingPostMatch);
+
+	for (auto& WizardPlayer : WizardPlayers) {
+		WizardPlayer->OnGameEnded(bIsGameWon);
+	}
+}
+
+void AWizardGameMode::PlayerLeavingGame(AWizardPlayerController* WController)
+{
+	if (WizardPlayers.Num() > 0 && WController && WizardPlayers.Contains(WController)) {
+		WizardPlayers.Remove(WController);
+	}
+}
+
 AWizardCharacter* AWizardGameMode::GetCharacterWithLowestAttribute(EAttribute AttributeType)
 {
 	if (WizardPlayers.Num() > 0) {
@@ -252,7 +268,6 @@ void AWizardGameMode::OnThresholdReached()
 		if (WizardPlayer)
 		{
 			// TODO client rpc to show notification
-			//WizardPlayer->ClientAddHUDVictoryPublicMessage(WCharacter, CombatTarget);
 		}
 	}
 }

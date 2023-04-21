@@ -59,6 +59,7 @@ void AWizardPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	DOREPLIFETIME(AWizardPlayerController, CachedDestination);
 	DOREPLIFETIME(AWizardPlayerController, MatchState);
 	DOREPLIFETIME(AWizardPlayerController, bCanCastSpell);
+	DOREPLIFETIME(AWizardPlayerController, bGameWon);
 }
 
 #pragma region Init
@@ -120,6 +121,9 @@ void AWizardPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Completed, this, &AWizardPlayerController::OnSetDestinationReleased);
 		EnhancedInputComponent->BindAction(SetDestinationClickAction, ETriggerEvent::Canceled, this, &AWizardPlayerController::OnSetDestinationReleased);
 
+		// Setup keyboard input events
+		EnhancedInputComponent->BindAction(InGameMenuAction, ETriggerEvent::Completed, this, &AWizardPlayerController::OnEscapeButtonReleased);
+
 		// Setup Camera input events
 		EnhancedInputComponent->BindAction(CameraMoveAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnKeyMove);
 		EnhancedInputComponent->BindAction(CameraZoomAction, ETriggerEvent::Triggered, this, &AWizardPlayerController::OnMouseWheelAxis);
@@ -178,7 +182,7 @@ void AWizardPlayerController::SetInputContext(EInputContext ContextType)
 	}
 }
 
-#pragma region CharacterMovement
+#pragma region Character Input
 void AWizardPlayerController::OnInputStarted()
 {
 	ServerStopMovement();
@@ -235,9 +239,14 @@ void AWizardPlayerController::ServerMoveToLocation_Implementation(AWizardPlayerC
 	CachedDestination = Dest;
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Controller, Dest);
 }
+
+void AWizardPlayerController::OnEscapeButtonReleased()
+{
+	ToggleHUDInGameMenu();
+}
 #pragma endregion
 
-#pragma region CameraMovement
+#pragma region Camera Input
 void AWizardPlayerController::SetCameraFocusOnWizard()
 {
 	if (GameplayCamera && bCanCameraMove) {
@@ -385,6 +394,15 @@ void AWizardPlayerController::SetHUDSpells(int32 NewSpell, bool bIsGoodSpell)
 	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
 	if (WizardHUD) {
 		WizardHUD->SetSpells(NewSpell, bIsGoodSpell);
+	}
+}
+
+void AWizardPlayerController::ToggleHUDInGameMenu()
+{
+	bShowInGameMenu = !bShowInGameMenu;
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->ShowInGameMenu(bShowInGameMenu);
 	}
 }
 #pragma endregion
@@ -621,6 +639,12 @@ void AWizardPlayerController::SetHUDMatchState()
 	else if (MatchState == MatchState::Prepare) {
 		AddHUDMatchState();
 	}
+	else if (MatchState == MatchState::WaitingPostMatch) {
+		SetupHUDPostTurn();
+		FInputModeUIOnly InputMode;
+		SetInputMode(InputMode);
+		SetInputContext(EInputContext::EIC_None);
+	}
 }
 
 void AWizardPlayerController::AddHUDMatchState()
@@ -671,4 +695,24 @@ void AWizardPlayerController::OnMatchStateSet(FName NewMatchState)
 void AWizardPlayerController::OnRep_MatchState()
 {
 	SetHUDMatchState();
+}
+
+void AWizardPlayerController::OnGameEnded(bool bIsGameWon)
+{
+	bGameWon = bIsGameWon;
+
+	AddHUDEndGame();
+}
+
+void AWizardPlayerController::OnRep_bGameWon()
+{
+	AddHUDEndGame();
+}
+
+void AWizardPlayerController::AddHUDEndGame()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->ShowEndGameMenu(bGameWon);
+	}
 }

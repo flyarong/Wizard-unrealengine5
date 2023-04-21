@@ -241,8 +241,10 @@ void AWizardGameState::PositiveOutcome()
 	WGameMode = WGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WGameMode;
 	if (WGameMode) {
 		WGameMode->BroadcastStoryPointUpdate(PositiveStoryPoints);
+		if (PositiveStoryPoints >= VictoryThreshold) {
+			WGameMode->EndGame(true);
+		}
 	}
-	// TODO check if storypoints reach threshold - can only happen after trial
 }
 
 void AWizardGameState::NegativeOutcome()
@@ -281,10 +283,8 @@ void AWizardGameState::CheckThreshold()
 			SpawnEnemy(BossClass);
 		}
 		else if (NumOfThresholdsReached >= 4) {
-			// TODO game lost
+			WGameMode->EndGame(false);
 		}
 	}
-
-	// TODO check if storypoints reach threshold - can only happen after prepare, so this needs to be checked in gamemode OnPrepareStateFinished
 }
 #pragma endregion

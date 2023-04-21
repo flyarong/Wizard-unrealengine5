@@ -9,6 +9,11 @@
 #include "Wizard/WizardTypes/DistrictNames.h"
 #include "WizardCharacter.generated.h"
 
+/// <summary>
+/// Delegate type for leaving the game
+/// </summary>
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame);
+
 UCLASS(Blueprintable)
 class AWizardCharacter : public ACharacter, public IPublicMessageActor
 {
@@ -30,6 +35,17 @@ public:
 	/// <param name="PlayerName">Player's name</param>
 	/// <param name="RowName">Selected character's name</param>
 	void InitGameplayCharacter(FString PlayerName, FName RowName);
+
+	/// <summary>
+	/// Delegate to broadcast when the player
+	/// is leaving the game
+	/// </summary>
+	FOnLeftGame OnLeftGameDelegate;
+
+	/// <summary>
+	/// Function to leave the game
+	/// </summary>
+	void LeaveGame();
 
 	/// <summary>
 	/// Function to add a new Item to the
@@ -195,6 +211,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Item Sounds")
 	USoundCue* UseSound;
 #pragma endregion
+
+	/// <summary>
+	/// Server RPC for leaving the game
+	/// </summary>
+	UFUNCTION(Server, Reliable)
+	void ServerLeaveGame();
 
 	/// <summary>
 	/// Multicast RPC to broadcast Character Movement

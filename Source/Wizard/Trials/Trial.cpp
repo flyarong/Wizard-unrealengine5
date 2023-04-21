@@ -113,7 +113,7 @@ int32 ATrial::GetHealth()
 void ATrial::Kill()
 {
 	// Handle Trial Success
-	if (bCharacterHasGoodSpell) {
+	if (bCharacterHasGoodSpell && HasAuthority()) {
 		AWizardGameState* WGameState = Cast<AWizardGameState>(UGameplayStatics::GetGameState(this));
 		if (WGameState && TrialCharacter && TrialCharacter->GetAttribute()) {
 			TrialCharacter->GetAttribute()->SpendGoodSpell(1);

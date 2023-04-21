@@ -190,6 +190,13 @@ private:
 	int32 PositiveStoryPoints = 0;
 
 	/// <summary>
+	/// Number of Positive Story Points needed
+	/// to win the game
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Game Story")
+	int32 VictoryThreshold = 10;
+
+	/// <summary>
 	/// Number of story points received
 	/// for negative outcomes
 	/// </summary>
