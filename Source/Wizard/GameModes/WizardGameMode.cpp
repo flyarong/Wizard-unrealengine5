@@ -62,6 +62,9 @@ void AWizardGameMode::OnMatchStateSet()
 		
 		WizardGameState->EnableWizardActors();
 	}
+	else if (MatchState == MatchState::Enemy && WizardGameState) {
+		WizardGameState->DisableWizardActors(); // needs to run before MatchState widget animation ends
+	}
 }
 
 void AWizardGameMode::Tick(float DeltaTime)

@@ -37,7 +37,6 @@ void UMatchStateWidget::OnMatchStateAnimationFinished()
 	AWizardGameState* WGameState = Cast<AWizardGameState>(UGameplayStatics::GetGameState(this));
 	if (PlayerController && PlayerController->HasAuthority() && WGameState) {
 		if (CurrentState == MatchState::Enemy) {
-			WGameState->DisableWizardActors();
 			WGameState->MoveEnemies();
 		}
 		else if (CurrentState == MatchState::Trial) {
