@@ -103,6 +103,7 @@ void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AWizardCharacter, Items);
+	DOREPLIFETIME(AWizardCharacter, Equipments);
 }
 
 void AWizardCharacter::PostInitializeComponents()
@@ -161,17 +162,20 @@ void AWizardCharacter::InitGameplayCharacter(FString PlayerName, FName RowName)
 	}
 
 	PlayerController = Cast<AWizardPlayerController>(Controller);
-	if (PlayerController && IsLocallyControlled()) {
-		// Setup Controller&Gameplay Camera
-		PlayerController->SetupCamera();
+	if (PlayerController) {
+		if (HasAuthority()) PlayerController->OnMatchStateSet(MatchState::InProgress);
+		
+		if (IsLocallyControlled()) {
+			// Setup Controller&Gameplay Camera
+			PlayerController->SetupCamera();
 
-		// Setup WizardOverlay
-		PlayerController->SetupOverlay();
-		PlayerController->SetShowMouseCursor(true);
-		PlayerController->OnMatchStateSet(MatchState::InProgress);
+			// Setup WizardOverlay
+			PlayerController->SetupOverlay();
+			PlayerController->SetShowMouseCursor(true);
 
-		// Setup Point of Interest on Minimap
-		POI->ServerSetupPOI(this);
+			// Setup Point of Interest on Minimap
+			POI->ServerSetupPOI(this);
+		}
 	}
 }
 
@@ -192,8 +196,14 @@ void AWizardCharacter::ServerLeaveGame_Implementation()
 #pragma region Items
 void AWizardCharacter::AddNewItem(const FItemDataTable& ItemRow)
 {
-	Items.Add(ItemRow);
-	UpdateInventory();
+	if (ItemRow.bIsPersistent) {
+		Equipments.Add(ItemRow);
+		UpdateEquipments();
+	}
+	else {
+		Items.Add(ItemRow);
+		UpdateInventory();
+	}
 }
 
 void AWizardCharacter::OnRep_Items()
@@ -206,6 +216,19 @@ void AWizardCharacter::UpdateInventory()
 	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
 	if (PlayerController) {
 		PlayerController->UpdateHUDCharacterInventory(Items);
+	}
+}
+
+void AWizardCharacter::OnRep_Equipments()
+{
+	UpdateEquipments();
+}
+
+void AWizardCharacter::UpdateEquipments()
+{
+	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
+	if (PlayerController) {
+		// TODO player controller function
 	}
 }
 

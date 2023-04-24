@@ -671,9 +671,11 @@ void AWizardPlayerController::ClientSetHUDStoryPoints_Implementation(const float
 
 void AWizardPlayerController::ServerEndTurn_Implementation()
 {
+	WizardCharacter = WizardCharacter == nullptr ? Cast<AWizardCharacter>(GetPawn()) : WizardCharacter;
 	WizardGameMode = WizardGameMode == nullptr ? Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode()) : WizardGameMode;
-	if (WizardGameMode) {
+	if (WizardGameMode && WizardCharacter) {
 		WizardGameMode->IncrementPlayersFinished();
+		WizardCharacter->ServerInterruptMovement();
 	}
 }
 

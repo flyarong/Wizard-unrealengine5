@@ -204,6 +204,23 @@ private:
 	void UpdateInventory();
 #pragma endregion
 
+#pragma region Equipments
+	/// <summary>
+	/// Replicated array used to control
+	/// the Character's Equipments from the server
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_Equipments)
+	TArray<FItemDataTable> Equipments;
+
+	UFUNCTION()
+	void OnRep_Equipments();
+
+	/// <summary>
+	/// Function to update the Character's Equipments
+	/// </summary>
+	void UpdateEquipments();
+#pragma endregion
+
 #pragma region Sounds
 	UPROPERTY(EditAnywhere, Category = "Item Sounds")
 	class USoundCue* OpenInventorySound;
