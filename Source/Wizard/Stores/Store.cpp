@@ -167,14 +167,23 @@ TArray<UDataTable*> AStore::GetProductTables()
 	UDataTable* PowerItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *PowerItemSelectorTablePath));
 	const FString DefenseItemSelectorTablePath{ DEFENSE_ITEM_DATA_TABLE_PATH };
 	UDataTable* DefenseItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *DefenseItemSelectorTablePath));
-	const FString AgilityItemSelectorTablePath{ AGILITY_ITEM_DATA_TABLE_PATH };
-	UDataTable* AgilityItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *AgilityItemSelectorTablePath));
 	const FString OffenseItemSelectorTablePath{ OFFENSE_ITEM_DATA_TABLE_PATH };
 	UDataTable* OffenseItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *OffenseItemSelectorTablePath));
 	const FString IntelligenceItemSelectorTablePath{ INTELLIGENCE_ITEM_DATA_TABLE_PATH };
 	UDataTable* IntelligenceItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *IntelligenceItemSelectorTablePath));
 	const FString WisdomItemSelectorTablePath{ WISDOM_ITEM_DATA_TABLE_PATH };
 	UDataTable* WisdomItemSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *WisdomItemSelectorTablePath));
+	const FString AgilityEquipmentSelectorTablePath{ AGILITY_EQUIPMENT_DATA_TABLE_PATH };
+	UDataTable* AgilityEquipmentSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *AgilityEquipmentSelectorTablePath));
+	const FString DefenseEquipmentSelectorTablePath{ DEFENSE_EQUIPMENT_DATA_TABLE_PATH };
+	UDataTable* DefenseEquipmentSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *DefenseEquipmentSelectorTablePath));
+	const FString OffenseEquipmentSelectorTablePath{ OFFENSE_EQUIPMENT_DATA_TABLE_PATH };
+	UDataTable* OffenseEquipmentSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *OffenseEquipmentSelectorTablePath));
+	const FString IntelligenceEquipmentSelectorTablePath{ INTELLIGENCE_EQUIPMENT_DATA_TABLE_PATH };
+	UDataTable* IntelligenceEquipmentSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *IntelligenceEquipmentSelectorTablePath));
+	const FString WisdomEquipmentSelectorTablePath{ WISDOM_EQUIPMENT_DATA_TABLE_PATH };
+	UDataTable* WisdomEquipmentSelectorTableObject = Cast<UDataTable>(StaticLoadObject(UDataTable::StaticClass(), nullptr, *WisdomEquipmentSelectorTablePath));
+
 
 	switch (StoreType)
 	{
@@ -187,16 +196,28 @@ TArray<UDataTable*> AStore::GetProductTables()
 		}
 		break;
 	case EStore::ES_Forge:
+		if (AgilityEquipmentSelectorTableObject) {
+			TableObjects.Add(AgilityEquipmentSelectorTableObject);
+		}
+		if (DefenseEquipmentSelectorTableObject) {
+			TableObjects.Add(DefenseEquipmentSelectorTableObject);
+		}
+		if (OffenseEquipmentSelectorTableObject) {
+			TableObjects.Add(OffenseEquipmentSelectorTableObject);
+		}
+		if (WisdomEquipmentSelectorTableObject) {
+			TableObjects.Add(WisdomEquipmentSelectorTableObject);
+		}
+		if (IntelligenceEquipmentSelectorTableObject) {
+			TableObjects.Add(IntelligenceEquipmentSelectorTableObject);
+		}
+		break;
+	case EStore::ES_Draper:
 		if (OffenseItemSelectorTableObject) {
 			TableObjects.Add(OffenseItemSelectorTableObject);
 		}
 		if (DefenseItemSelectorTableObject) {
 			TableObjects.Add(DefenseItemSelectorTableObject);
-		}
-		break;
-	case EStore::EA_MAX: // TODO need third store type for these
-		if (AgilityItemSelectorTableObject) {
-			TableObjects.Add(AgilityItemSelectorTableObject);
 		}
 		if (IntelligenceItemSelectorTableObject) {
 			TableObjects.Add(IntelligenceItemSelectorTableObject);
