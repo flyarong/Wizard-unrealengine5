@@ -38,6 +38,14 @@ public:
 	UFUNCTION()
 	void OnAttackEnded(class AActor* EnemyActor);
 
+	/// <summary>
+	/// Callback function to when an Animation Montage
+	/// Notify begins
+	/// </summary>
+	/// <param name="NotifyName">Name of the AnimNotify</param>
+	UFUNCTION()
+	void OnMontageNotifyBegin(FName NotifyName, const struct FBranchingPointNotifyPayload& BranchingPointPayload);
+
 protected:
 	virtual void BeginPlay() override;
 

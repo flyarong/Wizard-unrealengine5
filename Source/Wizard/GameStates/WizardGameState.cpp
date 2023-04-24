@@ -28,8 +28,8 @@ void AWizardGameState::BeginPlay()
 		Horde.Add(FName("Enemy"));
 		Horde.Add(FName("Enemy"));
 		Horde.Add(FName("Enemy"));
-		Horde.Add(FName("Enemy"));
-		Horde.Add(FName("Enemy"));
+		Horde.Add(FName("EliteEnemy"));
+		Horde.Add(FName("EliteEnemy"));
 		CachedHorde = Horde;
 	}
 }
@@ -219,6 +219,11 @@ void AWizardGameState::AddSpawnActorClass(FName Tag)
 		int32 Selection = FMath::RandRange(0, EnemyClasses.Num() - 1);
 
 		SpawnableEnemies.Add(EnemyClasses[Selection]);
+	}
+	else if (Tag == FName("EliteEnemy")) {
+		int32 Selection = FMath::RandRange(0, EliteEnemyClasses.Num() - 1);
+
+		SpawnableEnemies.Add(EliteEnemyClasses[Selection]);
 	}
 }
 

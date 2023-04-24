@@ -159,7 +159,6 @@ int32 AEnemy::GetHealth()
 void AEnemy::Kill()
 {
 	MulticastPlayAnimation(FName("Elim"));
-	Destroy();
 }
 
 ECombat AEnemy::GetCombatType()
@@ -297,6 +296,13 @@ void AEnemy::PlayCombatMontage(const FName& Section)
 	if (AnimInstance) {
 		AnimInstance->Montage_Play(CombatMontage);
 		AnimInstance->Montage_JumpToSection(Section);
+	}
+}
+
+void AEnemy::OnMontageNotifyBegin(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload)
+{
+	if (HasAuthority() && NotifyName.IsEqual(FName("Elimned"))) {
+		Destroy();
 	}
 }
 #pragma endregion
