@@ -19,37 +19,27 @@ UAttributeComponent::UAttributeComponent()
 
 int32 UAttributeComponent::GetAttributeValue(EAttribute AttributeType)
 {
-	int32 Value = -1;
-
 	switch (AttributeType)
 	{
 	case EAttribute::EA_Health:
-		Value = Health;
-		break;
+		return Health;
 	case EAttribute::EA_Defense:
-		Value = Defense;
-		break;
+		return Defense;
 	case EAttribute::EA_Power:
-		Value = Power;
-		break;
+		return Power;
 	case EAttribute::EA_XP:
-		Value = XP;
-		break;
+		return XP;
 	case EAttribute::EA_Wisdom:
-		Value = Wisdom;
-		break;
+		return Wisdom;
 	case EAttribute::EA_Intelligence:
-		Value = Intelligence;
-		break;
+		return Intelligence;
 	case EAttribute::EA_Offense:
-		Value = Offense;
-		break;
+		return Offense;
 	case EAttribute::EA_Agility:
-		Value = Agility;
-		break;
+		return Agility;
 	}
 
-	return Value;
+	return 0;
 }
 
 // Called when the game starts
@@ -165,7 +155,7 @@ void UAttributeComponent::UpdateHUDPower()
 void UAttributeComponent::SpendXP(int32 Cost)
 {
 	if (Character && Character->HasAuthority()) {
-		XP = FMath::Clamp(XP - Cost, 0.f, XP);
+		XP = FMath::Clamp(XP - Cost, 0, XP);
 		UpdateHUDXP();
 	}
 }
@@ -253,6 +243,166 @@ void UAttributeComponent::UpdateHUDDarkSpells()
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
 		Controller->SetHUDSpells(DarkSpells, false);
+	}
+}
+#pragma endregion
+
+#pragma region Wisdom
+void UAttributeComponent::DecreaseWisdom(int32 AmountToSubtract)
+{
+	if (Character && Character->HasAuthority()) {
+		Wisdom = FMath::Clamp(Wisdom - AmountToSubtract, 0, Wisdom);
+		UpdateHUDWisdom();
+	}
+}
+
+void UAttributeComponent::IncreaseWisdom(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Wisdom += AmountToAdd;
+		UpdateHUDWisdom();
+	}
+}
+
+void UAttributeComponent::OnRep_Wisdom()
+{
+	UpdateHUDWisdom();
+}
+
+void UAttributeComponent::UpdateHUDWisdom()
+{
+	Controller = (Controller == nullptr && Character) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDWisdom(Wisdom);
+	}
+}
+#pragma endregion
+
+#pragma region Intelligence
+void UAttributeComponent::DecreaseIntelligence(int32 AmountToSubtract)
+{
+	if (Character && Character->HasAuthority()) {
+		Intelligence = FMath::Clamp(Intelligence - AmountToSubtract, 0, Intelligence);
+		UpdateHUDIntelligence();
+	}
+}
+
+void UAttributeComponent::IncreaseIntelligence(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Intelligence += AmountToAdd;
+		UpdateHUDIntelligence();
+	}
+}
+
+void UAttributeComponent::OnRep_Intelligence()
+{
+	UpdateHUDIntelligence();
+}
+
+void UAttributeComponent::UpdateHUDIntelligence()
+{
+	Controller = (Controller == nullptr && Character) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDIntelligence(Intelligence);
+	}
+}
+#pragma endregion
+
+#pragma region Offense
+void UAttributeComponent::DecreaseOffense(int32 AmountToSubtract)
+{
+	if (Character && Character->HasAuthority()) {
+		Offense = FMath::Clamp(Offense - AmountToSubtract, 0, Offense);
+		UpdateHUDOffense();
+	}
+}
+
+void UAttributeComponent::IncreaseOffense(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Offense += AmountToAdd;
+		UpdateHUDOffense();
+	}
+}
+
+void UAttributeComponent::OnRep_Offense()
+{
+	UpdateHUDOffense();
+}
+
+void UAttributeComponent::UpdateHUDOffense()
+{
+	Controller = (Controller == nullptr && Character) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDOffense(Offense);
+	}
+}
+#pragma endregion
+
+#pragma region Defense
+void UAttributeComponent::DecreaseDefense(int32 AmountToSubtract)
+{
+	if (Character && Character->HasAuthority()) {
+		Defense = FMath::Clamp(Defense - AmountToSubtract, 0, Defense);
+		UpdateHUDDefense();
+	}
+}
+
+void UAttributeComponent::IncreaseDefense(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Defense += AmountToAdd;
+		UpdateHUDDefense();
+	}
+}
+
+void UAttributeComponent::OnRep_Defense()
+{
+	UpdateHUDDefense();
+}
+
+void UAttributeComponent::UpdateHUDDefense()
+{
+	Controller = (Controller == nullptr && Character) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDDefense(Defense);
+	}
+}
+#pragma endregion
+
+#pragma region Agility
+void UAttributeComponent::DecreaseAgility(int32 AmountToSubtract)
+{
+	if (Character && Character->HasAuthority()) {
+		Agility = FMath::Clamp(Agility - AmountToSubtract, 0, Agility);
+		UpdateHUDAgility();
+	}
+}
+
+void UAttributeComponent::IncreaseAgility(int32 AmountToAdd)
+{
+	if (Character && Character->HasAuthority()) {
+		Agility += AmountToAdd;
+		UpdateHUDAgility();
+	}
+}
+
+void UAttributeComponent::OnRep_Agility()
+{
+	UpdateHUDAgility();
+}
+
+void UAttributeComponent::UpdateHUDAgility()
+{
+	Controller = (Controller == nullptr && Character) ?
+		Cast<AWizardPlayerController>(Character->Controller) : Controller;
+	if (Controller) {
+		Controller->SetHUDAgility(Agility);
 	}
 }
 #pragma endregion

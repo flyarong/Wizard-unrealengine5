@@ -85,6 +85,66 @@ public:
 	void AddDarkSpell(int32 DarkSpellAmount);
 
 	/// <summary>
+	/// Function to handle Wisdom decrease
+	/// </summary>
+	/// <param name="AmountToSubtract">The number of Wisdom to subtract</param>
+	void DecreaseWisdom(int32 AmountToSubtract);
+
+	/// <summary>
+	/// Function to handle Wisdom increase
+	/// </summary>
+	/// <param name="AmountToAdd">The number of Wisdom to add</param>
+	void IncreaseWisdom(int32 AmountToAdd);
+
+	/// <summary>
+	/// Function to handle Intelligence decrease
+	/// </summary>
+	/// <param name="AmountToSubtract">The number of Intelligence to subtract</param>
+	void DecreaseIntelligence(int32 AmountToSubtract);
+
+	/// <summary>
+	/// Function to handle Intelligence increase
+	/// </summary>
+	/// <param name="AmountToAdd">The number of Intelligence to add</param>
+	void IncreaseIntelligence(int32 AmountToAdd);
+
+	/// <summary>
+	/// Function to handle Offense decrease
+	/// </summary>
+	/// <param name="AmountToSubtract">The number of Offense to subtract</param>
+	void DecreaseOffense(int32 AmountToSubtract);
+
+	/// <summary>
+	/// Function to handle Offense increase
+	/// </summary>
+	/// <param name="AmountToAdd">The number of Offense to add</param>
+	void IncreaseOffense(int32 AmountToAdd);
+
+	/// <summary>
+	/// Function to handle Defense decrease
+	/// </summary>
+	/// <param name="AmountToSubtract">The number of Defense to subtract</param>
+	void DecreaseDefense(int32 AmountToSubtract);
+
+	/// <summary>
+	/// Function to handle Defense increase
+	/// </summary>
+	/// <param name="AmountToAdd">The number of Defense to add</param>
+	void IncreaseDefense(int32 AmountToAdd);
+
+	/// <summary>
+	/// Function to handle Agility decrease
+	/// </summary>
+	/// <param name="AmountToSubtract">The number of Agility to subtract</param>
+	void DecreaseAgility(int32 AmountToSubtract);
+
+	/// <summary>
+	/// Function to handle Agility increase
+	/// </summary>
+	/// <param name="AmountToAdd">The number of Agility to add</param>
+	void IncreaseAgility(int32 AmountToAdd);
+
+	/// <summary>
 	/// Function that gets the value of an
 	/// Attribute based on its Type
 	/// </summary>
@@ -190,20 +250,75 @@ private:
 	void UpdateHUDDarkSpells();
 #pragma endregion
 
-	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
+#pragma region Wisdom
+	UPROPERTY(ReplicatedUsing = OnRep_Wisdom, EditAnywhere, Category = "Wizard Attributes")
 	int32 Wisdom;
 
-	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
+	UFUNCTION()
+	void OnRep_Wisdom();
+
+	/// <summary>
+	/// Function to update the Wisdom
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDWisdom();
+#pragma endregion
+
+#pragma region Intelligence
+	UPROPERTY(ReplicatedUsing = OnRep_Intelligence, EditAnywhere, Category = "Wizard Attributes")
 	int32 Intelligence;
 
-	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
+	UFUNCTION()
+	void OnRep_Intelligence();
+
+	/// <summary>
+	/// Function to update the Intelligence
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDIntelligence();
+#pragma endregion
+
+#pragma region Offense
+	UPROPERTY(ReplicatedUsing = OnRep_Offense, EditAnywhere, Category = "Wizard Attributes")
 	int32 Offense;
 
-	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
+	UFUNCTION()
+	void OnRep_Offense();
+
+	/// <summary>
+	/// Function to update the Offense
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDOffense();
+#pragma endregion
+
+#pragma region Defense
+	UPROPERTY(ReplicatedUsing = OnRep_Defense, EditAnywhere, Category = "Wizard Attributes")
 	int32 Defense;
 
-	UPROPERTY(Replicated, EditAnywhere, Category = "Wizard Attributes")
+	UFUNCTION()
+	void OnRep_Defense();
+
+	/// <summary>
+	/// Function to update the Defense
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDDefense();
+#pragma endregion
+
+#pragma region Agility
+	UPROPERTY(ReplicatedUsing = OnRep_Agility, EditAnywhere, Category = "Wizard Attributes")
 	int32 Agility;
+
+	UFUNCTION()
+	void OnRep_Agility();
+
+	/// <summary>
+	/// Function to update the Agility
+	/// on the HUD
+	/// </summary>
+	void UpdateHUDAgility();
+#pragma endregion
 
 public:	
 	FORCEINLINE void SetName(FString NameToSet) { Name = NameToSet; }
