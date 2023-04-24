@@ -6,7 +6,8 @@
 		"Cost": 70,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
-		"BoostAmount": 25
+		"BoostAmount": 25,
+		"bIsPersistent": false
 	},
 	{
 		"Name": "Lizfeldite",
@@ -15,7 +16,8 @@
 		"Cost": 50,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
-		"BoostAmount": 20
+		"BoostAmount": 20,
+		"bIsPersistent": false
 	},
 	{
 		"Name": "BrownSimradorite",
@@ -24,7 +26,8 @@
 		"Cost": 60,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
-		"BoostAmount": 15
+		"BoostAmount": 15,
+		"bIsPersistent": false
 	},
 	{
 		"Name": "Hagoxene",
@@ -33,7 +36,8 @@
 		"Cost": 30,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
-		"BoostAmount": 10
+		"BoostAmount": 10,
+		"bIsPersistent": false
 	},
 	{
 		"Name": "PrussianBlueColougite",
@@ -42,7 +46,8 @@
 		"Cost": 25,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
-		"BoostAmount": 10
+		"BoostAmount": 10,
+		"bIsPersistent": false
 	},
 	{
 		"Name": "FlaskofPremonition",
@@ -51,6 +56,7 @@
 		"Cost": 40,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__37_.Tex_ic__37_'",
 		"BoostType": "EB_Power",
-		"BoostAmount": 15
+		"BoostAmount": 15,
+		"bIsPersistent": false
 	}
 ]

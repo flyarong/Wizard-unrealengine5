@@ -12,7 +12,7 @@
 
 bool FItemDataTable::operator==(const FItemDataTable& Rhs) const
 {
-	return ItemName == Rhs.ItemName;
+	return ItemName == Rhs.ItemName && BoostAmount == Rhs.BoostAmount;
 }
 
 uint32 GetTypeHash(const FItemDataTable& ItemRow)

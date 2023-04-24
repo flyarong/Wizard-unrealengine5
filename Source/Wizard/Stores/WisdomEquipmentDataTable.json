@@ -1,0 +1,68 @@
+[
+	{
+		"Name": "CloakoftheScourge",
+		"ItemName": "Doomguard",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_10.Tex_cloth_10'",
+		"Cost": 120,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Cloak"
+	},
+	{
+		"Name": "DragonsLantern",
+		"ItemName": "Dragon's Lantern",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_05.Tex_herbs_05'",
+		"Cost": 110,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Boot"
+	},
+	{
+		"Name": "StoneofSecrecy",
+		"ItemName": "Stone of Secrecy",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_leather_05.Tex_leather_05'",
+		"Cost": 100,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
+	},
+	{
+		"Name": "Ferallity",
+		"ItemName": "Ferallity",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_herbs_06_b.Tex_herbs_06_b'",
+		"Cost": 90,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Belt"
+	},
+	{
+		"Name": "TimewornGrasp",
+		"ItemName": "Timeworn Grasp",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_gemstone_05_b.Tex_gemstone_05_b'",
+		"Cost": 80,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Armor"
+	},
+	{
+		"Name": "BoneShortbow",
+		"ItemName": "Bone Shortbow",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_wood_01_b.Tex_wood_01_b'",
+		"Cost": 130,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_feather_05_b.Tex_feather_05_b'",
+		"BoostType": "EB_Wisdom",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Staff"
+	}
+]

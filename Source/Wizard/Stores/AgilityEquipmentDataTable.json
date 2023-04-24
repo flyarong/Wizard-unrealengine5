@@ -6,7 +6,9 @@
 		"Cost": 40,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
 		"BoostType": "EB_Agility",
-		"BoostAmount": 1
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Boot"
 	},
 	{
 		"Name": "ThunderguardLinenCloak",
@@ -15,7 +17,9 @@
 		"Cost": 50,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
 		"BoostType": "EB_Agility",
-		"BoostAmount": 1
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Cloak"
 	},
 	{
 		"Name": "HatredChainGauntlets",
@@ -24,7 +28,9 @@
 		"Cost": 55,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
 		"BoostType": "EB_Agility",
-		"BoostAmount": 1
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
 	},
 	{
 		"Name": "DraughtofHaste",
@@ -33,7 +39,9 @@
 		"Cost": 45,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
 		"BoostType": "EB_Agility",
-		"BoostAmount": 1
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Staff"
 	},
 	{
 		"Name": "VialofDawn",
@@ -42,7 +50,9 @@
 		"Cost": 35,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
 		"BoostType": "EB_Agility",
-		"BoostAmount": 1
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Belt"
 	},
 	{
 		"Name": "WhistlingWoolDrape",
@@ -51,6 +61,8 @@
 		"Cost": 60,
 		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__39_.Tex_ic__39_'",
 		"BoostType": "EB_Agility",
-		"BoostAmount": 1
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Boot"
 	}
 ]

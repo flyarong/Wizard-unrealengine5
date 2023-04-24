@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
 #include "Wizard/WizardTypes/BoostTypes.h"
+#include "Wizard/WizardTypes/OutfitTypes.h"
 #include "Item.generated.h"
 
 /**
@@ -52,6 +53,19 @@ public:
 	/// </summary>
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 BoostAmount;
+
+	/// <summary>
+	/// Whether the Item can be applied as outfit or
+	/// provides only a one-time boost
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsPersistent;
+
+	/// <summary>
+	/// Item outfit type for persistent Items
+	/// </summary>
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EOutfit OutfitType;
 
 	/// <summary>
 	/// Custom operator for Equals

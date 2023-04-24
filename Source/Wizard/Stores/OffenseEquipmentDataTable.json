@@ -1,0 +1,68 @@
+[
+	{
+		"Name": "DarknessStone",
+		"ItemName": "Darkness Stone",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_12_b.Tex_spare_parts_12_b'",
+		"Cost": 100,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Staff"
+	},
+	{
+		"Name": "oftheStorm",
+		"ItemName": " Satchel of the Storm",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_stone_11.Tex_stone_11'",
+		"Cost": 80,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Belt"
+	},
+	{
+		"Name": "YewRecurve",
+		"ItemName": "Yew Recurve",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_tools_06.Tex_tools_06'",
+		"Cost": 90,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Staff"
+	},
+	{
+		"Name": "VolcanicGrimoire",
+		"ItemName": "Volcanic Grimoire",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_bone_02.Tex_bone_02'",
+		"Cost": 110,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
+	},
+	{
+		"Name": "Draughtbane",
+		"ItemName": "Draughtbane",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_11_b.Tex_cloth_11_b'",
+		"Cost": 120,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Cloak"
+	},
+	{
+		"Name": "SoulInfusedMapleFan",
+		"ItemName": "Soul Infused Maple Fan",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_ingots_05.Tex_ingots_05'",
+		"Cost": 130,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__27_.Tex_ic__27_'",
+		"BoostType": "EB_Offense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Armor"
+	}
+]

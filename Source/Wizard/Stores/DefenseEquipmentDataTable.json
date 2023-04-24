@@ -1,0 +1,68 @@
+[
+	{
+		"Name": "GhastlySpauldersofEndingMisery",
+		"ItemName": "Ghastly Spaulders of Ending Misery",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_leather_09_b.Tex_leather_09_b'",
+		"Cost": 100,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Armor"
+	},
+	{
+		"Name": "JudgementBronzedAegis",
+		"ItemName": "Judgement Bronzed Aegis",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_tools_04.Tex_tools_04'",
+		"Cost": 80,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Belt"
+	},
+	{
+		"Name": "LinenDrapeofDistantKings",
+		"ItemName": "Linen Drape of Distant Kings",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_10.Tex_spare_parts_10'",
+		"Cost": 90,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Cloak"
+	},
+	{
+		"Name": "BronzedofSacredAncestors",
+		"ItemName": "Bronzed Fists of Sacred Ancestors",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_leather_07_b.Tex_leather_07_b'",
+		"Cost": 75,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Staff"
+	},
+	{
+		"Name": "GhastlyofOblivion",
+		"ItemName": "Ghastly Warfists of Oblivion",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_cloth_12.Tex_cloth_12'",
+		"Cost": 110,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
+	},
+	{
+		"Name": "VindictiveSteelGauntlets",
+		"ItemName": "Vindictive Steel Gauntlets",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_02_b.Tex_spare_parts_02_b'",
+		"Cost": 100,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/Game_UI_03/Textures/Game_UI_03/PNG/icons/Tex_ic__12_.Tex_ic__12_'",
+		"BoostType": "EB_Defense",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
+	}
+]

@@ -1,0 +1,68 @@
+[
+	{
+		"Name": "Blazewing",
+		"ItemName": "Blazewing",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_spare_parts_04_b.Tex_spare_parts_04_b'",
+		"Cost": 70,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Belt"
+	},
+	{
+		"Name": "MendedRender",
+		"ItemName": "Mended Render",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_bone_11.Tex_bone_11'",
+		"Cost": 90,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
+	},
+	{
+		"Name": "WretchedGrip",
+		"ItemName": "Wretched Grip",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_reagent_07.Tex_reagent_07'",
+		"Cost": 120,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Armor"
+	},
+	{
+		"Name": "GrimSkeletalTouch",
+		"ItemName": "Grim Skeletal Touch",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_container_02_b.Tex_container_02_b'",
+		"Cost": 110,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Gauntlet"
+	},
+	{
+		"Name": "PossessedCodex",
+		"ItemName": "Possessed Codex",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_09.Tex_recipes_09'",
+		"Cost": 80,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Cloak"
+	},
+	{
+		"Name": "SlayeroftheSummoner",
+		"ItemName": "Slayer of the Summoner",
+		"ItemImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_stone_12_b.Tex_stone_12_b'",
+		"Cost": 100,
+		"BoostImage": "/Script/Engine.Texture2D'/Game/Assets/CraftResourcesIcons/Textures/Tex_recipes_12_b.Tex_recipes_12_b'",
+		"BoostType": "EB_Intelligence",
+		"BoostAmount": 1,
+		"bIsPersistent": true,
+		"OutfitType": "EO_Staff"
+	}
+]
