@@ -6,6 +6,7 @@
 #include "Wizard/HUD/WizardWidgetClasses/MiniMap/MiniMapWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Catalog/CatalogWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Items/CharacterInventoryWidget.h"
+#include "Wizard/HUD/WizardWidgetClasses/Equipments/CharacterOutfitWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/WizardOverlay.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/LocalMessageWidget.h"
 #include "Wizard/HUD/WizardWidgetClasses/Messages/PublicMessageWidget.h"
@@ -87,6 +88,7 @@ void AWizardHUD::ShowRightPanel()
 {
 	if (WizardOverlay) {
 		if (WizardOverlay->GetEndTurnButton()) WizardOverlay->GetEndTurnButton()->SetIsButtonEnabled(true);
+		if (WizardOverlay->GetOutfitButton()) WizardOverlay->GetOutfitButton()->SetIsEnabled(true);
 		if (WizardOverlay->GetProfileButton()) WizardOverlay->GetProfileButton()->SetIsEnabled(true);
 		if (WizardOverlay->GetInventoryButton()) WizardOverlay->GetInventoryButton()->SetIsEnabled(true);
 		if (WizardOverlay->GetSettingsButton()) WizardOverlay->GetSettingsButton()->SetIsEnabled(true);
@@ -98,6 +100,7 @@ void AWizardHUD::HideRightPanel()
 {
 	if (WizardOverlay) {
 		if (WizardOverlay->GetEndTurnButton()) WizardOverlay->GetEndTurnButton()->SetIsButtonEnabled(false);
+		if (WizardOverlay->GetOutfitButton()) WizardOverlay->GetOutfitButton()->SetIsEnabled(false);
 		if (WizardOverlay->GetProfileButton()) WizardOverlay->GetProfileButton()->SetIsEnabled(false);
 		if (WizardOverlay->GetInventoryButton()) WizardOverlay->GetInventoryButton()->SetIsEnabled(false);
 		if (WizardOverlay->GetSettingsButton()) WizardOverlay->GetSettingsButton()->SetIsEnabled(false);
@@ -179,10 +182,11 @@ void AWizardHUD::SetCharacterImage(UTexture2D* CharacterImage)
 {
 	AWizardPlayerController* WController = Cast<AWizardPlayerController>(GetOwningPlayerController());
 	if (WController && WizardOverlay && WizardOverlay->GetProfileImage() && WizardOverlay->GetProfileButton() &&
-		WizardOverlay->GetSettingsButton()) {
+		WizardOverlay->GetSettingsButton() && WizardOverlay->GetOutfitButton()) {
 		WizardOverlay->SetProfileImage(CharacterImage);
 		WizardOverlay->GetProfileButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::SetCameraFocusOnWizard);
 		WizardOverlay->GetInventoryButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::OpenHUDInventory);
+		WizardOverlay->GetOutfitButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::OpenHUDEquipments);
 		WizardOverlay->GetSettingsButton()->OnClicked.AddDynamic(WController, &AWizardPlayerController::ToggleHUDInGameMenu);
 	}
 }
@@ -289,6 +293,35 @@ void AWizardHUD::ShowCharacterInventory()
 	ClearCenterBox();
 	if (WizardOverlay && WizardOverlay->GetCenterBox() && WizardOverlay->GetInventoryWidget()) {
 		WizardOverlay->GetCenterBox()->AddChild(WizardOverlay->GetInventoryWidget());
+	}
+}
+
+void AWizardHUD::UpdateCharacterOutfit(const TArray<FItemDataTable>& Items, bool bUpdateOutfit)
+{
+	if (WizardOverlay) {
+		if (WizardOverlay->GetOutfitWidget() == nullptr && WizardOverlay->GetOutfitWidgetClass()) {
+			UCharacterOutfitWidget* OutfitWidget = CreateWidget<UCharacterOutfitWidget>(
+				GetOwningPlayerController(),
+				WizardOverlay->GetOutfitWidgetClass()
+				);
+			if (OutfitWidget) WizardOverlay->SetOutfitWidget(OutfitWidget);
+		}
+
+		if (WizardOverlay->GetOutfitWidget()) {
+			if (bUpdateOutfit) {
+				WizardOverlay->GetOutfitWidget()->UpdateOutfit(Items);
+			}
+			else {
+				WizardOverlay->GetOutfitWidget()->UpdateEquipments(Items);
+			}
+		}
+	}
+}
+void AWizardHUD::ShowCharacterOutfit()
+{
+	ClearCenterBox();
+	if (WizardOverlay && WizardOverlay->GetCenterBox() && WizardOverlay->GetOutfitWidget()) {
+		WizardOverlay->GetCenterBox()->AddChild(WizardOverlay->GetOutfitWidget());
 	}
 }
 #pragma endregion

@@ -437,6 +437,36 @@ void AWizardPlayerController::UpdateHUDCharacterInventory(const TArray<FItemData
 		WizardHUD->UpdateCharacterInventory(Items);
 	}
 }
+
+void AWizardPlayerController::OpenHUDEquipments()
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD && WizardCharacter) {
+		WizardCharacter->PlayOpenEquipmentSound();
+		if (WizardCharacter->GetEquipments().Num() > 0) {
+			WizardHUD->ShowCharacterOutfit();
+		}
+		else {
+			WizardHUD->AddLocalMessage(FString(TEXT("You don't have any Equipments to upgrade your Outfit!")), EAttribute::EA_MAX);
+		}
+	}
+}
+
+void AWizardPlayerController::UpdateHUDCharacterEquipments(const TArray<FItemDataTable>& Equipments)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->UpdateCharacterOutfit(Equipments);
+	}
+}
+
+void AWizardPlayerController::UpdateHUDCharacterOutfit(const TArray<FItemDataTable>& Outfit)
+{
+	WizardHUD = WizardHUD == nullptr ? Cast<AWizardHUD>(GetHUD()) : WizardHUD;
+	if (WizardHUD) {
+		WizardHUD->UpdateCharacterOutfit(Outfit, true);
+	}
+}
 #pragma endregion
 
 #pragma region HUD/MiniMap

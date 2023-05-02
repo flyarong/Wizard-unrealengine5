@@ -52,4 +52,24 @@ private:
 
 	UFUNCTION()
 	void OnBuyButtonClicked();
+
+	UPROPERTY(EditAnywhere, Category = "Outfits")
+	class UTexture2D* ArmorTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Outfits")
+	UTexture2D* CloakTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Outfits")
+	UTexture2D* GauntletTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Outfits")
+	UTexture2D* StaffTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Outfits")
+	UTexture2D* BeltTexture;
+
+	UPROPERTY(EditAnywhere, Category = "Outfits")
+	UTexture2D* BootTexture;
+
+	void SetItemImage();
 };

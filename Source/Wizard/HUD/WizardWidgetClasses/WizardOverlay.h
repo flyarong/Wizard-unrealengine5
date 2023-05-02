@@ -39,6 +39,12 @@ private:
 	TSubclassOf<class UUserWidget> InventoryWidgetClass;
 
 	/// <summary>
+	/// Widget class for the Character Outfit
+	/// </summary>
+	UPROPERTY(EditAnywhere, Category = "Items")
+	TSubclassOf<class UUserWidget> OutfitWidgetClass;
+
+	/// <summary>
 	/// Widget class for the local Message
 	/// </summary>
 	UPROPERTY(EditAnywhere, Category = "Messages")
@@ -122,6 +128,12 @@ private:
 	UPROPERTY()
 	class UCharacterInventoryWidget* InventoryWidget;
 
+	/// <summary>
+	/// Widget used on the Overlay to show the Character's Outfit
+	/// </summary>
+	UPROPERTY()
+	class UCharacterOutfitWidget* OutfitWidget;
+
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* CharacterNameText;
 
@@ -136,6 +148,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* SettingsButton;
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* OutfitButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UEndTurnButtonWidget* EndTurnButton;
@@ -225,6 +240,7 @@ public:
 	FORCEINLINE TSubclassOf<UUserWidget> GetDistrictPanelWidgetClass() const { return DistrictPanelWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetCatalogWidgetClass() const { return CatalogWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetInventoryWidgetClass() const { return InventoryWidgetClass; }
+	FORCEINLINE TSubclassOf<UUserWidget> GetOutfitWidgetClass() const { return OutfitWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetLocalMessageWidgetClass() const { return LocalMessageWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetPublicMessageWidgetClass() const { return PublicMessageWidgetClass; }
 	FORCEINLINE TSubclassOf<UUserWidget> GetSpellMapWidgetClass() const { return SpellMapWidgetClass; }
@@ -243,10 +259,13 @@ public:
 	FORCEINLINE void SetCombatScoreWidget(UCombatScoreWidget* CombatWidget) { CombatScoreWidget = CombatWidget; }
 	FORCEINLINE UCharacterInventoryWidget* GetInventoryWidget() const { return InventoryWidget; }
 	FORCEINLINE void SetInventoryWidget(UCharacterInventoryWidget* Inventory) { InventoryWidget = Inventory; }
+	FORCEINLINE UCharacterOutfitWidget* GetOutfitWidget() const { return OutfitWidget; }
+	FORCEINLINE void SetOutfitWidget(UCharacterOutfitWidget* Outfit) { OutfitWidget = Outfit; }
 	FORCEINLINE UImage* GetProfileImage() const { return ProfileImage; }
 	FORCEINLINE UButton* GetProfileButton() const { return ProfileButton; }
 	FORCEINLINE UButton* GetInventoryButton() const { return InventoryButton; }
 	FORCEINLINE UButton* GetSettingsButton() const { return SettingsButton; }
+	FORCEINLINE UButton* GetOutfitButton() const { return OutfitButton; }
 	FORCEINLINE void SetProfileImage(UTexture2D* Image) { ProfileImage->SetBrushFromTexture(Image); }
 	FORCEINLINE void SetHealthBarPercentage(float Health, float MaxHealth) { HealthBar->SetWizardBarPercent(Health, MaxHealth); };
 	FORCEINLINE UWizardProgressBarWidget* GetHealthBar() const { return HealthBar; }

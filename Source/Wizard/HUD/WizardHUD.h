@@ -183,6 +183,19 @@ public:
 	/// on the Overlay
 	/// </summary>
 	void ShowCharacterInventory();
+
+	/// <summary>
+	/// Function to update the Character's Outfit
+	/// </summary>
+	/// <param name="Items">The equipments or the outfit to be updated</param>
+	/// <param name="bUpdateOutfit">Whether or not to update the outfit</param>
+	void UpdateCharacterOutfit(const TArray<FItemDataTable>& Items, bool bUpdateOutfit = false);
+
+	/// <summary>
+	/// Function to show the Character's Outfit 
+	/// on the Overlay
+	/// </summary>
+	void ShowCharacterOutfit();
 #pragma endregion
 
 #pragma region MiniMap

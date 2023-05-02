@@ -104,6 +104,7 @@ void AWizardCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 
 	DOREPLIFETIME(AWizardCharacter, Items);
 	DOREPLIFETIME(AWizardCharacter, Equipments);
+	DOREPLIFETIME(AWizardCharacter, Outfit);
 }
 
 void AWizardCharacter::PostInitializeComponents()
@@ -228,7 +229,20 @@ void AWizardCharacter::UpdateEquipments()
 {
 	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
 	if (PlayerController) {
-		// TODO player controller function
+		PlayerController->UpdateHUDCharacterEquipments(Equipments);
+	}
+}
+
+void AWizardCharacter::OnRep_Outfit()
+{
+	UpdateOutfit();
+}
+
+void AWizardCharacter::UpdateOutfit()
+{
+	PlayerController = PlayerController == nullptr ? Cast<AWizardPlayerController>(Controller) : PlayerController;
+	if (PlayerController) {
+		PlayerController->UpdateHUDCharacterOutfit(Outfit);
 	}
 }
 
@@ -236,34 +250,101 @@ void AWizardCharacter::ServerUseItem_Implementation(const FItemDataTable& Item)
 {
 	if (!Items.Contains(Item)) return;
 
+	BoostAttribute(Item);
+
+	Items.RemoveSingle(Item);
+	UpdateInventory();
+	ServerInterruptMovement();
+	MulticastPlayInteractMontage(FName("Use"));
+}
+
+void AWizardCharacter::BoostAttribute(const FItemDataTable& Item)
+{
 	switch (Item.BoostType)
 	{
 	case EBoost::EB_Health:
 		if (Attribute->GetHealth() >= Attribute->GetMaxHealth()) return;
 		Attribute->AddHealth(Item.BoostAmount);
 		break;
-	case EBoost::EB_Defense:
-		break;
 	case EBoost::EB_Power:
 		if (Attribute->GetPower() >= Attribute->GetMaxPower()) return;
 		Attribute->AddPower(Item.BoostAmount);
 		break;
+	case EBoost::EB_Defense:
+		Attribute->IncreaseDefense(Item.BoostAmount); // TODO check later for all if persistent; if not, one-time boost applied
+		break;
 	case EBoost::EB_Wisdom:
+		Attribute->IncreaseWisdom(Item.BoostAmount);
 		break;
 	case EBoost::EB_Intelligence:
+		Attribute->IncreaseIntelligence(Item.BoostAmount);
 		break;
 	case EBoost::EB_Offense:
+		Attribute->IncreaseOffense(Item.BoostAmount);
 		break;
 	case EBoost::EB_Agility:
+		Attribute->IncreaseAgility(Item.BoostAmount);
 		break;
 	default:
 		break;
 	}
+}
 
-	Items.RemoveSingle(Item);
-	UpdateInventory();
-	ServerInterruptMovement();
-	MulticastPlayInteractMontage(FName("Use"));
+void AWizardCharacter::DecreaseAttribute(const FItemDataTable& Item)
+{
+	switch (Item.BoostType)
+	{
+	case EBoost::EB_Defense:
+		Attribute->DecreaseDefense(Item.BoostAmount);
+		break;
+	case EBoost::EB_Wisdom:
+		Attribute->DecreaseWisdom(Item.BoostAmount);
+		break;
+	case EBoost::EB_Intelligence:
+		Attribute->DecreaseIntelligence(Item.BoostAmount);
+		break;
+	case EBoost::EB_Offense:
+		Attribute->DecreaseOffense(Item.BoostAmount);
+		break;
+	case EBoost::EB_Agility:
+		Attribute->DecreaseAgility(Item.BoostAmount);
+		break;
+	default:
+		break;
+	}
+}
+
+void AWizardCharacter::ServerEquipOutfit_Implementation(const FItemDataTable& Equipment)
+{
+	if (!Equipments.Contains(Equipment) || HasOutfitTypeOn(Equipment.OutfitType)) return;
+
+	BoostAttribute(Equipment);
+
+	Equipments.RemoveSingle(Equipment);
+	UpdateEquipments();
+	Outfit.Add(Equipment);
+	UpdateOutfit();
+}
+
+bool AWizardCharacter::HasOutfitTypeOn(EOutfit OutfitType)
+{
+	for (auto& OutfitElement : Outfit) {
+		if (OutfitElement.OutfitType == OutfitType) return true;
+	}
+
+	return false;
+}
+
+void AWizardCharacter::ServerUnEquipOutfit_Implementation(const FItemDataTable& Equipment)
+{
+	if (!Outfit.Contains(Equipment)) return;
+
+	DecreaseAttribute(Equipment);
+
+	Outfit.RemoveSingle(Equipment);
+	UpdateOutfit();
+	Equipments.Add(Equipment);
+	UpdateEquipments();
 }
 #pragma endregion
 

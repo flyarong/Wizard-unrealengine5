@@ -199,6 +199,27 @@ public:
 	/// Inventory in the HUD
 	/// </summary>
 	void UpdateHUDCharacterInventory(const TArray<FItemDataTable>& Items);
+
+	/// <summary>
+	/// Function to open the Equipments
+	/// on the HUD
+	/// </summary>
+	UFUNCTION()
+	void OpenHUDEquipments();
+
+	/// <summary>
+	/// Function to update the Character's Equipments
+	/// on the HUD
+	/// </summary>
+	/// <param name="Equipments">The Equipments</param>
+	void UpdateHUDCharacterEquipments(const TArray<FItemDataTable>& Equipments);
+
+	/// <summary>
+	/// Function to update the Character's
+	/// outfit on the HUD
+	/// </summary>
+	/// <param name="Outfit">The outfit elements</param>
+	void UpdateHUDCharacterOutfit(const TArray<FItemDataTable>& Outfit);
 #pragma endregion
 
 #pragma region HUD/MiniMap

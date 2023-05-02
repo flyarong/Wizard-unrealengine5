@@ -136,13 +136,17 @@ void UActionComponent::CloseCatalog()
 void UActionComponent::ServerBuyItem_Implementation(const FItemDataTable& ItemRow)
 {
 	if (Character && Character->GetAttribute() && !ItemRow.ItemName.IsEmpty() && OverlappedWizardActor) {
-		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost)) {
+		if (Character->GetAttribute()->HasEnoughXP(ItemRow.Cost) && !Character->HasEquipment(ItemRow)) {
 			Character->GetAttribute()->SpendXP(ItemRow.Cost);
 			Character->AddNewItem(ItemRow);
 			ClientPlaySound(SuccessfulPurchaseSound);
 		}
-		else {
+		else if (!Character->GetAttribute()->HasEnoughXP(ItemRow.Cost)) {
 			ClientAddLocalMessage(FString(TEXT("You don't have enough")), EAttribute::EA_XP);
+			ClientPlaySound(FailedPurchaseSound);
+		}
+		else if (Character->HasEquipment(ItemRow)) {
+			ClientAddLocalMessage(FString(TEXT("You already have this equipment")), EAttribute::EA_MAX);
 			ClientPlaySound(FailedPurchaseSound);
 		}
 	}

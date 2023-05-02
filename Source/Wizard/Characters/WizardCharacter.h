@@ -63,6 +63,20 @@ public:
 	void ServerUseItem(const FItemDataTable& Item);
 
 	/// <summary>
+	/// Server RPC to equip an outfit on the Character
+	/// </summary>
+	/// <param name="Equipment">Equipment DataTable Row the Character wants to equip</param>
+	UFUNCTION(Server, Reliable)
+	void ServerEquipOutfit(const FItemDataTable& Equipment);
+
+	/// <summary>
+	/// Server RPC to unequip an outfit on the Character
+	/// </summary>
+	/// <param name="Equipment">Equipment DataTable Row the Character wants to unequip</param>
+	UFUNCTION(Server, Reliable)
+	void ServerUnEquipOutfit(const FItemDataTable& Equipment);
+
+	/// <summary>
 	/// Multicast RPC to play the Interact Animation Montage
 	/// </summary>
 	UFUNCTION(NetMulticast, Reliable)
@@ -202,6 +216,18 @@ private:
 	/// Function to update the Character's Inventory
 	/// </summary>
 	void UpdateInventory();
+
+	/// <summary>
+	/// Function to boost an Attribute
+	/// </summary>
+	/// <param name="Item">Item used to boost the Attribute</param>
+	void BoostAttribute(const FItemDataTable& Item);
+
+	/// <summary>
+	/// Function to decrease an Attribute
+	/// </summary>
+	/// <param name="Item">Item used to decrease the Attribute</param>
+	void DecreaseAttribute(const FItemDataTable& Item);
 #pragma endregion
 
 #pragma region Equipments
@@ -219,6 +245,29 @@ private:
 	/// Function to update the Character's Equipments
 	/// </summary>
 	void UpdateEquipments();
+
+	/// <summary>
+	/// Replicated array used to control
+	/// the Character's Outfit from the server
+	/// </summary>
+	UPROPERTY(ReplicatedUsing = OnRep_Outfit)
+	TArray<FItemDataTable> Outfit;
+
+	UFUNCTION()
+	void OnRep_Outfit();
+
+	/// <summary>
+	/// Function to update the Character's Outfit
+	/// </summary>
+	void UpdateOutfit();
+
+	/// <summary>
+	/// Function that checks whether or not the Character
+	/// has an outfit type already equipped
+	/// </summary>
+	/// <param name="OutfitType">Type of outfit to check for</param>
+	/// <returns>Whether or not the Character has an outfit equipped with that type</returns>
+	bool HasOutfitTypeOn(EOutfit OutfitType);
 #pragma endregion
 
 #pragma region Sounds
@@ -227,6 +276,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Item Sounds")
 	USoundCue* UseSound;
+
+	UPROPERTY(EditAnywhere, Category = "Equipment Sounds")
+	USoundCue* OpenEquipmentSound;
+
+	UPROPERTY(EditAnywhere, Category = "Equipment Sounds")
+	USoundCue* EquipSound;
 #pragma endregion
 
 	/// <summary>
@@ -248,11 +303,15 @@ public:
 	FORCEINLINE UCharacterPOIComponent* GetPOI() const { return POI; }
 	FORCEINLINE AWizardPlayerController* GetWizardController() { return PlayerController; }
 	FORCEINLINE TArray<FItemDataTable> GetItems() const { return Items; }
+	FORCEINLINE TArray<FItemDataTable> GetEquipments() const { return Equipments; }
+	FORCEINLINE bool HasEquipment(const FItemDataTable& Equipment) const { return Equipments.Contains(Equipment) || Outfit.Contains(Equipment); }
 	FORCEINLINE bool GetIsInCombat() const { return bIsInCombat; }
 	FORCEINLINE void SetIsInCombat(bool bInCombat) { bIsInCombat = bInCombat; }
 	FORCEINLINE bool GetIsAttacking() const { return bIsAttacking; }
 	FORCEINLINE void SetIsAttacking(bool bAttacking) { bIsAttacking = bAttacking; }
 	FORCEINLINE void PlayUseSound() { PlaySound(UseSound); }
+	FORCEINLINE void PlayEquipSound() { PlaySound(EquipSound); }
 	FORCEINLINE void PlayOpenInventorySound() { PlaySound(OpenInventorySound); }
+	FORCEINLINE void PlayOpenEquipmentSound() { PlaySound(OpenEquipmentSound); }
 };
 
