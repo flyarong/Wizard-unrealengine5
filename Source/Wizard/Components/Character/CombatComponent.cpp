@@ -131,15 +131,19 @@ void UCombatComponent::SetSuccessRate()
 	if (CombatTarget) {
 		if (CombatTarget->GetCombatType() <= ECombat::EC_DarkSpell) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetWisdom()) / NumberOfSteps;
+			UsedAttribute = EAttribute::EA_Wisdom;
 		}
 		else if (CombatTarget->GetCombatType() == ECombat::EC_Trial) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetIntelligence()) / NumberOfSteps;
+			UsedAttribute = EAttribute::EA_Intelligence;
 		}
 		else if (bIsAttacking) {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetOffense()) / NumberOfSteps;
+			UsedAttribute = EAttribute::EA_Offense;
 		}
 		else {
 			SuccessRate = static_cast<float>(Character->GetAttribute()->GetDefense()) / NumberOfSteps;
+			UsedAttribute = EAttribute::EA_Defense;
 		}
 	}
 }
@@ -192,6 +196,7 @@ void UCombatComponent::StartDarkSpellCombat()
 	if (!Character || !CombatTarget) return;
 
 	Successes = (CombatTarget->GetHealth() / 2) + 2.f;
+	UsedAttribute = EAttribute::EA_Intelligence;
 
 	if (bIsAttacking) {
 		CalculateCombatAttackResult();
@@ -243,6 +248,21 @@ void UCombatComponent::SetCurrentSpellStep()
 	}
 }
 
+void UCombatComponent::OnRep_StepIndex()
+{
+	if (StepIndex > -1)	AddCurrentStep();
+}
+
+void UCombatComponent::AddCurrentStep()
+{
+	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
+	if (WController) {
+		if (StepIndex == 0) WController->AddHUDSpellMap();
+		WController->AddHUDCurrentSpellStep(Steps[StepIndex]);
+		WController->SetCanCastSpell(true);
+	}
+}
+
 void UCombatComponent::CalculateCombatAttackResult()
 {
 	Character->GetAttribute()->SpendPower(CombatTarget->GetCost(), EAction::EA_Combat);
@@ -291,6 +311,7 @@ void UCombatComponent::CalculateCombatDefendResult()
 void UCombatComponent::EndCombat()
 {
 	StopCombat();
+	ResetAttributeBoost();
 	if (bIsAttacking) {
 		Character->GetAction()->EndAttack();
 	}
@@ -299,18 +320,27 @@ void UCombatComponent::EndCombat()
 	}
 }
 
-void UCombatComponent::OnRep_StepIndex()
+void UCombatComponent::ResetAttributeBoost()
 {
-	if (StepIndex > -1)	AddCurrentStep();
-}
-
-void UCombatComponent::AddCurrentStep()
-{
-	WController = (WController == nullptr && Character) ? Character->GetWizardController() : WController;
-	if (WController) {
-		if (StepIndex == 0) WController->AddHUDSpellMap();
-		WController->AddHUDCurrentSpellStep(Steps[StepIndex]);
-		WController->SetCanCastSpell(true);
+	if (Character && Character->GetAttribute()) {
+		switch (UsedAttribute)
+		{
+		case EAttribute::EA_Defense:
+			Character->GetAttribute()->ResetDefenseBoost();
+			break;
+		case EAttribute::EA_Wisdom:
+			Character->GetAttribute()->ResetWisdomBoost();
+			break;
+		case EAttribute::EA_Intelligence:
+			Character->GetAttribute()->ResetIntelligenceBoost();
+			break;
+		case EAttribute::EA_Offense:
+			Character->GetAttribute()->ResetOffenseBoost();
+			break;
+		default:
+			break;
+		}
+		UsedAttribute = EAttribute();
 	}
 }
 

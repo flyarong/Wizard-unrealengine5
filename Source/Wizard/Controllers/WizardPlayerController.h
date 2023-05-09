@@ -570,7 +570,7 @@ private:
 #pragma endregion
 
 public:
-	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter; }
+	FORCEINLINE AWizardCharacter* GetWizardCharacter() const { return WizardCharacter == nullptr ? Cast<AWizardCharacter>(GetPawn()) : WizardCharacter; }
 	FORCEINLINE AGameplayCamera* GetGameplayCamera() const { return GameplayCamera; }
 	FORCEINLINE bool GetCanCastSpell() const { return bCanCastSpell; }
 	FORCEINLINE void SetCanCastSpell(bool bIsInCombat) { bCanCastSpell = bIsInCombat; }

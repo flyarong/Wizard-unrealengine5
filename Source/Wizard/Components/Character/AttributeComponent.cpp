@@ -64,11 +64,15 @@ void UAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(UAttributeComponent, Name);
 	DOREPLIFETIME(UAttributeComponent, Health);
 	DOREPLIFETIME(UAttributeComponent, Defense);
+	DOREPLIFETIME(UAttributeComponent, BoostedDefense);
 	DOREPLIFETIME(UAttributeComponent, XP);
 	DOREPLIFETIME(UAttributeComponent, Power);
 	DOREPLIFETIME(UAttributeComponent, Wisdom);
+	DOREPLIFETIME(UAttributeComponent, BoostedWisdom);
 	DOREPLIFETIME(UAttributeComponent, Intelligence);
+	DOREPLIFETIME(UAttributeComponent, BoostedIntelligence);
 	DOREPLIFETIME(UAttributeComponent, Offense);
+	DOREPLIFETIME(UAttributeComponent, BoostedOffense);
 	DOREPLIFETIME(UAttributeComponent, Agility);
 	DOREPLIFETIME(UAttributeComponent, GoodSpells);
 	DOREPLIFETIME(UAttributeComponent, DarkSpells);
@@ -248,6 +252,22 @@ void UAttributeComponent::UpdateHUDDarkSpells()
 #pragma endregion
 
 #pragma region Wisdom
+void UAttributeComponent::BoostWisdom(int32 BoostAmount)
+{
+	if (Character && Character->HasAuthority()) {
+		BoostedWisdom += BoostAmount;
+		UpdateHUDWisdom();
+	}
+}
+
+void UAttributeComponent::ResetWisdomBoost()
+{
+	if (Character && Character->HasAuthority() && BoostedWisdom > 0) {
+		BoostedWisdom = 0;
+		UpdateHUDWisdom();
+	}
+}
+
 void UAttributeComponent::DecreaseWisdom(int32 AmountToSubtract)
 {
 	if (Character && Character->HasAuthority()) {
@@ -269,17 +289,38 @@ void UAttributeComponent::OnRep_Wisdom()
 	UpdateHUDWisdom();
 }
 
+void UAttributeComponent::OnRep_BoostedWisdom()
+{
+	UpdateHUDWisdom();
+}
+
 void UAttributeComponent::UpdateHUDWisdom()
 {
 	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDWisdom(Wisdom);
+		Controller->SetHUDWisdom(Wisdom + BoostedWisdom);
 	}
 }
 #pragma endregion
 
 #pragma region Intelligence
+void UAttributeComponent::BoostIntelligence(int32 BoostAmount)
+{
+	if (Character && Character->HasAuthority()) {
+		BoostedIntelligence += BoostAmount;
+		UpdateHUDIntelligence();
+	}
+}
+
+void UAttributeComponent::ResetIntelligenceBoost()
+{
+	if (Character && Character->HasAuthority() && BoostedIntelligence > 0) {
+		BoostedIntelligence = 0;
+		UpdateHUDIntelligence();
+	}
+}
+
 void UAttributeComponent::DecreaseIntelligence(int32 AmountToSubtract)
 {
 	if (Character && Character->HasAuthority()) {
@@ -301,17 +342,38 @@ void UAttributeComponent::OnRep_Intelligence()
 	UpdateHUDIntelligence();
 }
 
+void UAttributeComponent::OnRep_BoostedIntelligence()
+{
+	UpdateHUDIntelligence();
+}
+
 void UAttributeComponent::UpdateHUDIntelligence()
 {
 	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDIntelligence(Intelligence);
+		Controller->SetHUDIntelligence(Intelligence + BoostedIntelligence);
 	}
 }
 #pragma endregion
 
 #pragma region Offense
+void UAttributeComponent::BoostOffense(int32 BoostAmount)
+{
+	if (Character && Character->HasAuthority()) {
+		BoostedOffense += BoostAmount;
+		UpdateHUDOffense();
+	}
+}
+
+void UAttributeComponent::ResetOffenseBoost()
+{
+	if (Character && Character->HasAuthority() && BoostedOffense > 0) {
+		BoostedOffense = 0;
+		UpdateHUDOffense();
+	}
+}
+
 void UAttributeComponent::DecreaseOffense(int32 AmountToSubtract)
 {
 	if (Character && Character->HasAuthority()) {
@@ -333,17 +395,38 @@ void UAttributeComponent::OnRep_Offense()
 	UpdateHUDOffense();
 }
 
+void UAttributeComponent::OnRep_BoostedOffense()
+{
+	UpdateHUDOffense();
+}
+
 void UAttributeComponent::UpdateHUDOffense()
 {
 	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDOffense(Offense);
+		Controller->SetHUDOffense(Offense + BoostedOffense);
 	}
 }
 #pragma endregion
 
 #pragma region Defense
+void UAttributeComponent::BoostDefense(int32 BoostAmount)
+{
+	if (Character && Character->HasAuthority()) {
+		BoostedDefense += BoostAmount;
+		UpdateHUDDefense();
+	}
+}
+
+void UAttributeComponent::ResetDefenseBoost()
+{
+	if (Character && Character->HasAuthority() && BoostedDefense > 0) {
+		BoostedDefense = 0;
+		UpdateHUDDefense();
+	}
+}
+
 void UAttributeComponent::DecreaseDefense(int32 AmountToSubtract)
 {
 	if (Character && Character->HasAuthority()) {
@@ -365,12 +448,17 @@ void UAttributeComponent::OnRep_Defense()
 	UpdateHUDDefense();
 }
 
+void UAttributeComponent::OnRep_BoostedDefense()
+{
+	UpdateHUDDefense();
+}
+
 void UAttributeComponent::UpdateHUDDefense()
 {
 	Controller = (Controller == nullptr && Character) ?
 		Cast<AWizardPlayerController>(Character->Controller) : Controller;
 	if (Controller) {
-		Controller->SetHUDDefense(Defense);
+		Controller->SetHUDDefense(Defense + BoostedDefense);
 	}
 }
 #pragma endregion

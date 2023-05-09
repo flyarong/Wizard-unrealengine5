@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "InputCoreTypes.h"
 #include "Components/ActorComponent.h"
+#include "Wizard/WizardTypes/AttributeTypes.h"
 #include "CombatComponent.generated.h"
 
 /*
@@ -200,6 +201,18 @@ private:
 	/// </summary>
 	UPROPERTY(Replicated)
 	bool bIsAttacking = true;
+
+	/// <summary>
+	/// Attribute used during Combat
+	/// </summary>
+	UPROPERTY()
+	EAttribute UsedAttribute = EAttribute();
+
+	/// <summary>
+	/// Function to reset the boost of the
+	/// Attribute used during this Combat
+	/// </summary>
+	void ResetAttributeBoost();
 
 	/// <summary>
 	/// Function to setup Combat gameplay

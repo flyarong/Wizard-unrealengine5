@@ -186,6 +186,13 @@ void AWizardCharacter::LeaveGame()
 	if (IsLocallyControlled()) OnLeftGameDelegate.Broadcast();
 }
 
+void AWizardCharacter::RefillPower()
+{
+	if (Attribute) {
+		Attribute->AddPower(10 * Attribute->Agility);
+	}
+}
+
 void AWizardCharacter::ServerLeaveGame_Implementation()
 {
 	AWizardGameMode* WGameMode = Cast<AWizardGameMode>(GetWorld()->GetAuthGameMode());
@@ -271,16 +278,36 @@ void AWizardCharacter::BoostAttribute(const FItemDataTable& Item)
 		Attribute->AddPower(Item.BoostAmount);
 		break;
 	case EBoost::EB_Defense:
-		Attribute->IncreaseDefense(Item.BoostAmount); // TODO check later for all if persistent; if not, one-time boost applied
+		if (Item.bIsPersistent) {
+			Attribute->IncreaseDefense(Item.BoostAmount); 
+		}
+		else {
+			Attribute->BoostDefense(Item.BoostAmount);
+		}
 		break;
 	case EBoost::EB_Wisdom:
-		Attribute->IncreaseWisdom(Item.BoostAmount);
+		if (Item.bIsPersistent) {
+			Attribute->IncreaseWisdom(Item.BoostAmount);
+		}
+		else {
+			Attribute->BoostWisdom(Item.BoostAmount);
+		}
 		break;
 	case EBoost::EB_Intelligence:
-		Attribute->IncreaseIntelligence(Item.BoostAmount);
+		if (Item.bIsPersistent) {
+			Attribute->IncreaseIntelligence(Item.BoostAmount);
+		}
+		else {
+			Attribute->BoostIntelligence(Item.BoostAmount);
+		}
 		break;
 	case EBoost::EB_Offense:
-		Attribute->IncreaseOffense(Item.BoostAmount);
+		if (Item.bIsPersistent) {
+			Attribute->IncreaseOffense(Item.BoostAmount);
+		}
+		else {
+			Attribute->BoostOffense(Item.BoostAmount);
+		}
 		break;
 	case EBoost::EB_Agility:
 		Attribute->IncreaseAgility(Item.BoostAmount);

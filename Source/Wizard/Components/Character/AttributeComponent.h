@@ -85,6 +85,19 @@ public:
 	void AddDarkSpell(int32 DarkSpellAmount);
 
 	/// <summary>
+	/// Function to apply a one-time boost
+	/// on Wisdom
+	/// </summary>
+	/// <param name="BoostAmount">Amount to boost</param>
+	void BoostWisdom(int32 BoostAmount);
+
+	/// <summary>
+	/// Function to reset the boost on
+	/// Wisdom after it was used
+	/// </summary>
+	void ResetWisdomBoost();
+
+	/// <summary>
 	/// Function to handle Wisdom decrease
 	/// </summary>
 	/// <param name="AmountToSubtract">The number of Wisdom to subtract</param>
@@ -95,6 +108,19 @@ public:
 	/// </summary>
 	/// <param name="AmountToAdd">The number of Wisdom to add</param>
 	void IncreaseWisdom(int32 AmountToAdd);
+
+	/// <summary>
+	/// Function to apply a one-time boost
+	/// on Intelligence
+	/// </summary>
+	/// <param name="BoostAmount">Amount to boost</param>
+	void BoostIntelligence(int32 BoostAmount);
+
+	/// <summary>
+	/// Function to reset the boost on
+	/// Intelligence after it was used
+	/// </summary>
+	void ResetIntelligenceBoost();
 
 	/// <summary>
 	/// Function to handle Intelligence decrease
@@ -109,6 +135,19 @@ public:
 	void IncreaseIntelligence(int32 AmountToAdd);
 
 	/// <summary>
+	/// Function to apply a one-time boost
+	/// on Offense
+	/// </summary>
+	/// <param name="BoostAmount">Amount to boost</param>
+	void BoostOffense(int32 BoostAmount);
+
+	/// <summary>
+	/// Function to reset the boost on
+	/// Offense after it was used
+	/// </summary>
+	void ResetOffenseBoost();
+
+	/// <summary>
 	/// Function to handle Offense decrease
 	/// </summary>
 	/// <param name="AmountToSubtract">The number of Offense to subtract</param>
@@ -119,6 +158,19 @@ public:
 	/// </summary>
 	/// <param name="AmountToAdd">The number of Offense to add</param>
 	void IncreaseOffense(int32 AmountToAdd);
+
+	/// <summary>
+	/// Function to apply a one-time boost
+	/// on Defense
+	/// </summary>
+	/// <param name="BoostAmount">Amount to boost</param>
+	void BoostDefense(int32 BoostAmount);
+
+	/// <summary>
+	/// Function to reset the boost on
+	/// Defense after it was used
+	/// </summary>
+	void ResetDefenseBoost();
 
 	/// <summary>
 	/// Function to handle Defense decrease
@@ -257,6 +309,12 @@ private:
 	UFUNCTION()
 	void OnRep_Wisdom();
 
+	UPROPERTY(ReplicatedUsing = OnRep_BoostedWisdom)
+	int32 BoostedWisdom = 0;
+
+	UFUNCTION()
+	void OnRep_BoostedWisdom();
+
 	/// <summary>
 	/// Function to update the Wisdom
 	/// on the HUD
@@ -270,6 +328,12 @@ private:
 
 	UFUNCTION()
 	void OnRep_Intelligence();
+
+	UPROPERTY(ReplicatedUsing = OnRep_BoostedIntelligence)
+	int32 BoostedIntelligence = 0;
+
+	UFUNCTION()
+	void OnRep_BoostedIntelligence();
 
 	/// <summary>
 	/// Function to update the Intelligence
@@ -285,6 +349,12 @@ private:
 	UFUNCTION()
 	void OnRep_Offense();
 
+	UPROPERTY(ReplicatedUsing = OnRep_BoostedOffense)
+	int32 BoostedOffense = 0;
+
+	UFUNCTION()
+	void OnRep_BoostedOffense();
+
 	/// <summary>
 	/// Function to update the Offense
 	/// on the HUD
@@ -298,6 +368,12 @@ private:
 
 	UFUNCTION()
 	void OnRep_Defense();
+
+	UPROPERTY(ReplicatedUsing = OnRep_BoostedDefense)
+	int32 BoostedDefense = 0;
+
+	UFUNCTION()
+	void OnRep_BoostedDefense();
 
 	/// <summary>
 	/// Function to update the Defense
@@ -328,13 +404,13 @@ public:
 	FORCEINLINE int32 GetGoodSpells() const { return GoodSpells; }
 	FORCEINLINE int32 GetDarkSpells() const { return DarkSpells; }
 	FORCEINLINE void SetDefense(int32 DefenseToSet) { Defense = DefenseToSet; }
-	FORCEINLINE int32 GetDefense() const { return Defense; }
+	FORCEINLINE int32 GetDefense() const { return Defense + BoostedDefense; }
 	FORCEINLINE void SetWisdom(int32 WisdomToSet) { Wisdom = WisdomToSet; }
-	FORCEINLINE int32 GetWisdom() const { return Wisdom; }
+	FORCEINLINE int32 GetWisdom() const { return Wisdom + BoostedWisdom; }
 	FORCEINLINE void SetIntelligence(int32 IntelligenceToSet) { Intelligence = IntelligenceToSet; }
-	FORCEINLINE int32 GetIntelligence() const { return Intelligence; }
+	FORCEINLINE int32 GetIntelligence() const { return Intelligence + BoostedIntelligence; }
 	FORCEINLINE void SetOffense(int32 OffenseToSet) { Offense = OffenseToSet; }
-	FORCEINLINE int32 GetOffense() const { return Offense; }
+	FORCEINLINE int32 GetOffense() const { return Offense + BoostedOffense; }
 	FORCEINLINE void SetAgility(int32 AgilityToSet) { Agility = AgilityToSet; }
 	FORCEINLINE int32 GetAgility() const { return Agility; }
 	FORCEINLINE float GetPower() const { return Power; }

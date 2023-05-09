@@ -59,6 +59,13 @@ void AWizardGameMode::OnMatchStateSet()
 			}
 			bPlayersInitialized = true;
 		}
+		else {
+			for (auto& WizardPlayer : WizardPlayers) {
+				if (WizardPlayer && WizardPlayer->GetWizardCharacter()) {
+					WizardPlayer->GetWizardCharacter()->RefillPower();
+				}
+			}
+		}
 		
 		WizardGameState->EnableWizardActors();
 	}

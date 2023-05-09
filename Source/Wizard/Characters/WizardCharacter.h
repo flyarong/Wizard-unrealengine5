@@ -48,6 +48,12 @@ public:
 	void LeaveGame();
 
 	/// <summary>
+	/// Function that refills some amount of Power
+	/// to the Character at the start of each turn
+	/// </summary>
+	void RefillPower();
+
+	/// <summary>
 	/// Function to add a new Item to the
 	/// Character's Items
 	/// </summary>
